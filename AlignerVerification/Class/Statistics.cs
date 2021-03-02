@@ -136,6 +136,9 @@ namespace AlignerVerification.Class
 
                 if (Temp > TOffset) TOffset = Temp;
             }
+
+            //計算每一次的平移誤差量
+            CalibrateOffset = Math.Sqrt((nowPtD.X - AvgTop.X) * (nowPtD.X - AvgTop.X) + (nowPtD.Y - AvgTop.Y) * (nowPtD.Y - AvgTop.Y));
         }
         public static void AddOrigin(PointD nowPtD)
         {
@@ -191,16 +194,16 @@ namespace AlignerVerification.Class
             }
         }
 
-        public static double FindCalibrateOffset(PointD nowPtD)
-        {
-            ///CalibrateOffset  = Math.Sqrt((nowPtD.X - AvgOrigin.X) * (nowPtD.X - AvgOrigin.X) + (nowPtD.Y - AvgOrigin.Y) * (nowPtD.Y - AvgOrigin.Y));
-            AvgDistance = Math.Sqrt((AvgNotch.X - AvgOrigin.X) * (AvgNotch.X - AvgOrigin.X) + (AvgNotch.Y - AvgOrigin.Y) * (AvgNotch.Y - AvgOrigin.Y));
+        //public static double FindCalibrateOffset(PointD nowPtD)
+        //{
+        //    ///CalibrateOffset  = Math.Sqrt((nowPtD.X - AvgOrigin.X) * (nowPtD.X - AvgOrigin.X) + (nowPtD.Y - AvgOrigin.Y) * (nowPtD.Y - AvgOrigin.Y));
+        //    AvgDistance = Math.Sqrt((AvgNotch.X - AvgOrigin.X) * (AvgNotch.X - AvgOrigin.X) + (AvgNotch.Y - AvgOrigin.Y) * (AvgNotch.Y - AvgOrigin.Y));
 
-            double Distance = Math.Sqrt((nowPtD.X - AvgOrigin.X) * (nowPtD.X - AvgOrigin.X) + (nowPtD.Y - AvgOrigin.Y) * (nowPtD.Y - AvgOrigin.Y));
+        //    double Distance = Math.Sqrt((nowPtD.X - AvgOrigin.X) * (nowPtD.X - AvgOrigin.X) + (nowPtD.Y - AvgOrigin.Y) * (nowPtD.Y - AvgOrigin.Y));
 
-            CalibrateOffset = Distance - AvgDistance;
+        //    CalibrateOffset = Distance - AvgDistance;
 
-            return CalibrateOffset;
-        }
+        //    return CalibrateOffset;
+        //}
     }
 }

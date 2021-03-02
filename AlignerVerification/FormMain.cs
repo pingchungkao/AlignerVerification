@@ -2950,7 +2950,7 @@ namespace AlignerVerification
                 };
 
                 Statistics.AddNotch(N);
-                Statistics.FindCalibrateOffset(N);
+                //Statistics.FindCalibrateOffset(N);
 
                 Statistics.AddNotchDeg(cameraBasic.AOITool.Notch_Theta);
 
@@ -3064,12 +3064,12 @@ namespace AlignerVerification
 
         private void Calibrate_Click(object sender, EventArgs e)
         {
-            string strDirectory = MachineParas.OutputFolder;
-            DateTime dt = DateTime.Now;
-            string dateString = dt.ToString("yyyyMMdd");
-            dateString = @"\" + dateString + "_" + MachineParas.ExportFolder + @"\";
+            //string strDirectory = MachineParas.OutputFolder;
+            //DateTime dt = DateTime.Now;
+            //string dateString = dt.ToString("yyyyMMdd");
+            //dateString = @"\" + dateString + "_" + MachineParas.ExportFolder + @"\";
 
-            string RawDataFile = strDirectory + dateString + @"RawData.csv";               //紀錄資料
+            string RawDataFile = RootDirectory + @"RawData.csv";               //紀錄資料
 
             string line;
 
@@ -3098,11 +3098,11 @@ namespace AlignerVerification
                     string[] raw = line.Split(',');
                     if (lineCnt > 0)
                     {
-                        //Ndeg
+                        //旋轉角度差異
                         if (Double.TryParse(raw[4], out double dData1))
                             data1.Add(dData1);
 
-                        //Calibrate_offset_mm
+                        //平移距離差異
                         if (Double.TryParse(raw[6], out double dData2))
                             data2.Add(dData2);
                     }
@@ -3115,7 +3115,7 @@ namespace AlignerVerification
                 lineCnt++;
             }
 
-            string DataFile = strDirectory + dateString + @"Data.csv";               //紀錄資料
+            string DataFile = RootDirectory + @"Data.csv";               //紀錄資料
             lineCnt = 0;
             StreamReader Datafile = new StreamReader(DataFile);
             while ((line = Datafile.ReadLine()) != null)

@@ -366,7 +366,19 @@ namespace AlignerVerification.AOI
             Point pt2 = new Point((int)(List2.Average(x => x.X) + 0.5), (int)(List2.Average(y => y.Y) + 0.5));
 
             //計算Notch角度
-            Notch_Theta = Math.Atan((double)(pt1.Y - pt2.Y) / (double)(pt1.X - pt2.X)) / Math.PI * 180;
+            if(pt1.X - pt2.X == 0)
+            {
+                if(pt1.Y - pt2.Y > 0)
+                {
+                    Notch_Theta = 90.0;
+                }
+                else
+                {
+                    Notch_Theta = -90.0;
+                }
+            }
+            else
+                Notch_Theta = Math.Atan((double)(pt1.Y - pt2.Y) / (double)(pt1.X - pt2.X)) / Math.PI * 180;
 
             //計算直線與圓的交點(計算Notch點)
             double a = 1.0 + da1 * da1;
@@ -633,7 +645,19 @@ namespace AlignerVerification.AOI
 
 
             //計算Notch角度
-            Notch_Theta = Math.Atan((double)(NotchPt.Y - CenterPt.Y) / (double)(NotchPt.X - CenterPt.X)) / Math.PI * 180;
+            if(NotchPt.X - CenterPt.X == 0)
+            {
+                if(NotchPt.Y - CenterPt.Y >= 0)
+                {
+                    Notch_Theta = 90.0;
+                }
+                else
+                {
+                    Notch_Theta = -90.0;
+                }
+            }
+            else
+                Notch_Theta = Math.Atan((double)(NotchPt.Y - CenterPt.Y) / (double)(NotchPt.X - CenterPt.X)) / Math.PI * 180;
 
             return bReturn;
         }

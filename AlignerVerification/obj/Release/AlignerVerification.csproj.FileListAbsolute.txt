@@ -8,16 +8,19 @@ C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\x86\msvcp140.dll
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\x86\opencv_ffmpeg410.dll
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\x86\vcruntime140.dll
+C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\INI\Config.ini
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\AlignerVerification.exe.config
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\AlignerVerification.exe
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\AlignerVerification.pdb
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\Emgu.CV.UI.dll
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\Emgu.CV.World.dll
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\log4net.dll
+C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\MWArray.dll
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\ZedGraph.dll
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\Emgu.CV.UI.xml
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\Emgu.CV.World.xml
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\log4net.xml
+C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\MWArray.xml
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\ZedGraph.xml
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\de\ZedGraph.resources.dll
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\es\ZedGraph.resources.dll
@@ -39,7 +42,3 @@ C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\obj\
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\obj\Release\AlignerVerification.csproj.CopyComplete
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\obj\Release\AlignerVerification.exe
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\obj\Release\AlignerVerification.pdb
-C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\INI\Config.ini
-C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\MWArray.dll
-C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\MWArray.xml
-C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\obj\Release\AlignerVerification.csprojAssemblyReference.cache
