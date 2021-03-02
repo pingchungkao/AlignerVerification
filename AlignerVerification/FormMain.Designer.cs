@@ -2232,7 +2232,7 @@
             this.Controls.Add(this.statusStrip1);
             this.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.Name = "FormMain";
-            this.Text = "Aligner Verification";
+            this.Text = "Aligner Verification - Ver.1.01";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.BottomPanel.ResumeLayout(false);
             this.ShowResultGroupBox.ResumeLayout(false);

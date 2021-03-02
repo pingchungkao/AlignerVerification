@@ -42,3 +42,4 @@ C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\obj\
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\INI\Config.ini
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\MWArray.dll
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\bin\Release\MWArray.xml
+C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\obj\Release\AlignerVerification.csprojAssemblyReference.cache
