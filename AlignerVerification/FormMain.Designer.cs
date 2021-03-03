@@ -1114,7 +1114,7 @@
             // 
             this.TestCountUpDown.Location = new System.Drawing.Point(9, 22);
             this.TestCountUpDown.Maximum = new decimal(new int[] {
-            2000,
+            9999,
             0,
             0,
             0});
@@ -2232,7 +2232,7 @@
             this.Controls.Add(this.statusStrip1);
             this.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.Name = "FormMain";
-            this.Text = "Aligner Verification - Ver.1.02";
+            this.Text = "Aligner Verification - Ver.1.02.1";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.BottomPanel.ResumeLayout(false);
             this.ShowResultGroupBox.ResumeLayout(false);

@@ -1361,7 +1361,8 @@ namespace AlignerVerification
 
                     if(RetryTime == 3)
                     {
-                       FormMainUpdate.MessageLogUpdate("DoCameraGrab(DeviceController dctrl)", "RetryTime == 3");
+                        FormMainUpdate.MessageLogUpdate("DoCameraGrab(DeviceController dctrl)", "RetryTime == 3");
+                        bReturn = false;
                     }
                     
                 }
