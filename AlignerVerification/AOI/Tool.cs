@@ -463,36 +463,72 @@ namespace AlignerVerification.AOI
             CenterMMPt.X = (double)CenterPt.X / PixelPerMM;
             CenterMMPt.Y = (double)CenterPt.Y / PixelPerMM;
 
-            List<PointF> TopEage = new List<PointF>();
-            int MinValue = edge.Min();
-
-            for(int i = 0; i< 3840; i++)
+            List<PointF> Eage = new List<PointF>();
+            for (int x = 0; x < 3840; x++)
             {
-                if(edge[i] == MinValue)
+                PointF pt = new PointF
                 {
-                    PointF pt = new PointF
-                    {
-                        X = (float)i,
-                        Y = (float)edge[i]
-                    };
-                    TopEage.Add(pt);
+                    X = (float)x,
+                    Y = (float)edge[x]
+                };
+                Eage.Add(pt);
+            }
+
+            LeastSquaresFit(Eage, ref Ox, ref Oy, ref R);
+
+            //尋找最高的點
+            double MaxTop = 99999999.0;
+            double tempY = 0;
+            int MaxX = 0;
+            for (int x = 0; x < 3840; x++)
+            {
+                tempY = Oy - Math.Sqrt(R * R - (Ox - x) * (Ox - x));
+                if (tempY < MaxTop)
+                {
+                    MaxTop = tempY;
+                    MaxX = x;
                 }
             }
 
-            if(TopEage.Count == 1)
-            {
-                TopPt.X = (int)TopEage[0].X;
-                TopPt.Y = (int)TopEage[0].Y + ROITop;
-                TopMMPt.X = (double)TopPt.X / PixelPerMM;
-                TopMMPt.Y = (double)TopPt.Y / PixelPerMM;
-            }
-            else
-            {
-                TopPt.X = (int)TopEage.Average(x => x.X);
-                TopPt.Y = MinValue + ROITop;
-                TopMMPt.X = (double)TopPt.X / PixelPerMM;
-                TopMMPt.Y = (double)TopPt.Y / PixelPerMM;
-            }
+            //----------------------------------------
+            //紀錄最高點
+            TopPt.X = MaxX;
+            TopPt.Y = (int)(MaxTop + 0.5) + ROITop;
+
+            TopMMPt.X = (double)TopPt.X / PixelPerMM;
+            TopMMPt.Y = (double)TopPt.Y / PixelPerMM;
+            //----------------------------------------
+
+            //List<PointF> TopEage = new List<PointF>();
+            //int MinValue = edge.Min();
+
+            //for(int i = 0; i< 3840; i++)
+            //{
+            //    if(edge[i] == MinValue)
+            //    {
+            //        PointF pt = new PointF
+            //        {
+            //            X = (float)i,
+            //            Y = (float)edge[i]
+            //        };
+            //        TopEage.Add(pt);
+            //    }
+            //}
+
+            //if(TopEage.Count == 1)
+            //{
+            //    TopPt.X = (int)TopEage[0].X;
+            //    TopPt.Y = (int)TopEage[0].Y + ROITop;
+            //    TopMMPt.X = (double)TopPt.X / PixelPerMM;
+            //    TopMMPt.Y = (double)TopPt.Y / PixelPerMM;
+            //}
+            //else
+            //{
+            //    TopPt.X = (int)TopEage.Average(x => x.X);
+            //    TopPt.Y = MinValue + ROITop;
+            //    TopMMPt.X = (double)TopPt.X / PixelPerMM;
+            //    TopMMPt.Y = (double)TopPt.Y / PixelPerMM;
+            //}
 
             NotchPt.X = 0;
             NotchPt.Y = 0;
@@ -503,7 +539,6 @@ namespace AlignerVerification.AOI
 
             return bReturn;
         }
-
         void FindRelateCircle(int index1, int index2, ref double Ox, ref double Oy, double R)
         {
             int x1 = index1;

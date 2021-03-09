@@ -42,5 +42,15 @@ namespace AlignerVerification.Class
 
         //AutoRun時，是否確認 Wafer Present
         public static bool CheckWaferPresentInAutoRun = true;
+
+        //異常時停機
+        public static bool bAlarmStopEnabled = true;
+        //異常時，Download Data
+        public static bool bAlarmStopDownloadData = false;
+        //O offset 規格上限
+        public static double dOOffsetUpLimit = 0.2;
+        //N offset 規格上限
+        public static double dNOffsetUpLimit = 0.2;
+
     }
 }

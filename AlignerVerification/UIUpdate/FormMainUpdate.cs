@@ -274,23 +274,42 @@ namespace AlignerVerification.UIUpdate
                     if (lb != null)
                         lb.Text = Math.Round(Statistics.NOffsetDeg, 3).ToString();
 
-                    //string strDirectory = MachineParas.OutputFolder;
-                    //DateTime dt = DateTime.Now;
-                    //string dateString = dt.ToString("yyyyMMdd");
-                    //dateString = @"\" + dateString + "_" + MachineParas.ExportFolder + @"\";
+                    if(Statistics.TOffset > MachineParas.dOOffsetUpLimit)
+                    {
+                        lb = null;
+                        lb = form.Controls.Find("ShowToffsetLabel", true).FirstOrDefault() as Label;
+                        if (lb != null)
+                            lb.ForeColor = Color.Red;
+
+                        lb = null;
+                        lb = form.Controls.Find("lbToffset", true).FirstOrDefault() as Label;
+                        if (lb != null)
+                            lb.ForeColor = Color.Red;
+
+                    }
+
+                    if (Statistics.NOffsetDeg > MachineParas.dNOffsetUpLimit)
+                    {
+                        lb = null;
+                        lb = form.Controls.Find("ShowNDegoffsetLabel", true).FirstOrDefault() as Label;
+                        if (lb != null)
+                            lb.ForeColor = Color.Red;
+
+                        lb = null;
+                        lb = form.Controls.Find("lbNDegoffset", true).FirstOrDefault() as Label;
+                        if (lb != null)
+                            lb.ForeColor = Color.Red;
+
+                    }
+
 
                     form.Refresh();
 
                     if (saveImg)
                     {
-                        //string strFileName = strDirectory + dateString + @"\n" + Cnt.ToString() + @".jpg";
-                        
                         string strFileName = RootDirectory + @"\n" + Cnt.ToString() + @".jpg";
                         Bitmap bit = new Bitmap(form.Width, form.Height);//例項化一個和窗體一樣大的bitmap
                         form.DrawToBitmap(bit, new Rectangle(0, 0, form.Width, form.Height));
-                        //Graphics g = Graphics.FromImage(bit);
-                        //g.CompositingQuality = CompositingQuality.HighQuality;//質量設為最高
-                        //g.CopyFromScreen(form.Left, form.Top, 0, 0, new Size(form.Width, form.Height));//儲存整個窗體為圖片
                         bit.Save(strFileName);
                     }
                 }

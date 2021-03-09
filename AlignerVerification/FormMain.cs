@@ -533,8 +533,8 @@ namespace AlignerVerification
             deviceConfig.Add(CameraDC.DeviceName, CameraDC);
 
             //設定 Buffer
-            cameraBasic.ImageBuffer.SetBufferInfo(100, 3840, 2748, DepthType.Cv8U, 3);
-            cameraBasic.FileBuffer.SetBufferInfo(100, 3840, 2748, DepthType.Cv8U, 3);
+            cameraBasic.ImageBuffer.SetBufferInfo(360, 3840, 2748, DepthType.Cv8U, 3);
+            cameraBasic.FileBuffer.SetBufferInfo(360, 3840, 2748, DepthType.Cv8U, 3);
 
             DisplayImageBox.FunctionalMode = ImageBox.FunctionalModeOption.Minimum;
 
@@ -718,6 +718,19 @@ namespace AlignerVerification
             strValue = (string)Registry.GetValue(RegRoot, "FillWafer", cameraBasic.AOITool.FillWafer.ToString());
             cameraBasic.AOITool.FillWafer = strValue.ToUpper().Equals("TRUE") ? true : false;
 
+            //異常時停機
+            strValue = (string)Registry.GetValue(RegRoot, "AlarmStopEnabled", MachineParas.bAlarmStopEnabled.ToString());
+            MachineParas.bAlarmStopEnabled = strValue.ToUpper().Equals("TRUE") ? true : false;
+
+            //異常時，Download Data
+            strValue = (string)Registry.GetValue(RegRoot, "AlarmStopDownloadData", MachineParas.bAlarmStopDownloadData.ToString());
+            MachineParas.bAlarmStopDownloadData = strValue.ToUpper().Equals("TRUE") ? true : false;
+
+            //O offset 規格上限
+            MachineParas.dOOffsetUpLimit = Convert.ToDouble(Registry.GetValue(RegRoot, "OOffsetUpLimit", MachineParas.dOOffsetUpLimit.ToString()));
+            //N offset 規格上限
+            MachineParas.dNOffsetUpLimit = Convert.ToDouble(Registry.GetValue(RegRoot, "NOffsetUpLimit", MachineParas.dNOffsetUpLimit.ToString()));
+
 
             Reg.Close();
 
@@ -788,6 +801,15 @@ namespace AlignerVerification
             Registry.SetValue(RegRoot, "BinaryTHL", cameraBasic.AOITool.BinaryTHL.ToString());
             Registry.SetValue(RegRoot, "FilterMask", cameraBasic.AOITool.FilterMask);
             Registry.SetValue(RegRoot, "FillWafer", cameraBasic.AOITool.FillWafer.ToString());
+
+            //異常時停機
+            Registry.SetValue(RegRoot, "AlarmStopEnabled", MachineParas.bAlarmStopEnabled.ToString());
+            //異常時，Download Data
+            Registry.SetValue(RegRoot, "AlarmStopDownloadData", MachineParas.bAlarmStopDownloadData.ToString());
+            //O offset 規格上限
+            Registry.SetValue(RegRoot, "OOffsetUpLimit", MachineParas.dOOffsetUpLimit.ToString());
+            //N offset 規格上限
+            Registry.SetValue(RegRoot, "NOffsetUpLimit", MachineParas.dNOffsetUpLimit.ToString());
         }
         private void LoadINIFile(string path = "")
         {
@@ -1007,6 +1029,15 @@ namespace AlignerVerification
 
             cbOffsetType.Checked = Statistics.OffsetType.Equals(1) ? true : false;
 
+            //異常時停機
+            cbAlarmStopEnabled.Checked = MachineParas.bAlarmStopEnabled;
+            //異常時，Download Data
+            cbAlarmStopDownloadData.Checked = MachineParas.bAlarmStopDownloadData;
+            //O offset 規格上限
+            tbOOffsetUpLimit.Text = MachineParas.dOOffsetUpLimit.ToString();
+            //N offset 規格上限
+            tbNOffsetUpLimit.Text = MachineParas.dNOffsetUpLimit.ToString();
+
             dc = deviceConfig["Cylinder"];
             cbCylinderEnabled.Checked = dc.Enable;
             cmbCylinderPort.Text = dc.PortName;
@@ -1094,6 +1125,15 @@ namespace AlignerVerification
             MachineParas.CheckWaferPresentInAutoRun = cbCheckWaferPresentInAutoRun.Checked;
 
             Statistics.OffsetType = cbOffsetType.Checked ? 1 : 0;
+
+            //異常時停機
+            MachineParas.bAlarmStopEnabled = cbAlarmStopEnabled.Checked;
+            //異常時，Download Data
+            MachineParas.bAlarmStopDownloadData = cbAlarmStopDownloadData.Checked;
+            //O offset 規格上限
+            MachineParas.dOOffsetUpLimit = Convert.ToDouble(tbOOffsetUpLimit.Text);
+            //N offset 規格上限
+            MachineParas.dNOffsetUpLimit = Convert.ToDouble(tbNOffsetUpLimit.Text);
 
             dc = deviceConfig["Cylinder"];
             dc.Enable = cbCylinderEnabled.Checked;
@@ -1229,7 +1269,12 @@ namespace AlignerVerification
         {
             if (!StartPreventMultiClick(300)) return;
 
-            DoCylinderJob("MoveUp");
+            if(DoAlignerRelease())
+            {
+                Thread.Sleep(1000);
+                DoCylinderJob("MoveUp");
+            }
+
 
             StopPreventMultiClick();
         }
@@ -1882,6 +1927,12 @@ namespace AlignerVerification
             lbNDegoffset.Text = "0.00";
 
             lbShowCurrentCnt.Text = "";
+
+            ShowToffsetLabel.ForeColor = Color.Black;
+            lbToffset.ForeColor = Color.Black;
+
+            ShowNDegoffsetLabel.ForeColor = Color.Black;
+            lbNDegoffset.ForeColor = Color.Black;
         }
         private void btnCalculateResutl_Click(object sender, EventArgs e)
         {
@@ -2089,6 +2140,8 @@ namespace AlignerVerification
                     Y = cameraBasic.AOITool.TopMMPt.Y
                 };
                 Statistics.AddTop(Top);
+
+                Statistics.FindCalibrateOffset();
 
                 FormMainUpdate.DisplayImageUpdate(RootDirectory ,cameraBasic.MatFrame, cameraBasic.AOITool, (float)ZoomRadioX, (float)ZoomRadioY, Info.ID + 1, false);
 
@@ -2604,14 +2657,6 @@ namespace AlignerVerification
             int YOffset = MachineParas.TestModeYOffset;
             int TOffset = MachineParas.TestModeTOffset;
 
-            //儲存資料
-            //string strDirectory = MachineParas.OutputFolder;
-            //DateTime dt = DateTime.Now;
-            //string dateString = dt.ToString("yyyyMMdd");
-            //dateString = @"\" + dateString + "_" + MachineParas.ExportFolder + @"\";
-
-            //string strSubDirectory1 = strDirectory + dateString;
-
             if (!Directory.Exists(RootDirectory))
                 Directory.CreateDirectory(RootDirectory);
 
@@ -2632,7 +2677,7 @@ namespace AlignerVerification
                     if (MachineParas.MachineType == 0)
                     {
                         IsRun = DoCylinderRaiseWafer();
-                        if (!IsRun) break;
+                        //if (!IsRun) break;
                     }
 
                     //Aligner回Home
@@ -2640,7 +2685,7 @@ namespace AlignerVerification
                     if (!DoAlignerHome())
                     {
                         IsRun = false;
-                        break;
+                        //break;
                     }
 
                     //Vacuum type
@@ -2650,13 +2695,13 @@ namespace AlignerVerification
                         if(!DoAlignerXOffset())
                         {
                             IsRun = false;
-                            break;
+                            //break;
                         }
 
                         if(!DoCylinderLowerWafer())
                         {
                             IsRun = false;
-                            break;
+                            //break;
                         }
                     }
                     else
@@ -2665,19 +2710,19 @@ namespace AlignerVerification
                         if(!DoClampAlignerZMidDown())
                         {
                             IsRun = false;
-                            break;
+                            //break;
                         }
 
                         if(!DoClampAlignerXClamp())
                         {
                             IsRun = false;
-                            break;
+                            //break;
                         }
 
                         if (!DoClampAlignerZDown())
                         {
                             IsRun = false;
-                            break;
+                            //break;
                         }
                     }
 
@@ -2795,14 +2840,14 @@ namespace AlignerVerification
                             break;
                     }
 
-                    if (!IsRun) break;
+                    //if (!IsRun) break;
 
                     if(MachineParas.MachineType == 0)
                     {
                         if(!DoCylinderLowerWafer())
                         {
                             IsRun = false;
-                            break;
+                            //break;
                         }
                     }
                     else
@@ -2810,7 +2855,7 @@ namespace AlignerVerification
                         if(!DoClampAlignerGoHome())
                         {
                             IsRun = false;
-                            break;
+                            //break;
                         }
                     }
                 }
@@ -2821,7 +2866,7 @@ namespace AlignerVerification
                 if(!DoAlign())
                 {
                     IsRun = false;
-                    break;
+                    //break;
                 }
    
                 Statistics.AddTackTime(TackTime);
@@ -2840,7 +2885,7 @@ namespace AlignerVerification
                     if (AlignError)
                     {
                         IsRun = false;
-                        break;
+                        //break;
                     }
                 }
 
@@ -2854,7 +2899,7 @@ namespace AlignerVerification
                 {
                     FormMainUpdate.MessageLogUpdate("AutoRun", "GET:ALIGN:0 Timeout");
                     IsRun = false;
-                    break;
+                    //break;
                 }
 
                 //string DataFile = strDirectory + dateString + @"Data.csv";               //紀錄資料
@@ -2890,16 +2935,6 @@ namespace AlignerVerification
                     sw.Close();
                 }
 
-                ////確認Present是否ON
-                //if(MachineParas.CheckWaferPresentInAutoRun)
-                //{
-                //    if (!CheckAlignerIO(8))
-                //    {
-                //        IsRun = false;
-                //        break;
-                //    }
-                //}
-
                 //取像
                 Thread.Sleep(1000);
                 FormMainUpdate.MessageLogUpdate("AutoRun", "Capture");
@@ -2911,7 +2946,7 @@ namespace AlignerVerification
                         if (!DoCameraGrab(Camera))
                         {
                             IsRun = false;
-                            break;
+                           // break;
                         }
                     }
                 }
@@ -2922,7 +2957,7 @@ namespace AlignerVerification
                 if (!File.Exists(FileName))
                 {
                     IsRun = false;
-                    break;
+                    //break;
                 }
                 FormMainUpdate.MessageLogUpdate("AutoRun", "SetImage");
                 cameraBasic.SetImage(CvInvoke.Imread(FileName));
@@ -2930,7 +2965,7 @@ namespace AlignerVerification
                 if (!cameraBasic.AOITool.Calculate())
                 {
                     IsRun = false;
-                    break;
+                    //break;
                 }
 
                 FormMainUpdate.MessageLogUpdate("AutoRun", "Calculate Finish");
@@ -2963,6 +2998,8 @@ namespace AlignerVerification
 
                 Statistics.AddTop(T);
 
+                Statistics.FindCalibrateOffset();
+
                 FormMainUpdate.DisplayImageUpdate(RootDirectory, cameraBasic.MatFrame, cameraBasic.AOITool, (float)ZoomRadioX, (float)ZoomRadioY, CurrntCnt + 1, true);
 
                 //string RawDataFile = strDirectory + dateString + @"RawData.csv";               //紀錄資料
@@ -2987,10 +3024,34 @@ namespace AlignerVerification
                     str += Statistics.NowTackTime.ToString();
                     str += ",";
                     str += Statistics.CalibrateOffset.ToString();
-
+                    str += ",";
+                    str += Statistics.CalibrateDegOffset.ToString();
                     sw.WriteLine(str);
 
                     sw.Close();
+                }
+
+                if(IsRun)
+                {
+                    if(MachineParas.bAlarmStopEnabled)
+                    {
+                        if(Statistics.TOffset > MachineParas.dOOffsetUpLimit || 
+                            Statistics.NOffsetDeg > MachineParas.dNOffsetUpLimit)
+                            IsRun = false;
+
+                    }
+
+                    if (MachineParas.bAlarmStopDownloadData)
+                    {
+                        if (Statistics.TOffset > MachineParas.dOOffsetUpLimit ||
+                            Statistics.NOffsetDeg > MachineParas.dNOffsetUpLimit)
+                        {
+                            FormMainUpdate.MessageLogUpdate("AutoRun_", "Alarm Stop Download Data");
+
+                            GetAlignerRawData(CurrntCnt + 1);
+                        }
+
+                    }
                 }
 
                 CurrntCnt++;
@@ -3100,7 +3161,7 @@ namespace AlignerVerification
                     if (lineCnt > 0)
                     {
                         //旋轉角度差異
-                        if (Double.TryParse(raw[4], out double dData1))
+                        if (Double.TryParse(raw[7], out double dData1))
                             data1.Add(dData1);
 
                         //平移距離差異
@@ -3355,6 +3416,34 @@ namespace AlignerVerification
             if (loadParas) return;
 
             cameraBasic.AOITool.FillWafer = cbFillWafer.Checked;
+        }
+
+        private void cbAlarmStopEnabled_CheckedChanged(object sender, EventArgs e)
+        {
+            if (loadParas) return;
+
+            MachineParas.bAlarmStopEnabled = cbAlarmStopEnabled.Checked;
+        }
+
+        private void cbAlarmStopDownloadData_CheckedChanged(object sender, EventArgs e)
+        {
+            if (loadParas) return;
+
+            MachineParas.bAlarmStopDownloadData = cbAlarmStopDownloadData.Checked;
+        }
+
+        private void tbOOffsetUpLimit_TextChanged(object sender, EventArgs e)
+        {
+            if (loadParas) return;
+
+            MachineParas.dOOffsetUpLimit = Convert.ToDouble(tbOOffsetUpLimit.Text);
+        }
+
+        private void tbNOffsetUpLimit_TextChanged(object sender, EventArgs e)
+        {
+            if (loadParas) return;
+
+            MachineParas.dNOffsetUpLimit = Convert.ToDouble(tbNOffsetUpLimit.Text);
         }
     }
 

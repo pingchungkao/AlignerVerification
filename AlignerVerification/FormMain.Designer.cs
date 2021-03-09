@@ -138,6 +138,13 @@
             this.NextTestButton = new System.Windows.Forms.Button();
             this.AdvancePage = new System.Windows.Forms.TabPage();
             this.gbAdvance = new System.Windows.Forms.GroupBox();
+            this.gbAlarmStop = new System.Windows.Forms.GroupBox();
+            this.tbNOffsetUpLimit = new System.Windows.Forms.TextBox();
+            this.tbOOffsetUpLimit = new System.Windows.Forms.TextBox();
+            this.cbAlarmStopDownloadData = new System.Windows.Forms.CheckBox();
+            this.cbAlarmStopEnabled = new System.Windows.Forms.CheckBox();
+            this.lbNOffsetUpLimit = new System.Windows.Forms.Label();
+            this.lbOOffsetUpLimit = new System.Windows.Forms.Label();
             this.gbCalibrate = new System.Windows.Forms.GroupBox();
             this.tbParam196 = new System.Windows.Forms.TextBox();
             this.tbParam195 = new System.Windows.Forms.TextBox();
@@ -244,6 +251,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.tkbrROITop)).BeginInit();
             this.AdvancePage.SuspendLayout();
             this.gbAdvance.SuspendLayout();
+            this.gbAlarmStop.SuspendLayout();
             this.gbCalibrate.SuspendLayout();
             this.gbDownloadData.SuspendLayout();
             this.gbAdvanceParas.SuspendLayout();
@@ -309,6 +317,7 @@
             this.lbNoffset.TabIndex = 5;
             this.lbNoffset.Text = "0.0000";
             this.lbNoffset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lbNoffset.Visible = false;
             // 
             // lbToffset
             // 
@@ -332,11 +341,12 @@
             // ShowNoffsetLabel
             // 
             this.ShowNoffsetLabel.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.ShowNoffsetLabel.Location = new System.Drawing.Point(165, 32);
+            this.ShowNoffsetLabel.Location = new System.Drawing.Point(168, 32);
             this.ShowNoffsetLabel.Name = "ShowNoffsetLabel";
             this.ShowNoffsetLabel.Size = new System.Drawing.Size(126, 26);
             this.ShowNoffsetLabel.TabIndex = 2;
             this.ShowNoffsetLabel.Text = "N Offset(mm):";
+            this.ShowNoffsetLabel.Visible = false;
             // 
             // ShowToffsetLabel
             // 
@@ -1521,6 +1531,7 @@
             // 
             // gbAdvance
             // 
+            this.gbAdvance.Controls.Add(this.gbAlarmStop);
             this.gbAdvance.Controls.Add(this.gbCalibrate);
             this.gbAdvance.Controls.Add(this.btnSaveParas);
             this.gbAdvance.Controls.Add(this.gbDownloadData);
@@ -1534,6 +1545,79 @@
             this.gbAdvance.Size = new System.Drawing.Size(345, 693);
             this.gbAdvance.TabIndex = 6;
             this.gbAdvance.TabStop = false;
+            // 
+            // gbAlarmStop
+            // 
+            this.gbAlarmStop.Controls.Add(this.tbNOffsetUpLimit);
+            this.gbAlarmStop.Controls.Add(this.tbOOffsetUpLimit);
+            this.gbAlarmStop.Controls.Add(this.cbAlarmStopDownloadData);
+            this.gbAlarmStop.Controls.Add(this.cbAlarmStopEnabled);
+            this.gbAlarmStop.Controls.Add(this.lbNOffsetUpLimit);
+            this.gbAlarmStop.Controls.Add(this.lbOOffsetUpLimit);
+            this.gbAlarmStop.Location = new System.Drawing.Point(9, 579);
+            this.gbAlarmStop.Name = "gbAlarmStop";
+            this.gbAlarmStop.Size = new System.Drawing.Size(243, 108);
+            this.gbAlarmStop.TabIndex = 7;
+            this.gbAlarmStop.TabStop = false;
+            this.gbAlarmStop.Text = "規格設定";
+            // 
+            // tbNOffsetUpLimit
+            // 
+            this.tbNOffsetUpLimit.Location = new System.Drawing.Point(154, 79);
+            this.tbNOffsetUpLimit.Name = "tbNOffsetUpLimit";
+            this.tbNOffsetUpLimit.Size = new System.Drawing.Size(80, 23);
+            this.tbNOffsetUpLimit.TabIndex = 6;
+            this.tbNOffsetUpLimit.Text = "0.2";
+            this.tbNOffsetUpLimit.TextChanged += new System.EventHandler(this.tbNOffsetUpLimit_TextChanged);
+            // 
+            // tbOOffsetUpLimit
+            // 
+            this.tbOOffsetUpLimit.Location = new System.Drawing.Point(154, 47);
+            this.tbOOffsetUpLimit.Name = "tbOOffsetUpLimit";
+            this.tbOOffsetUpLimit.Size = new System.Drawing.Size(80, 23);
+            this.tbOOffsetUpLimit.TabIndex = 5;
+            this.tbOOffsetUpLimit.Text = "0.2";
+            this.tbOOffsetUpLimit.TextChanged += new System.EventHandler(this.tbOOffsetUpLimit_TextChanged);
+            // 
+            // cbAlarmStopDownloadData
+            // 
+            this.cbAlarmStopDownloadData.AutoSize = true;
+            this.cbAlarmStopDownloadData.Location = new System.Drawing.Point(111, 22);
+            this.cbAlarmStopDownloadData.Name = "cbAlarmStopDownloadData";
+            this.cbAlarmStopDownloadData.Size = new System.Drawing.Size(123, 20);
+            this.cbAlarmStopDownloadData.TabIndex = 4;
+            this.cbAlarmStopDownloadData.Text = "超過規格下載資料";
+            this.cbAlarmStopDownloadData.UseVisualStyleBackColor = true;
+            this.cbAlarmStopDownloadData.CheckedChanged += new System.EventHandler(this.cbAlarmStopDownloadData_CheckedChanged);
+            // 
+            // cbAlarmStopEnabled
+            // 
+            this.cbAlarmStopEnabled.AutoSize = true;
+            this.cbAlarmStopEnabled.Location = new System.Drawing.Point(6, 22);
+            this.cbAlarmStopEnabled.Name = "cbAlarmStopEnabled";
+            this.cbAlarmStopEnabled.Size = new System.Drawing.Size(99, 20);
+            this.cbAlarmStopEnabled.TabIndex = 3;
+            this.cbAlarmStopEnabled.Text = "超過規格停機";
+            this.cbAlarmStopEnabled.UseVisualStyleBackColor = true;
+            this.cbAlarmStopEnabled.CheckedChanged += new System.EventHandler(this.cbAlarmStopEnabled_CheckedChanged);
+            // 
+            // lbNOffsetUpLimit
+            // 
+            this.lbNOffsetUpLimit.AutoSize = true;
+            this.lbNOffsetUpLimit.Location = new System.Drawing.Point(11, 82);
+            this.lbNOffsetUpLimit.Name = "lbNOffsetUpLimit";
+            this.lbNOffsetUpLimit.Size = new System.Drawing.Size(113, 16);
+            this.lbNOffsetUpLimit.TabIndex = 2;
+            this.lbNOffsetUpLimit.Text = "N offset 上限(deg)";
+            // 
+            // lbOOffsetUpLimit
+            // 
+            this.lbOOffsetUpLimit.AutoSize = true;
+            this.lbOOffsetUpLimit.Location = new System.Drawing.Point(11, 51);
+            this.lbOOffsetUpLimit.Name = "lbOOffsetUpLimit";
+            this.lbOOffsetUpLimit.Size = new System.Drawing.Size(112, 16);
+            this.lbOOffsetUpLimit.TabIndex = 0;
+            this.lbOOffsetUpLimit.Text = "O offset 上限(mm)";
             // 
             // gbCalibrate
             // 
@@ -1556,7 +1640,7 @@
             // 
             // tbParam196
             // 
-            this.tbParam196.Location = new System.Drawing.Point(90, 127);
+            this.tbParam196.Location = new System.Drawing.Point(90, 130);
             this.tbParam196.Name = "tbParam196";
             this.tbParam196.Size = new System.Drawing.Size(100, 23);
             this.tbParam196.TabIndex = 8;
@@ -2232,7 +2316,7 @@
             this.Controls.Add(this.statusStrip1);
             this.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.Name = "FormMain";
-            this.Text = "Aligner Verification - Ver.1.02.1";
+            this.Text = "Aligner Verification - Ver.1.02.2";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.BottomPanel.ResumeLayout(false);
             this.ShowResultGroupBox.ResumeLayout(false);
@@ -2279,6 +2363,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.tkbrROITop)).EndInit();
             this.AdvancePage.ResumeLayout(false);
             this.gbAdvance.ResumeLayout(false);
+            this.gbAlarmStop.ResumeLayout(false);
+            this.gbAlarmStop.PerformLayout();
             this.gbCalibrate.ResumeLayout(false);
             this.gbCalibrate.PerformLayout();
             this.gbDownloadData.ResumeLayout(false);
@@ -2481,6 +2567,13 @@
         private System.Windows.Forms.Button btnReadConfigFile;
         private System.Windows.Forms.CheckBox cbOffsetType;
         private System.Windows.Forms.CheckBox cbFillWafer;
+        private System.Windows.Forms.GroupBox gbAlarmStop;
+        private System.Windows.Forms.TextBox tbNOffsetUpLimit;
+        private System.Windows.Forms.TextBox tbOOffsetUpLimit;
+        private System.Windows.Forms.CheckBox cbAlarmStopDownloadData;
+        private System.Windows.Forms.CheckBox cbAlarmStopEnabled;
+        private System.Windows.Forms.Label lbNOffsetUpLimit;
+        private System.Windows.Forms.Label lbOOffsetUpLimit;
     }
 }
 
