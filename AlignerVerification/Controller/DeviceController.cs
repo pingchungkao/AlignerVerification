@@ -128,6 +128,14 @@ namespace AlignerVerification.Controller
             }
             return result;
         }
+
+        public void close()
+        {
+            conn.Close();
+            this._IsConnected = false;
+
+            logger.Info(_Config.DeviceName + " : Close ");
+        }
         public void AssignedRecevicedEvent(EventHandler<string> EventMessage)
         {
             //EventMessage += ReceivedEventMessage;

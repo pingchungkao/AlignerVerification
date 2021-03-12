@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace AlignerVerification.Class
 {
@@ -37,6 +38,14 @@ namespace AlignerVerification.Class
         public static List<PointD> OriginList = new List<PointD>();
         public static List<PointD> NotchList = new List<PointD>();
         public static List<PointD> TopList = new List<PointD>();
+
+
+        public static List<Point> OPTList = new List<Point>();
+        public static List<Point> NPTList = new List<Point>();
+        public static List<Point> TPTList = new List<Point>();
+        public static Point NowOPT = new Point();
+        public static Point NowNPT = new Point();
+        public static Point NowTPT = new Point();
 
         public static List<double> TackTimeList = new List<double>();
         public static double NowTackTime;
@@ -89,7 +98,32 @@ namespace AlignerVerification.Class
             NotchList.Clear();
             TackTimeList.Clear();
             TopList.Clear();
+
+            OPTList.Clear();
+            NPTList.Clear();
+            TPTList.Clear();
+
+            NowOPT.X = 0;
+            NowOPT.Y = 0;
+
+            NowNPT.X = 0;
+            NowNPT.Y = 0;
+
+            NowTPT.X = 0;
+            NowTPT.Y = 0;
         }
+        
+        public static void AddCalibrationPT(Point Opt, Point Npt, Point Tpt)
+        {
+            NowOPT = Opt;
+            NowNPT = Npt;
+            NowTPT = Tpt;
+
+            OPTList.Add(NowOPT);
+            NPTList.Add(NowNPT);
+            TPTList.Add(NowTPT);
+        }
+
         public static void AddTackTime(double TackTime)
         {
             NowTackTime = TackTime;
@@ -195,24 +229,82 @@ namespace AlignerVerification.Class
 
         public static void FindCalibrateOffset()
         {
-            
-            CalibrateOffset = Math.Sqrt((NowTop.X - AvgTop.X) * (NowTop.X - AvgTop.X) + (NowTop.Y - AvgTop.Y) * (NowTop.Y - AvgTop.Y));
+            //沿用舊的offset計算方式方式
+            //1.計算平均Notch的位置
 
-            //計算Notch角度
-            if (NowNotch.X - NowOrigin.X == 0)
+            //以下為以pixel方式計算-------------------------
+            //double AvgNotchX = 0.0;
+            //double AvgNotchY = 0.0;
+            //double AvgOriginX = 0.0;
+            //double AvgOriginY = 0.0;
+            //double AvgTopX = 0.0;
+            //double AvgTopY = 0.0;
+            //double NowNotchX = (double)NowNPT.X;
+            //double NowNotchY = (double)NowNPT.Y;
+            //double NowOriginX = (double)NowOPT.X;
+            //double NowOriginY = (double)NowOPT.Y;
+            //double NowTopX = (double)NowTPT.X;
+            //double NowTopY = (double)NowTPT.Y;
+
+            //double sum1 = 0;
+            //double sum2 = 0;
+            //foreach (Point pt in OPTList)
+            //{
+            //    sum1 += pt.X;
+            //    sum2 += pt.Y;
+            //}
+
+            //AvgOriginX = sum1 / OPTList.Count();
+            //AvgOriginY = sum2 / OPTList.Count();
+
+            //sum1 = 0;
+            //sum2 = 0;
+            //foreach (Point pt in NPTList)
+            //{
+            //    sum1 += pt.X;
+            //    sum2 += pt.Y;
+            //}
+
+            //AvgNotchX = sum1 / NPTList.Count();
+            //AvgNotchY = sum2 / NPTList.Count();
+
+            //double d = Math.Sqrt(Math.Pow(AvgNotchX - AvgOriginX, 2) + Math.Pow(AvgNotchY - AvgOriginY, 2));
+
+            //////1.2 計算 當下Notch到圓心的距離 - Notch到圓心的平均距離(不考慮角度)
+            //CalibrateOffset = Math.Sqrt(Math.Pow(NowNotchX - AvgOriginX, 2) + Math.Pow(NowNotchY - AvgOriginY, 2)) - d;
+            //CalibrateOffset = CalibrateOffset / (300.0 / 1.67);
+
+            //if (NowNotchY - NowOriginY >= 0)
+            //{
+            //    CalibrateDegOffset = Math.Acos((NowNotchX - NowOriginX) / Math.Sqrt(Math.Pow(NowNotchX - NowOriginX, 2) + Math.Pow(NowNotchY - NowOriginY, 2))) * 180 / Math.PI;
+            //}
+            //else
+            //{
+            //    CalibrateDegOffset = -1 * Math.Acos((NowNotchX - NowOriginX) / Math.Sqrt(Math.Pow(NowNotchX - NowOriginX, 2) + Math.Pow(NowNotchY - NowOriginY, 2))) * 180 / Math.PI;
+            //}
+            //以上為以pixel方式計算-------------------------
+
+
+
+            //以下為以mm方式計算-------------------------
+            //1.1 計算 Notch到圓心的平均距離
+            double d = Math.Sqrt(Math.Pow(AvgNotch.X - AvgOrigin.X, 2) + Math.Pow(AvgNotch.Y - AvgOrigin.Y, 2));
+
+            ////1.2 計算 當下Notch到圓心的距離 - Notch到圓心的平均距離(不考慮角度)
+            CalibrateOffset = Math.Sqrt(Math.Pow(NowNotch.X - AvgOrigin.X, 2) + Math.Pow(NowNotch.Y - AvgOrigin.Y, 2)) - d;
+
+
+            //2.計算角度偏差量
+            if (NowNotch.Y - NowOrigin.Y >= 0)
             {
-                if (NowNotch.Y - NowOrigin.Y >= 0)
-                {
-                    CalibrateDegOffset = 90.0;
-                }
-                else
-                {
-                    CalibrateDegOffset = -90.0;
-                }
+                CalibrateDegOffset = Math.Acos((NowNotch.X - NowOrigin.X) / Math.Sqrt(Math.Pow(NowNotch.X - NowOrigin.X, 2) + Math.Pow(NowNotch.Y - NowOrigin.Y, 2))) * 180 / Math.PI;
             }
             else
-                CalibrateDegOffset = Math.Atan((double)(NowNotch.Y - NowOrigin.Y) / (double)(NowNotch.X - NowOrigin.X)) / Math.PI * 180;
+            {
+                CalibrateDegOffset = -1 * Math.Acos((NowNotch.X - NowOrigin.X) / Math.Sqrt(Math.Pow(NowNotch.X - NowOrigin.X, 2) + Math.Pow(NowNotch.Y - NowOrigin.Y, 2))) * 180 / Math.PI;
+            }
 
+            //以上為以mm方式計算-------------------------
         }
     }
 }

@@ -65,6 +65,12 @@ namespace AlignerVerification
         BackgroundWorker bwContinousTest = new BackgroundWorker();
         BackgroundWorker bwTest = new BackgroundWorker();
 
+        //將Wafer置中
+        BackgroundWorker bwDoWaferAlignment = new BackgroundWorker();
+
+        //重複性測試
+        BackgroundWorker bwDoRepeatMotionTest = new BackgroundWorker();
+
         public FormMain()
         {
             InitializeComponent();
@@ -73,16 +79,29 @@ namespace AlignerVerification
 
             bwAlignerIni.DoWork += new DoWorkEventHandler(DoAlignerIni);
             bwAlignerIni.RunWorkerCompleted += new RunWorkerCompletedEventHandler(AlignerIniCompleted);
+
             bwDoAlign.DoWork += new DoWorkEventHandler(DoAlign);
             bwDoAlign.RunWorkerCompleted += new RunWorkerCompletedEventHandler(AlignerIniCompleted);
+
             bwDoAutoRun.DoWork += new DoWorkEventHandler(DoAutoRun);
             bwDoAutoRun.RunWorkerCompleted += new RunWorkerCompletedEventHandler(DoAutoRunCompleted);
+
             bwDownloadData.DoWork += new DoWorkEventHandler(DoDownloadData);
             bwDownloadData.RunWorkerCompleted += new RunWorkerCompletedEventHandler(AlignerIniCompleted);
+
             bwMonitorPresent.DoWork += new DoWorkEventHandler(DoMonitorPresent);
             bwMonitorPresent.RunWorkerCompleted += new RunWorkerCompletedEventHandler(MonitorCompleted);
+
+            bwContinousTest.WorkerReportsProgress = true;
             bwContinousTest.DoWork += new DoWorkEventHandler(DoContinousTest);
+            bwContinousTest.ProgressChanged += new ProgressChangedEventHandler(ContinousTestProgressChanged);
             bwContinousTest.RunWorkerCompleted += new RunWorkerCompletedEventHandler(ContinousTestCompleted);
+
+            bwDoWaferAlignment.DoWork += new DoWorkEventHandler(DoWaferAlignment);
+            bwDoWaferAlignment.RunWorkerCompleted += new RunWorkerCompletedEventHandler(AlignerIniCompleted);
+
+            bwDoRepeatMotionTest.DoWork += new DoWorkEventHandler(DoRepeatMotionTest);
+            bwDoRepeatMotionTest.RunWorkerCompleted += new RunWorkerCompletedEventHandler(AlignerIniCompleted);
 
             IODevice ioDevice = null;
             ioDevice = new IODevice()
@@ -203,11 +222,27 @@ namespace AlignerVerification
 
             if (MachineParas.MachineType == 0)
             {
-                FormMainUpdate.MessageLogUpdate("DoAlignerIni", "$1SET:ALIGN:"+ MachineParas.WaferRadius.ToString());
+                string waferType = ",0";
+
+                if (MachineParas.WaferType == 0)
+                {
+                    waferType = ",0";
+                }
+                else if (MachineParas.WaferType == 1)
+                {
+                    waferType = ",5";
+                }
+                else
+                {
+                    waferType = ",6";
+                }
+
+
+                FormMainUpdate.MessageLogUpdate("DoAlignerIni", "$1SET:ALIGN:"+ MachineParas.WaferRadius.ToString() + waferType);
 
                 EvtManager.AlignerSetAlignACKEvt.Reset();
                 //設定Wafer Radius
-                SetAlignerCommand("$1SET:ALIGN:" + MachineParas.WaferRadius.ToString());
+                SetAlignerCommand("$1SET:ALIGN:" + MachineParas.WaferRadius.ToString() + waferType);
 
                 //設定WaferRadius
                 if (!EvtManager.AlignerSetAlignACKEvt.WaitOne(10000))
@@ -254,7 +289,6 @@ namespace AlignerVerification
         private void DoAutoRunCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             GeneralSetting(true);
-
             RunButton.Text = "Run";
         }
         private void MonitorCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -287,6 +321,8 @@ namespace AlignerVerification
             gbAOI.Enabled = enabled;
             gbAdvance.Enabled = enabled;
             gbPresentTest.Enabled = enabled;
+
+            gbMotionTest.Enabled = enabled;
         }
         void IConnectionReport.On_Message_Log(string Type, string Message)
         {
@@ -1181,6 +1217,21 @@ namespace AlignerVerification
             foreach (DeviceConfig dc in deviceConfig.Values)
                 ConnectDevice(dc);                            
         }
+
+        private void DisconnectAllDevice()
+        {
+            foreach (DeviceConfig dc in deviceConfig.Values)
+            {                
+                deviceMap.TryGetValue(dc.DeviceName, out DeviceController Ctrl);
+
+                if(Ctrl != null)
+                {
+                    if (dc.Enable) Ctrl.close();
+
+                    deviceMap.Remove(Ctrl.Name);
+                }
+            }
+        }
         private void ConnectDevice(DeviceConfig dc)
         {
             DeviceController dvcCtrl = new DeviceController(dc, this);
@@ -1192,6 +1243,7 @@ namespace AlignerVerification
 
             if (dc.Enable)  dvcCtrl.start();
         }
+
         private void btnCylinderConnect_Click(object sender, EventArgs e)
         {
             Button btn = (Button)sender;
@@ -1426,42 +1478,32 @@ namespace AlignerVerification
 
             return bReturn;
         }
-        private void GrabButton_Click(object sender, EventArgs e)
+        private bool DoGrab()
         {
-            if (!StartPreventMultiClick(300)) return;
-
             DeviceController dctrl = deviceMap["Camera"];
             if (dctrl._Config.Enable)
             {
                 if (dctrl._IsConnected)
                 {
                     //取像
-                    if(!DoCameraGrab(dctrl))
+                    if (!DoCameraGrab(dctrl))
                     {
                         logger.Debug("GrabButton_Click(object sender, EventArgs e) : 取像失敗");
-                        return;
+                        return false;
                     }
 
                     string strFileName = Environment.CurrentDirectory;
                     strFileName = strFileName + @"\Output\img0\acc0.bmp";
 
-                    if(!File.Exists(strFileName))
+                    if (!File.Exists(strFileName))
                     {
-                        logger.Debug("GrabButton_Click(object sender, EventArgs e) : 檔案不存在("+strFileName+")");
-                        return;
+                        logger.Debug("GrabButton_Click(object sender, EventArgs e) : 檔案不存在(" + strFileName + ")");
+                        return false;
                     }
 
-                    //cameraBasic.MatFrame = CvInvoke.Imread(strFileName);
                     cameraBasic.SetImage(CvInvoke.Imread(strFileName));
 
-                    FilterImageBox.Visible = false;
-                    FilterImageBox.Refresh();
-
-                    DisplayImageBox.Image = cameraBasic.MatFrame;
-
-                    DisplayImageBox.Refresh();
-
-                    ShowAlignment();
+                    FormMainUpdate.ShowImageUpdate(cameraBasic.MatFrame);
                 }
                 else
                     logger.Debug("GrabButton_Click(object sender, EventArgs e) : 未連線");
@@ -1469,34 +1511,43 @@ namespace AlignerVerification
             else
                 logger.Debug("GrabButton_Click(object sender, EventArgs e) : 未啟用");
 
+            return true;
+        }
+
+        private void GrabButton_Click(object sender, EventArgs e)
+        {
+            if (!StartPreventMultiClick(300)) return;
+
+            DoGrab();
+
             StopPreventMultiClick();
         }
-        private void ShowAlignment()
-        {
-            using (Pen pen = new Pen(Color.Red, 1))
-            {
-                pen.DashStyle = DashStyle.Dash;
-                Graphics eGraphics = DisplayImageBox.CreateGraphics();
+        //private void ShowAlignment()
+        //{
+        //    using (Pen pen = new Pen(Color.Red, 1))
+        //    {
+        //        pen.DashStyle = DashStyle.Dash;
+        //        Graphics eGraphics = DisplayImageBox.CreateGraphics();
 
-                Point HSPT = new Point(0, DisplayImageBox.Height / 2);
-                Point HEPT = new Point(DisplayImageBox.Width, DisplayImageBox.Height / 2);
-                Point VSPT = new Point(DisplayImageBox.Width / 2, 0);
-                Point VEPT = new Point(DisplayImageBox.Width / 2, DisplayImageBox.Height);
+        //        Point HSPT = new Point(0, DisplayImageBox.Height / 2);
+        //        Point HEPT = new Point(DisplayImageBox.Width, DisplayImageBox.Height / 2);
+        //        Point VSPT = new Point(DisplayImageBox.Width / 2, 0);
+        //        Point VEPT = new Point(DisplayImageBox.Width / 2, DisplayImageBox.Height);
 
-                eGraphics.DrawLine(pen, HSPT, HEPT);
-                eGraphics.DrawLine(pen, VSPT, VEPT);
+        //        eGraphics.DrawLine(pen, HSPT, HEPT);
+        //        eGraphics.DrawLine(pen, VSPT, VEPT);
 
-                pen.DashStyle = DashStyle.Dash;
-                pen.Color = Color.Blue;
-                for (int i = 1; i < 5; i++)
-                {
-                    Point a = new Point(DisplayImageBox.Width / 5 * i, 0);
-                    Point b = new Point(DisplayImageBox.Width / 5 * i, DisplayImageBox.Height);
+        //        pen.DashStyle = DashStyle.Dash;
+        //        pen.Color = Color.Blue;
+        //        for (int i = 1; i < 5; i++)
+        //        {
+        //            Point a = new Point(DisplayImageBox.Width / 5 * i, 0);
+        //            Point b = new Point(DisplayImageBox.Width / 5 * i, DisplayImageBox.Height);
 
-                    eGraphics.DrawLine(pen, a, b);
-                }
-            }
-        }
+        //            eGraphics.DrawLine(pen, a, b);
+        //        }
+        //    }
+        //}
         private void WaferRadiusUpDown_ValueChanged(object sender, EventArgs e)
         {
             if (loadParas) return;
@@ -1666,7 +1717,28 @@ namespace AlignerVerification
 
                 if(DialogResult.OK == path.ShowDialog())
                 {
+                    // 顯示進度條控制元件.
+                    pbrOpenImageFolder.Visible = true;
+
                     string folderpath = path.SelectedPath;
+
+                    string [] Files =  Directory.GetFiles(folderpath);
+
+                    int iInageFileCount = Files.Length;
+
+                    if(iInageFileCount > 0)
+                    {
+                        // 設定進度條最小值.
+                        pbrOpenImageFolder.Minimum = 1;
+
+                        // 設定進度條最大值.
+                        pbrOpenImageFolder.Maximum = iInageFileCount*2;
+
+                        // 設定進度條初始值
+                        pbrOpenImageFolder.Value = 1;
+                        // 設定每次增加的步長
+                        pbrOpenImageFolder.Step = 1;
+                    }
 
                     int count = 0;
                     Mat firstMat = null;
@@ -1675,6 +1747,9 @@ namespace AlignerVerification
                     Dictionary<string, Mat> matList = new Dictionary<string, Mat>();
                     foreach (string files in Directory.GetFiles(folderpath))
                     {
+                        if (iInageFileCount > 0)
+                            pbrOpenImageFolder.PerformStep();
+
                         if (files.Contains(".BMP") || files.Contains(".bmp"))
                         {
                             if (0 == count)
@@ -1708,6 +1783,9 @@ namespace AlignerVerification
 
                         foreach (KeyValuePair<string, Mat> item in matList)
                         {
+                            if (iInageFileCount > 0)
+                                pbrOpenImageFolder.PerformStep();
+
                             cameraBasic.FileBuffer.AddImage(item.Value, item.Key);
                         }
 
@@ -1715,18 +1793,24 @@ namespace AlignerVerification
                         cameraBasic.MatFrame = Info.MatImage;
                         cameraBasic.AOITool.SetImage(cameraBasic.MatFrame);
 
-                        DisplayImageBox.Image = cameraBasic.MatFrame;
-                        DisplayImageBox.Refresh();
+                        FormMainUpdate.ShowImageUpdate(cameraBasic.MatFrame);
 
-                        ShowAlignment();
+                        //DisplayImageBox.Image = cameraBasic.MatFrame;
+                        //DisplayImageBox.Refresh();
+
+                        //ShowAlignment();
 
                         TestButton.BackColor = Color.White;
                         PreTestButton.BackColor = Color.White;
                         NextTestButton.BackColor = Color.White;
 
                         toolStripStatusLabel3.Text = Info.FileName;
+
+
                     }
                     matList.Clear();
+
+                    pbrOpenImageFolder.Visible = false;
                 }
 
             }
@@ -2099,6 +2183,8 @@ namespace AlignerVerification
         private void ContinousTestCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             GeneralSetting(true);
+
+            pbrContinusTest.Visible = false;
         }
 
         void DoContinousTest(object sender, DoWorkEventArgs e)
@@ -2141,12 +2227,21 @@ namespace AlignerVerification
                 };
                 Statistics.AddTop(Top);
 
+                Statistics.AddCalibrationPT(cameraBasic.AOITool.CenterPt, cameraBasic.AOITool.NotchPt, cameraBasic.AOITool.TopPt);
+
                 Statistics.FindCalibrateOffset();
 
                 FormMainUpdate.DisplayImageUpdate(RootDirectory ,cameraBasic.MatFrame, cameraBasic.AOITool, (float)ZoomRadioX, (float)ZoomRadioY, Info.ID + 1, false);
 
                 Thread.Sleep(300);
+
+                bwContinousTest.ReportProgress((int)(((double)(i + 1) / (double)imageBuffer.ImageCount) * 100.0));
+
             }
+        }
+        private void ContinousTestProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            pbrContinusTest.Value = e.ProgressPercentage;
         }
         private void btnContinusTest_Click(object sender, EventArgs e)
         {
@@ -2170,6 +2265,10 @@ namespace AlignerVerification
                 {
                     return;
                 }
+
+                pbrContinusTest.Step = 1;
+
+                pbrContinusTest.Visible = true;
 
                 //關閉UI
                 GeneralSetting(false);
@@ -2201,6 +2300,11 @@ namespace AlignerVerification
         }
         private bool DoAlignerXOffset()
         {
+            if (MachineParas.AlignXOffset.ToString().Equals("0"))
+                return true;
+
+            FormMainUpdate.MessageLogUpdate("DoAlignerXOffset()", MachineParas.AlignXOffset.ToString());
+
             SetAlignerCommand("$1CMD:MOVED:1,2,"+ MachineParas.AlignXOffset.ToString());
 
             if (!EvtManager.AlignerMoveFinishEvt.WaitOne(3000))
@@ -2244,6 +2348,7 @@ namespace AlignerVerification
 
         private bool DoClampAlignerZDown()
         {
+            EvtManager.AlignerMoveFinishEvt.Reset();
             SetAlignerCommand("$1CMD:MOVED:4,1,+00000000");
             if (!EvtManager.AlignerMoveFinishEvt.WaitOne(3000))
             {
@@ -2311,6 +2416,11 @@ namespace AlignerVerification
 
         private void SetAlignerCommand(string cmd)
         {
+            if(cmd.ToUpper().Contains("MOVED"))
+            {
+                EvtManager.AlignerMoveFinishEvt.Reset();
+            }
+
             string DeviceName = "Aligner";
             DeviceController dctrl = deviceMap[DeviceName];
             if (dctrl._Config.Enable)   dctrl.sendCommand(cmd);
@@ -2383,6 +2493,67 @@ namespace AlignerVerification
         {
             DoAlign();
         }
+
+        void DoWaferAlignment(object sender, DoWorkEventArgs e)
+        {
+            if (DoAlign())
+            {
+                if (MachineParas.MachineType == 0)
+                {
+                    if (DoCylinderRaiseWafer())
+                    {
+                        Thread.Sleep(1000);
+
+                        if (DoAlignerHome())
+                        {
+                            DoCylinderLowerWafer();
+                        }
+                    }
+                    
+                }
+            }
+        }
+        void DoRepeatMotionTest(object sender, DoWorkEventArgs e)
+        {
+            int n = 5;
+
+            //歸零
+            //SetAlignerCommand("$1CMD:MOVED:3,1,0");
+            //if (!EvtManager.AlignerMoveFinishEvt.WaitOne(3000)) return;
+
+            //取像
+            FormMainUpdate.MessageLogUpdate("DoRepeatMotionTest()", "Initial_DoGrab()");
+
+            if (!DoGrab()) return;
+            Thread.Sleep(iCrabDelayTime);
+            for(int i = 0; i< n; i++)
+            {
+                FormMainUpdate.MessageLogUpdate("DoRepeatMotionTest()", "(" + (i+1).ToString() + ")");
+
+                SetAlignerCommand("$1CMD:MOVED:3,1," + (-360000*(i+1)).ToString());
+
+
+                if (!EvtManager.AlignerMoveFinishEvt.WaitOne(5000)) return;
+
+                Thread.Sleep(iCrabDelayTime);
+
+                //取像
+                FormMainUpdate.MessageLogUpdate("DoRepeatMotionTest()", "DoGrab()");
+                if (!DoGrab()) return;
+                Thread.Sleep(2000);
+            }
+
+            //歸零
+            //EvtManager.AlignerMoveFinishEvt.Reset();
+            //SetAlignerCommand("$1CMD:MOVED:3,1,00000000");
+            //if (!EvtManager.AlignerMoveFinishEvt.WaitOne(3000)) return;
+
+            //取像
+            FormMainUpdate.MessageLogUpdate("DoRepeatMotionTest()", "Final_DoGrab()");
+            if (!DoGrab()) return;
+
+        }
+
         private bool DoAlign()
         {
             bool result = true;
@@ -2489,8 +2660,12 @@ namespace AlignerVerification
             FormMainUpdate.MessageLogUpdate("DoCylinderRaiseWafer()", "Aligner Release");
             if (!DoAlignerRelease())    IsRun = false;
 
-            FormMainUpdate.MessageLogUpdate("DoCylinderRaiseWafer()", "Cylinder Move Up");
-            DoCylinderJob("MoveUp");
+            if(IsRun)
+            {
+                FormMainUpdate.MessageLogUpdate("DoCylinderRaiseWafer()", "Cylinder Move Up");
+                DoCylinderJob("MoveUp");
+            }
+
 
             return IsRun;
         }
@@ -2512,7 +2687,7 @@ namespace AlignerVerification
         string RootDirectory;
         private void RunButton_Click(object sender, EventArgs e)
         {
-            if (!StartPreventMultiClick(3000)) return;
+            if (!StartPreventMultiClick(1000)) return;
 
             logger.Debug("RunButton_Click : IsRun = !IsRun");
             IsRun = !IsRun;
@@ -2546,6 +2721,7 @@ namespace AlignerVerification
                 logger.Debug(@"RunButton_Click : if (Directory.Exists("+ RootDirectory + "))");
                 if (Directory.Exists(RootDirectory))
                 {
+                    Thread.Sleep(3000);
                     logger.Debug(@"RunButton_Click : DeleteFolder("+ RootDirectory + ")");
                     DeleteFolder(RootDirectory);
                 }
@@ -2569,10 +2745,14 @@ namespace AlignerVerification
                 bwDoAutoRun.RunWorkerAsync();
 
                 RunButton.Text = "Stop";
+
+                TestButton.BackColor = Color.DarkGray;
+                PreTestButton.BackColor = Color.DarkGray;
+                NextTestButton.BackColor = Color.DarkGray;
             }
             else
             {
-
+                RunButton.Text = "Wait to Stop";
             }
 
             StopPreventMultiClick();
@@ -2776,6 +2956,7 @@ namespace AlignerVerification
                                 if (IsRun)
                                 {
                                     double d1 = Math.Cos((double)(YOffset * CurrntCnt)* Math.PI / 180000.0);
+                                    EvtManager.AlignerMoveFinishEvt.Reset();
                                     SetAlignerCommand("$1CMD:MOVED:1,2," +((int)((double)XOffset* d1) %8000).ToString());
                                     if (!EvtManager.AlignerMoveFinishEvt.WaitOne(3000))
                                     {
@@ -2998,6 +3179,7 @@ namespace AlignerVerification
 
                 Statistics.AddTop(T);
 
+                Statistics.AddCalibrationPT(cameraBasic.AOITool.CenterPt, cameraBasic.AOITool.NotchPt, cameraBasic.AOITool.TopPt);
                 Statistics.FindCalibrateOffset();
 
                 FormMainUpdate.DisplayImageUpdate(RootDirectory, cameraBasic.MatFrame, cameraBasic.AOITool, (float)ZoomRadioX, (float)ZoomRadioY, CurrntCnt + 1, true);
@@ -3008,7 +3190,7 @@ namespace AlignerVerification
                 using (StreamWriter sw = new StreamWriter(RawDataFile, true))
                 {
                     if (CurrntCnt == 0)
-                        sw.WriteLine("Ox,Oy,Nx,Ny,Ndeg,Tack Time,Calibrate_offset_mm");
+                        sw.WriteLine("Ox,Oy,Nx,Ny,Ndeg,Tack Time,Calibrate_offset_mm,Calibrate_deg");
                     string str;
 
                     str = Statistics.NowOrigin.X.ToString();
@@ -3126,11 +3308,6 @@ namespace AlignerVerification
 
         private void Calibrate_Click(object sender, EventArgs e)
         {
-            //string strDirectory = MachineParas.OutputFolder;
-            //DateTime dt = DateTime.Now;
-            //string dateString = dt.ToString("yyyyMMdd");
-            //dateString = @"\" + dateString + "_" + MachineParas.ExportFolder + @"\";
-
             string RawDataFile = RootDirectory + @"RawData.csv";               //紀錄資料
 
             string line;
@@ -3140,7 +3317,7 @@ namespace AlignerVerification
             double sum = 0;
 
             double amplitude;
-            double minDelta;
+            double minDelta = 0;
             double Delta;
             int Angle_offset = 0;
 
@@ -3207,10 +3384,7 @@ namespace AlignerVerification
 
             for (int i = 0; i < data4.Count; i++)
             {
-                double d4 = data4[i];
-                double d5 = data5[i];
-
-                data11.Add(d5 - d4);
+                data11.Add(data5[i] - data4[i]);
             }
 
             for (int i = 0; i < data1.Count; i++)
@@ -3222,26 +3396,25 @@ namespace AlignerVerification
 
             amplitude = Math.Sqrt(sum / (double)data2.Count);
 
-            sum = 0;
-            for (int j = 0; j < data11.Count; j++)
-                sum = sum + Math.Abs(amplitude * Math.Sin((data11[j] + 90) * Math.PI / 180) - data2[j]);
-
-            minDelta = sum;
 
             for (int i = 0; i < 360; i++)
             {
                 sum = 0;
                 for (int j = 0; j < data11.Count; j++)
-                {
                     sum = sum + Math.Abs(amplitude * Math.Sin((data11[j] + i + 90) * Math.PI / 180) - data2[j]);
-                }
 
-                Delta = sum;
-
-                if (Delta <= minDelta)
+                if ( i == 0)
                 {
-                    minDelta = Delta;
-                    Angle_offset = i;
+                    minDelta = sum;
+                }
+                else
+                {
+                    Delta = sum;
+                    if (Delta <= minDelta)
+                    {
+                        minDelta = Delta;
+                        Angle_offset = i;
+                    }
                 }
             }
 
@@ -3254,24 +3427,24 @@ namespace AlignerVerification
 
             amplitude = Math.Sqrt(sum / (double)data10.Count);
 
-            sum = 0;
-            for (int j = 0; j < data11.Count; j++)
-                sum = sum + Math.Abs(amplitude * Math.Sin((data11[j] + 180) * Math.PI / 180) - data10[j]);
-
-            minDelta = sum;
-
             for (int i = 0; i < 360; i++)
             {
                 sum = 0;
                 for (int j = 0; j < data11.Count; j++)
                     sum = sum + Math.Abs(amplitude * Math.Sin((data11[j] + i + 180) * Math.PI / 180) - data10[j]);
 
-                Delta = sum;
-
-                if (Delta <= minDelta)
+                if(i == 0)
                 {
-                    minDelta = Delta;
-                    Angle_offset = i;
+                    minDelta = sum;
+                }
+                else
+                {
+                    Delta = sum;
+                    if (Delta <= minDelta)
+                    {
+                        minDelta = Delta;
+                        Angle_offset = i;
+                    }
                 }
             }
 
@@ -3287,7 +3460,8 @@ namespace AlignerVerification
             while(IsMonitor)
             {
                 //脫離監控
-                if ((DateTime.Now - MonitorStartTime).TotalMilliseconds > MonitorTime)
+                TimeSpan ts = DateTime.Now - MonitorStartTime;
+                if (ts.TotalMilliseconds > MonitorTime)
                 {
                     IsMonitor = false;
                     MonitorFinish = true;
@@ -3300,7 +3474,9 @@ namespace AlignerVerification
                     break;
                 }
 
-                if(IsMonitor)
+                FormMainUpdate.PresentMonitorTakeTimeUpdate(ts);
+
+                if (IsMonitor)
                     Thread.Sleep(1000);
             }
         }
@@ -3323,7 +3499,7 @@ namespace AlignerVerification
 
             rioMap.TryGetValue(input, out IODevice iodc);
 
-            FormMainUpdate.MessageLogUpdate("CheckAlignerIO", "Read IO :" + input.ToString().PadLeft(3, '0') + "Result = " + iodc.Status);
+            FormMainUpdate.MessageLogUpdate("CheckAlignerIO", "Read IO :" + input.ToString().PadLeft(3, '0') + ", Result = " + iodc.Status);
 
             return iodc.Status == 1 ? true : false;
         }
@@ -3444,6 +3620,43 @@ namespace AlignerVerification
             if (loadParas) return;
 
             MachineParas.dNOffsetUpLimit = Convert.ToDouble(tbNOffsetUpLimit.Text);
+        }
+
+        private void DisplayImageBox_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            DisconnectAllDevice();
+        }
+
+        private void btnWaferAlignment_Click(object sender, EventArgs e)
+        {
+            if (!bwDoWaferAlignment.IsBusy)
+            {
+                //關閉UI
+                GeneralSetting(false);
+                bwDoWaferAlignment.RunWorkerAsync();
+            }
+        }
+
+        private void btnRepeatMotionTest_Click(object sender, EventArgs e)
+        {
+            if (!bwDoRepeatMotionTest.IsBusy)
+            {
+                //關閉UI
+                GeneralSetting(false);
+                bwDoRepeatMotionTest.RunWorkerAsync();
+            }
+        }
+
+        int iCrabDelayTime = 1000;
+
+        private void udCrabDelayTime_ValueChanged(object sender, EventArgs e)
+        {
+            iCrabDelayTime = (int)udCrabDelayTime.Value;
         }
     }
 

@@ -319,6 +319,68 @@ namespace AlignerVerification.UIUpdate
                 logger.Debug(e.StackTrace);
             }
         }
+
+        delegate void UpdateShowImage(Mat mat);
+        public static void ShowImageUpdate(Mat mat)
+        {
+            try
+            {
+                Form form = Application.OpenForms["FormMain"];
+                if (form.InvokeRequired)
+                {
+                    UpdateShowImage ph = new UpdateShowImage(ShowImageUpdate);
+                    form.BeginInvoke(ph, mat);
+                }
+                else
+                {
+                    ImageBox imgbox = null;
+                    imgbox = form.Controls.Find("FilterImageBox", true).FirstOrDefault() as ImageBox;
+                    if(imgbox != null)
+                    {
+                        imgbox.Visible = false;
+                        imgbox.Refresh();
+                    }
+
+                    imgbox = form.Controls.Find("DisplayImageBox", true).FirstOrDefault() as ImageBox;
+                    if(imgbox != null)
+                    {
+                        imgbox.Image = mat;
+                        imgbox.Refresh();
+
+                        using (Pen pen = new Pen(Color.Red, 1))
+                        {
+                            pen.DashStyle = DashStyle.Dash;
+                            Graphics eGraphics = imgbox.CreateGraphics();
+
+                            Point HSPT = new Point(0, imgbox.Height / 2);
+                            Point HEPT = new Point(imgbox.Width, imgbox.Height / 2);
+                            Point VSPT = new Point(imgbox.Width / 2, 0);
+                            Point VEPT = new Point(imgbox.Width / 2, imgbox.Height);
+
+                            eGraphics.DrawLine(pen, HSPT, HEPT);
+                            eGraphics.DrawLine(pen, VSPT, VEPT);
+
+                            pen.DashStyle = DashStyle.Dash;
+                            pen.Color = Color.Blue;
+                            for (int i = 1; i < 5; i++)
+                            {
+                                Point a = new Point(imgbox.Width / 5 * i, 0);
+                                Point b = new Point(imgbox.Width / 5 * i, imgbox.Height);
+
+                                eGraphics.DrawLine(pen, a, b);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Debug(e.StackTrace);
+            }
+
+        }
+
+
         private static void DrawCrossPoint(Mat mat, Point point, MCvScalar color, int length, int thickness)
         {
             Point crossPt1 = new Point(point.X - length, point.Y - length);
@@ -358,6 +420,33 @@ namespace AlignerVerification.UIUpdate
                 logger.Debug(e.StackTrace);
             }
         }
-
+        delegate void UpdatePresentMonitorTakeTime(TimeSpan ts);
+        public static void PresentMonitorTakeTimeUpdate(TimeSpan ts)
+        {
+            try
+            {
+                Form form = Application.OpenForms["FormMain"];
+                if (form.InvokeRequired)
+                {
+                    UpdatePresentMonitorTakeTime ph = new UpdatePresentMonitorTakeTime(PresentMonitorTakeTimeUpdate);
+                    form.BeginInvoke(ph, ts);
+                }
+                else
+                {
+                    Label lb = null;
+                    lb = form.Controls.Find("lbPresentTakeTime", true).FirstOrDefault() as Label;
+                    if(lb != null)
+                    {
+                        lb.Text = ts.Hours.ToString().PadLeft(2,'0') + ":" + 
+                            ts.Minutes.ToString().PadLeft(2, '0') + ":" + 
+                            ts.Seconds.ToString().PadLeft(2, '0');
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Debug(e.StackTrace);
+            }
+        }
     }
 }

@@ -70,6 +70,16 @@ namespace AlignerVerification.Comm
             ThreadPool.QueueUserWorkItem(new WaitCallback(ConnectServer));
         }
 
+        public void Close()
+        {
+            if (tcpClient.Connected)
+            {
+                tcpClient.Close();
+
+                ConnReport.On_Connection_Disconnected("Close");
+            }
+        }
+
         private void ConnectServer(object input)
         {
             ConnReport.On_Connection_Connecting("["+ Config.DeviceName + "] Connecting");

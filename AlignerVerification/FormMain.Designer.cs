@@ -111,6 +111,8 @@
             this.RunButton = new System.Windows.Forms.Button();
             this.AOIPage = new System.Windows.Forms.TabPage();
             this.gbAOI = new System.Windows.Forms.GroupBox();
+            this.pbrContinusTest = new System.Windows.Forms.ProgressBar();
+            this.pbrOpenImageFolder = new System.Windows.Forms.ProgressBar();
             this.btnReadConfigFile = new System.Windows.Forms.Button();
             this.gbAOISetup = new System.Windows.Forms.GroupBox();
             this.cbFillWafer = new System.Windows.Forms.CheckBox();
@@ -191,7 +193,15 @@
             this.lbCameraPort = new System.Windows.Forms.Label();
             this.TestTabControl = new System.Windows.Forms.TabPage();
             this.gbTest = new System.Windows.Forms.GroupBox();
+            this.gbMotionTest = new System.Windows.Forms.GroupBox();
+            this.udCrabDelayTime = new System.Windows.Forms.NumericUpDown();
+            this.lbCrabDelayTime = new System.Windows.Forms.Label();
+            this.btnRepeatMotionTest = new System.Windows.Forms.Button();
+            this.btnWaferAlignment = new System.Windows.Forms.Button();
+            this.gbPresent = new System.Windows.Forms.GroupBox();
             this.gbPresentTest = new System.Windows.Forms.GroupBox();
+            this.lbPresentTakeTime = new System.Windows.Forms.Label();
+            this.lbPresentTakeTimeLabel = new System.Windows.Forms.Label();
             this.lbEndMonitorTime = new System.Windows.Forms.Label();
             this.lbStartMonitorTime = new System.Windows.Forms.Label();
             this.lbEndMonitorTimeLabel = new System.Windows.Forms.Label();
@@ -261,6 +271,9 @@
             this.gbCamera.SuspendLayout();
             this.TestTabControl.SuspendLayout();
             this.gbTest.SuspendLayout();
+            this.gbMotionTest.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.udCrabDelayTime)).BeginInit();
+            this.gbPresent.SuspendLayout();
             this.gbPresentTest.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udPresentMonitorSec)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udPresentMonitorMin)).BeginInit();
@@ -627,6 +640,7 @@
             this.DisplayImageBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.DisplayImageBox.TabIndex = 2;
             this.DisplayImageBox.TabStop = false;
+            this.DisplayImageBox.Click += new System.EventHandler(this.DisplayImageBox_Click);
             this.DisplayImageBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.DisplayImageBox_MouseMove);
             // 
             // FilterImageBox
@@ -1231,6 +1245,8 @@
             // 
             // gbAOI
             // 
+            this.gbAOI.Controls.Add(this.pbrContinusTest);
+            this.gbAOI.Controls.Add(this.pbrOpenImageFolder);
             this.gbAOI.Controls.Add(this.btnReadConfigFile);
             this.gbAOI.Controls.Add(this.gbAOISetup);
             this.gbAOI.Controls.Add(this.btnLoadBuffer);
@@ -1247,6 +1263,22 @@
             this.gbAOI.Size = new System.Drawing.Size(345, 693);
             this.gbAOI.TabIndex = 29;
             this.gbAOI.TabStop = false;
+            // 
+            // pbrContinusTest
+            // 
+            this.pbrContinusTest.Location = new System.Drawing.Point(10, 377);
+            this.pbrContinusTest.Name = "pbrContinusTest";
+            this.pbrContinusTest.Size = new System.Drawing.Size(216, 23);
+            this.pbrContinusTest.TabIndex = 31;
+            this.pbrContinusTest.Visible = false;
+            // 
+            // pbrOpenImageFolder
+            // 
+            this.pbrOpenImageFolder.Location = new System.Drawing.Point(117, 605);
+            this.pbrOpenImageFolder.Name = "pbrOpenImageFolder";
+            this.pbrOpenImageFolder.Size = new System.Drawing.Size(216, 23);
+            this.pbrOpenImageFolder.TabIndex = 30;
+            this.pbrOpenImageFolder.Visible = false;
             // 
             // btnReadConfigFile
             // 
@@ -1466,7 +1498,7 @@
             // 
             // PreTestButton
             // 
-            this.PreTestButton.BackColor = System.Drawing.SystemColors.Control;
+            this.PreTestButton.BackColor = System.Drawing.Color.DarkGray;
             this.PreTestButton.Image = ((System.Drawing.Image)(resources.GetObject("PreTestButton.Image")));
             this.PreTestButton.Location = new System.Drawing.Point(9, 275);
             this.PreTestButton.Name = "PreTestButton";
@@ -1487,7 +1519,8 @@
             // 
             // TestButton
             // 
-            this.TestButton.BackColor = System.Drawing.SystemColors.Control;
+            this.TestButton.BackColor = System.Drawing.Color.DarkGray;
+            this.TestButton.ForeColor = System.Drawing.Color.DarkGray;
             this.TestButton.Image = ((System.Drawing.Image)(resources.GetObject("TestButton.Image")));
             this.TestButton.Location = new System.Drawing.Point(55, 275);
             this.TestButton.Name = "TestButton";
@@ -1509,7 +1542,8 @@
             // 
             // NextTestButton
             // 
-            this.NextTestButton.BackColor = System.Drawing.SystemColors.Control;
+            this.NextTestButton.BackColor = System.Drawing.Color.DarkGray;
+            this.NextTestButton.ForeColor = System.Drawing.Color.DarkGray;
             this.NextTestButton.Image = ((System.Drawing.Image)(resources.GetObject("NextTestButton.Image")));
             this.NextTestButton.Location = new System.Drawing.Point(101, 275);
             this.NextTestButton.Name = "NextTestButton";
@@ -2120,8 +2154,8 @@
             // 
             // gbTest
             // 
-            this.gbTest.Controls.Add(this.gbPresentTest);
-            this.gbTest.Controls.Add(this.btnStartMonitorPresent);
+            this.gbTest.Controls.Add(this.gbMotionTest);
+            this.gbTest.Controls.Add(this.gbPresent);
             this.gbTest.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gbTest.Location = new System.Drawing.Point(3, 3);
             this.gbTest.Name = "gbTest";
@@ -2129,8 +2163,83 @@
             this.gbTest.TabIndex = 0;
             this.gbTest.TabStop = false;
             // 
+            // gbMotionTest
+            // 
+            this.gbMotionTest.Controls.Add(this.udCrabDelayTime);
+            this.gbMotionTest.Controls.Add(this.lbCrabDelayTime);
+            this.gbMotionTest.Controls.Add(this.btnRepeatMotionTest);
+            this.gbMotionTest.Controls.Add(this.btnWaferAlignment);
+            this.gbMotionTest.Dock = System.Windows.Forms.DockStyle.Top;
+            this.gbMotionTest.Location = new System.Drawing.Point(3, 244);
+            this.gbMotionTest.Name = "gbMotionTest";
+            this.gbMotionTest.Size = new System.Drawing.Size(339, 186);
+            this.gbMotionTest.TabIndex = 8;
+            this.gbMotionTest.TabStop = false;
+            this.gbMotionTest.Text = "動作測試";
+            // 
+            // udCrabDelayTime
+            // 
+            this.udCrabDelayTime.Location = new System.Drawing.Point(246, 22);
+            this.udCrabDelayTime.Maximum = new decimal(new int[] {
+            99999,
+            0,
+            0,
+            0});
+            this.udCrabDelayTime.Name = "udCrabDelayTime";
+            this.udCrabDelayTime.Size = new System.Drawing.Size(90, 23);
+            this.udCrabDelayTime.TabIndex = 3;
+            this.udCrabDelayTime.Value = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.udCrabDelayTime.ValueChanged += new System.EventHandler(this.udCrabDelayTime_ValueChanged);
+            // 
+            // lbCrabDelayTime
+            // 
+            this.lbCrabDelayTime.AutoSize = true;
+            this.lbCrabDelayTime.Location = new System.Drawing.Point(148, 24);
+            this.lbCrabDelayTime.Name = "lbCrabDelayTime";
+            this.lbCrabDelayTime.Size = new System.Drawing.Size(92, 16);
+            this.lbCrabDelayTime.TabIndex = 2;
+            this.lbCrabDelayTime.Text = "取向延遲時間：";
+            // 
+            // btnRepeatMotionTest
+            // 
+            this.btnRepeatMotionTest.Location = new System.Drawing.Point(246, 57);
+            this.btnRepeatMotionTest.Name = "btnRepeatMotionTest";
+            this.btnRepeatMotionTest.Size = new System.Drawing.Size(90, 34);
+            this.btnRepeatMotionTest.TabIndex = 1;
+            this.btnRepeatMotionTest.Text = "重複性測試";
+            this.btnRepeatMotionTest.UseVisualStyleBackColor = true;
+            this.btnRepeatMotionTest.Click += new System.EventHandler(this.btnRepeatMotionTest_Click);
+            // 
+            // btnWaferAlignment
+            // 
+            this.btnWaferAlignment.Location = new System.Drawing.Point(20, 22);
+            this.btnWaferAlignment.Name = "btnWaferAlignment";
+            this.btnWaferAlignment.Size = new System.Drawing.Size(90, 34);
+            this.btnWaferAlignment.TabIndex = 0;
+            this.btnWaferAlignment.Text = "Wafer 置中";
+            this.btnWaferAlignment.UseVisualStyleBackColor = true;
+            this.btnWaferAlignment.Click += new System.EventHandler(this.btnWaferAlignment_Click);
+            // 
+            // gbPresent
+            // 
+            this.gbPresent.Controls.Add(this.gbPresentTest);
+            this.gbPresent.Controls.Add(this.btnStartMonitorPresent);
+            this.gbPresent.Dock = System.Windows.Forms.DockStyle.Top;
+            this.gbPresent.Location = new System.Drawing.Point(3, 19);
+            this.gbPresent.Name = "gbPresent";
+            this.gbPresent.Size = new System.Drawing.Size(339, 225);
+            this.gbPresent.TabIndex = 7;
+            this.gbPresent.TabStop = false;
+            this.gbPresent.Text = "Present 監控";
+            // 
             // gbPresentTest
             // 
+            this.gbPresentTest.Controls.Add(this.lbPresentTakeTime);
+            this.gbPresentTest.Controls.Add(this.lbPresentTakeTimeLabel);
             this.gbPresentTest.Controls.Add(this.lbEndMonitorTime);
             this.gbPresentTest.Controls.Add(this.lbStartMonitorTime);
             this.gbPresentTest.Controls.Add(this.lbEndMonitorTimeLabel);
@@ -2146,10 +2255,26 @@
             this.gbPresentTest.Dock = System.Windows.Forms.DockStyle.Top;
             this.gbPresentTest.Location = new System.Drawing.Point(3, 19);
             this.gbPresentTest.Name = "gbPresentTest";
-            this.gbPresentTest.Size = new System.Drawing.Size(339, 160);
+            this.gbPresentTest.Size = new System.Drawing.Size(333, 160);
             this.gbPresentTest.TabIndex = 0;
             this.gbPresentTest.TabStop = false;
-            this.gbPresentTest.Text = "Present 監控";
+            // 
+            // lbPresentTakeTime
+            // 
+            this.lbPresentTakeTime.Location = new System.Drawing.Point(206, 91);
+            this.lbPresentTakeTime.Name = "lbPresentTakeTime";
+            this.lbPresentTakeTime.Size = new System.Drawing.Size(68, 16);
+            this.lbPresentTakeTime.TabIndex = 14;
+            this.lbPresentTakeTime.Text = "00:00:00";
+            // 
+            // lbPresentTakeTimeLabel
+            // 
+            this.lbPresentTakeTimeLabel.AutoSize = true;
+            this.lbPresentTakeTimeLabel.Location = new System.Drawing.Point(156, 91);
+            this.lbPresentTakeTimeLabel.Name = "lbPresentTakeTimeLabel";
+            this.lbPresentTakeTimeLabel.Size = new System.Drawing.Size(44, 16);
+            this.lbPresentTakeTimeLabel.TabIndex = 13;
+            this.lbPresentTakeTimeLabel.Text = "歷時：";
             // 
             // lbEndMonitorTime
             // 
@@ -2258,7 +2383,7 @@
             // 
             // btnStartMonitorPresent
             // 
-            this.btnStartMonitorPresent.Location = new System.Drawing.Point(246, 185);
+            this.btnStartMonitorPresent.Location = new System.Drawing.Point(243, 185);
             this.btnStartMonitorPresent.Name = "btnStartMonitorPresent";
             this.btnStartMonitorPresent.Size = new System.Drawing.Size(90, 34);
             this.btnStartMonitorPresent.TabIndex = 6;
@@ -2316,7 +2441,8 @@
             this.Controls.Add(this.statusStrip1);
             this.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.Name = "FormMain";
-            this.Text = "Aligner Verification - Ver.1.02.2";
+            this.Text = "Aligner Verification - Ver.1.03";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.BottomPanel.ResumeLayout(false);
             this.ShowResultGroupBox.ResumeLayout(false);
@@ -2380,6 +2506,10 @@
             this.gbCamera.PerformLayout();
             this.TestTabControl.ResumeLayout(false);
             this.gbTest.ResumeLayout(false);
+            this.gbMotionTest.ResumeLayout(false);
+            this.gbMotionTest.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.udCrabDelayTime)).EndInit();
+            this.gbPresent.ResumeLayout(false);
             this.gbPresentTest.ResumeLayout(false);
             this.gbPresentTest.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udPresentMonitorSec)).EndInit();
@@ -2574,6 +2704,16 @@
         private System.Windows.Forms.CheckBox cbAlarmStopEnabled;
         private System.Windows.Forms.Label lbNOffsetUpLimit;
         private System.Windows.Forms.Label lbOOffsetUpLimit;
+        private System.Windows.Forms.ProgressBar pbrOpenImageFolder;
+        private System.Windows.Forms.ProgressBar pbrContinusTest;
+        private System.Windows.Forms.GroupBox gbPresent;
+        private System.Windows.Forms.Label lbPresentTakeTime;
+        private System.Windows.Forms.Label lbPresentTakeTimeLabel;
+        private System.Windows.Forms.GroupBox gbMotionTest;
+        private System.Windows.Forms.Button btnWaferAlignment;
+        private System.Windows.Forms.Button btnRepeatMotionTest;
+        private System.Windows.Forms.NumericUpDown udCrabDelayTime;
+        private System.Windows.Forms.Label lbCrabDelayTime;
     }
 }
 

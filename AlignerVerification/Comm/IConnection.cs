@@ -13,5 +13,7 @@ namespace AlignerVerification.Comm
         void Start();
         void WaitForData(bool Enable);
 
+        void Close();
+
     }
 }

@@ -77,6 +77,7 @@ namespace AlignerVerification.Comm
         public void Close()
         {
             port.Close();
+            Connected = false;
             ConnReport.On_Connection_Disconnected("Close");
         }
 
@@ -92,7 +93,6 @@ namespace AlignerVerification.Comm
         {
             try
             {
-
                 port.Write(Message.ToString());
                 return true;
             }

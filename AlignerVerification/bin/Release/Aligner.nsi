@@ -41,7 +41,7 @@
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "Setup_V1.02.2.exe"
+OutFile "Setup_V1.03.exe"
 InstallDir "$PROGRAMFILES\AlignerVerification"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
