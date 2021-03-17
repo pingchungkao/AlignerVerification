@@ -167,30 +167,6 @@
             this.gbOutputFolder = new System.Windows.Forms.GroupBox();
             this.lbShowOutputFolder = new System.Windows.Forms.Label();
             this.btnOutputFolder = new System.Windows.Forms.Button();
-            this.CylinderGroupBox = new System.Windows.Forms.GroupBox();
-            this.cbCylinderEnabled = new System.Windows.Forms.CheckBox();
-            this.lbCylinderStatus = new System.Windows.Forms.Label();
-            this.btnCylinderConnect = new System.Windows.Forms.Button();
-            this.cmbCylinderBaudRate = new System.Windows.Forms.ComboBox();
-            this.lbCylinderBaudRate = new System.Windows.Forms.Label();
-            this.cmbCylinderPort = new System.Windows.Forms.ComboBox();
-            this.lbCylinderPort = new System.Windows.Forms.Label();
-            this.gbAligner = new System.Windows.Forms.GroupBox();
-            this.cbAlignerEnabled = new System.Windows.Forms.CheckBox();
-            this.lbAlignerStatus = new System.Windows.Forms.Label();
-            this.btnAlignerConnect = new System.Windows.Forms.Button();
-            this.cmbAlignerBaudRate = new System.Windows.Forms.ComboBox();
-            this.lbAlignerBaudRate = new System.Windows.Forms.Label();
-            this.cmbAlignerPort = new System.Windows.Forms.ComboBox();
-            this.lbAlignerPort = new System.Windows.Forms.Label();
-            this.gbCamera = new System.Windows.Forms.GroupBox();
-            this.cbCameraEnabled = new System.Windows.Forms.CheckBox();
-            this.lbCameraStatus = new System.Windows.Forms.Label();
-            this.btnCameraConnect = new System.Windows.Forms.Button();
-            this.cmbCameraBaudRate = new System.Windows.Forms.ComboBox();
-            this.lbCameraBaudRate = new System.Windows.Forms.Label();
-            this.cmbCameraPort = new System.Windows.Forms.ComboBox();
-            this.lbCameraPort = new System.Windows.Forms.Label();
             this.TestTabControl = new System.Windows.Forms.TabPage();
             this.gbTest = new System.Windows.Forms.GroupBox();
             this.gbMotionTest = new System.Windows.Forms.GroupBox();
@@ -215,6 +191,52 @@
             this.lbPresentMonitorMin = new System.Windows.Forms.Label();
             this.lbPresentMonitorHour = new System.Windows.Forms.Label();
             this.btnStartMonitorPresent = new System.Windows.Forms.Button();
+            this.CommPage = new System.Windows.Forms.TabPage();
+            this.btnSaveParas1 = new System.Windows.Forms.Button();
+            this.gbAligner02 = new System.Windows.Forms.GroupBox();
+            this.lbAligner02CommTest = new System.Windows.Forms.Label();
+            this.btnAligner02CommTest = new System.Windows.Forms.Button();
+            this.tbAligner02IPAddress = new System.Windows.Forms.TextBox();
+            this.lbAligner02IPAddress = new System.Windows.Forms.Label();
+            this.cmbAligner02ConnectionType = new System.Windows.Forms.ComboBox();
+            this.lbAligner02ConnectionType = new System.Windows.Forms.Label();
+            this.cbAligner02Enabled = new System.Windows.Forms.CheckBox();
+            this.lbAligner02Status = new System.Windows.Forms.Label();
+            this.btnAligner02Connect = new System.Windows.Forms.Button();
+            this.cmbAligner02BaudRate = new System.Windows.Forms.ComboBox();
+            this.lbAligner02BaudRate = new System.Windows.Forms.Label();
+            this.cmbAligner02Port = new System.Windows.Forms.ComboBox();
+            this.lbAligner02Port = new System.Windows.Forms.Label();
+            this.gbAligner = new System.Windows.Forms.GroupBox();
+            this.lbAlignerCommTest = new System.Windows.Forms.Label();
+            this.btnAlignerCommTest = new System.Windows.Forms.Button();
+            this.tbAlignerIPAddress = new System.Windows.Forms.TextBox();
+            this.lbAlignerIPAddress = new System.Windows.Forms.Label();
+            this.cmbAlignerConnectionType = new System.Windows.Forms.ComboBox();
+            this.lbAlignerConnectionType = new System.Windows.Forms.Label();
+            this.cbAlignerEnabled = new System.Windows.Forms.CheckBox();
+            this.lbAlignerStatus = new System.Windows.Forms.Label();
+            this.btnAlignerConnect = new System.Windows.Forms.Button();
+            this.cmbAlignerBaudRate = new System.Windows.Forms.ComboBox();
+            this.lbAlignerBaudRate = new System.Windows.Forms.Label();
+            this.cmbAlignerPort = new System.Windows.Forms.ComboBox();
+            this.lbAlignerPort = new System.Windows.Forms.Label();
+            this.gbCamera = new System.Windows.Forms.GroupBox();
+            this.cbCameraEnabled = new System.Windows.Forms.CheckBox();
+            this.lbCameraStatus = new System.Windows.Forms.Label();
+            this.btnCameraConnect = new System.Windows.Forms.Button();
+            this.cmbCameraBaudRate = new System.Windows.Forms.ComboBox();
+            this.lbCameraBaudRate = new System.Windows.Forms.Label();
+            this.cmbCameraPort = new System.Windows.Forms.ComboBox();
+            this.lbCameraPort = new System.Windows.Forms.Label();
+            this.CylinderGroupBox = new System.Windows.Forms.GroupBox();
+            this.cbCylinderEnabled = new System.Windows.Forms.CheckBox();
+            this.lbCylinderStatus = new System.Windows.Forms.Label();
+            this.btnCylinderConnect = new System.Windows.Forms.Button();
+            this.cmbCylinderBaudRate = new System.Windows.Forms.ComboBox();
+            this.lbCylinderBaudRate = new System.Windows.Forms.Label();
+            this.cmbCylinderPort = new System.Windows.Forms.ComboBox();
+            this.lbCylinderPort = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -266,9 +288,6 @@
             this.gbDownloadData.SuspendLayout();
             this.gbAdvanceParas.SuspendLayout();
             this.gbOutputFolder.SuspendLayout();
-            this.CylinderGroupBox.SuspendLayout();
-            this.gbAligner.SuspendLayout();
-            this.gbCamera.SuspendLayout();
             this.TestTabControl.SuspendLayout();
             this.gbTest.SuspendLayout();
             this.gbMotionTest.SuspendLayout();
@@ -278,6 +297,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.udPresentMonitorSec)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udPresentMonitorMin)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udPresentMonitorHour)).BeginInit();
+            this.CommPage.SuspendLayout();
+            this.gbAligner02.SuspendLayout();
+            this.gbAligner.SuspendLayout();
+            this.gbCamera.SuspendLayout();
+            this.CylinderGroupBox.SuspendLayout();
             this.panel1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -691,6 +715,7 @@
             this.LeftTabControl.Controls.Add(this.AOIPage);
             this.LeftTabControl.Controls.Add(this.AdvancePage);
             this.LeftTabControl.Controls.Add(this.TestTabControl);
+            this.LeftTabControl.Controls.Add(this.CommPage);
             this.LeftTabControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this.LeftTabControl.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.LeftTabControl.Location = new System.Drawing.Point(324, 0);
@@ -1570,9 +1595,6 @@
             this.gbAdvance.Controls.Add(this.btnSaveParas);
             this.gbAdvance.Controls.Add(this.gbDownloadData);
             this.gbAdvance.Controls.Add(this.gbAdvanceParas);
-            this.gbAdvance.Controls.Add(this.CylinderGroupBox);
-            this.gbAdvance.Controls.Add(this.gbAligner);
-            this.gbAdvance.Controls.Add(this.gbCamera);
             this.gbAdvance.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gbAdvance.Location = new System.Drawing.Point(3, 3);
             this.gbAdvance.Name = "gbAdvance";
@@ -1588,9 +1610,9 @@
             this.gbAlarmStop.Controls.Add(this.cbAlarmStopEnabled);
             this.gbAlarmStop.Controls.Add(this.lbNOffsetUpLimit);
             this.gbAlarmStop.Controls.Add(this.lbOOffsetUpLimit);
-            this.gbAlarmStop.Location = new System.Drawing.Point(9, 579);
+            this.gbAlarmStop.Location = new System.Drawing.Point(3, 333);
             this.gbAlarmStop.Name = "gbAlarmStop";
-            this.gbAlarmStop.Size = new System.Drawing.Size(243, 108);
+            this.gbAlarmStop.Size = new System.Drawing.Size(339, 108);
             this.gbAlarmStop.TabIndex = 7;
             this.gbAlarmStop.TabStop = false;
             this.gbAlarmStop.Text = "規格設定";
@@ -1665,7 +1687,7 @@
             this.gbCalibrate.Controls.Add(this.lbParam193);
             this.gbCalibrate.Controls.Add(this.Calibrate);
             this.gbCalibrate.Dock = System.Windows.Forms.DockStyle.Top;
-            this.gbCalibrate.Location = new System.Drawing.Point(3, 400);
+            this.gbCalibrate.Location = new System.Drawing.Point(3, 154);
             this.gbCalibrate.Name = "gbCalibrate";
             this.gbCalibrate.Size = new System.Drawing.Size(339, 173);
             this.gbCalibrate.TabIndex = 6;
@@ -1749,7 +1771,7 @@
             // 
             // btnSaveParas
             // 
-            this.btnSaveParas.Location = new System.Drawing.Point(258, 639);
+            this.btnSaveParas.Location = new System.Drawing.Point(261, 447);
             this.btnSaveParas.Name = "btnSaveParas";
             this.btnSaveParas.Size = new System.Drawing.Size(81, 45);
             this.btnSaveParas.TabIndex = 4;
@@ -1762,7 +1784,7 @@
             this.gbDownloadData.Controls.Add(this.btnDownloadData);
             this.gbDownloadData.Controls.Add(this.cbDownloadData);
             this.gbDownloadData.Dock = System.Windows.Forms.DockStyle.Top;
-            this.gbDownloadData.Location = new System.Drawing.Point(3, 346);
+            this.gbDownloadData.Location = new System.Drawing.Point(3, 100);
             this.gbDownloadData.Name = "gbDownloadData";
             this.gbDownloadData.Size = new System.Drawing.Size(339, 54);
             this.gbDownloadData.TabIndex = 3;
@@ -1796,7 +1818,7 @@
             this.gbAdvanceParas.Controls.Add(this.cbCheckWaferPresentInAutoRun);
             this.gbAdvanceParas.Controls.Add(this.gbOutputFolder);
             this.gbAdvanceParas.Dock = System.Windows.Forms.DockStyle.Top;
-            this.gbAdvanceParas.Location = new System.Drawing.Point(3, 265);
+            this.gbAdvanceParas.Location = new System.Drawing.Point(3, 19);
             this.gbAdvanceParas.Name = "gbAdvanceParas";
             this.gbAdvanceParas.Size = new System.Drawing.Size(339, 81);
             this.gbAdvanceParas.TabIndex = 5;
@@ -1856,291 +1878,6 @@
             this.btnOutputFolder.UseVisualStyleBackColor = true;
             this.btnOutputFolder.Click += new System.EventHandler(this.btnOutputFolder_Click);
             // 
-            // CylinderGroupBox
-            // 
-            this.CylinderGroupBox.Controls.Add(this.cbCylinderEnabled);
-            this.CylinderGroupBox.Controls.Add(this.lbCylinderStatus);
-            this.CylinderGroupBox.Controls.Add(this.btnCylinderConnect);
-            this.CylinderGroupBox.Controls.Add(this.cmbCylinderBaudRate);
-            this.CylinderGroupBox.Controls.Add(this.lbCylinderBaudRate);
-            this.CylinderGroupBox.Controls.Add(this.cmbCylinderPort);
-            this.CylinderGroupBox.Controls.Add(this.lbCylinderPort);
-            this.CylinderGroupBox.Dock = System.Windows.Forms.DockStyle.Top;
-            this.CylinderGroupBox.Location = new System.Drawing.Point(3, 179);
-            this.CylinderGroupBox.Name = "CylinderGroupBox";
-            this.CylinderGroupBox.Size = new System.Drawing.Size(339, 86);
-            this.CylinderGroupBox.TabIndex = 0;
-            this.CylinderGroupBox.TabStop = false;
-            this.CylinderGroupBox.Text = "Cylinder";
-            // 
-            // cbCylinderEnabled
-            // 
-            this.cbCylinderEnabled.AutoSize = true;
-            this.cbCylinderEnabled.Location = new System.Drawing.Point(9, 25);
-            this.cbCylinderEnabled.Name = "cbCylinderEnabled";
-            this.cbCylinderEnabled.Size = new System.Drawing.Size(51, 20);
-            this.cbCylinderEnabled.TabIndex = 7;
-            this.cbCylinderEnabled.Text = "啟用";
-            this.cbCylinderEnabled.UseVisualStyleBackColor = true;
-            this.cbCylinderEnabled.CheckedChanged += new System.EventHandler(this.cbCylinderEnabled_CheckedChanged);
-            // 
-            // lbCylinderStatus
-            // 
-            this.lbCylinderStatus.BackColor = System.Drawing.Color.Gray;
-            this.lbCylinderStatus.Location = new System.Drawing.Point(66, 19);
-            this.lbCylinderStatus.Name = "lbCylinderStatus";
-            this.lbCylinderStatus.Size = new System.Drawing.Size(80, 25);
-            this.lbCylinderStatus.TabIndex = 6;
-            this.lbCylinderStatus.Text = "未啟用";
-            this.lbCylinderStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // btnCylinderConnect
-            // 
-            this.btnCylinderConnect.Location = new System.Drawing.Point(65, 52);
-            this.btnCylinderConnect.Name = "btnCylinderConnect";
-            this.btnCylinderConnect.Size = new System.Drawing.Size(81, 29);
-            this.btnCylinderConnect.TabIndex = 5;
-            this.btnCylinderConnect.Text = "連線";
-            this.btnCylinderConnect.UseVisualStyleBackColor = true;
-            this.btnCylinderConnect.Click += new System.EventHandler(this.btnCylinderConnect_Click);
-            // 
-            // cmbCylinderBaudRate
-            // 
-            this.cmbCylinderBaudRate.FormattingEnabled = true;
-            this.cmbCylinderBaudRate.Items.AddRange(new object[] {
-            "9600",
-            "19200",
-            "38400",
-            "57600",
-            "115200",
-            "230400",
-            "460800",
-            "921600"});
-            this.cmbCylinderBaudRate.Location = new System.Drawing.Point(255, 49);
-            this.cmbCylinderBaudRate.Name = "cmbCylinderBaudRate";
-            this.cmbCylinderBaudRate.Size = new System.Drawing.Size(66, 24);
-            this.cmbCylinderBaudRate.TabIndex = 4;
-            this.cmbCylinderBaudRate.Text = "38400";
-            this.cmbCylinderBaudRate.SelectedIndexChanged += new System.EventHandler(this.cmbCylinderBaudRate_SelectedIndexChanged);
-            // 
-            // lbCylinderBaudRate
-            // 
-            this.lbCylinderBaudRate.AutoSize = true;
-            this.lbCylinderBaudRate.Location = new System.Drawing.Point(180, 52);
-            this.lbCylinderBaudRate.Name = "lbCylinderBaudRate";
-            this.lbCylinderBaudRate.Size = new System.Drawing.Size(69, 16);
-            this.lbCylinderBaudRate.TabIndex = 3;
-            this.lbCylinderBaudRate.Text = "Baud Rate";
-            // 
-            // cmbCylinderPort
-            // 
-            this.cmbCylinderPort.FormattingEnabled = true;
-            this.cmbCylinderPort.Location = new System.Drawing.Point(255, 19);
-            this.cmbCylinderPort.Name = "cmbCylinderPort";
-            this.cmbCylinderPort.Size = new System.Drawing.Size(66, 24);
-            this.cmbCylinderPort.TabIndex = 2;
-            this.cmbCylinderPort.Text = "COM24";
-            this.cmbCylinderPort.SelectedIndexChanged += new System.EventHandler(this.cmbCylinderPort_SelectedIndexChanged);
-            // 
-            // lbCylinderPort
-            // 
-            this.lbCylinderPort.AutoSize = true;
-            this.lbCylinderPort.Location = new System.Drawing.Point(185, 23);
-            this.lbCylinderPort.Name = "lbCylinderPort";
-            this.lbCylinderPort.Size = new System.Drawing.Size(64, 16);
-            this.lbCylinderPort.TabIndex = 1;
-            this.lbCylinderPort.Text = "Com Port";
-            // 
-            // gbAligner
-            // 
-            this.gbAligner.Controls.Add(this.cbAlignerEnabled);
-            this.gbAligner.Controls.Add(this.lbAlignerStatus);
-            this.gbAligner.Controls.Add(this.btnAlignerConnect);
-            this.gbAligner.Controls.Add(this.cmbAlignerBaudRate);
-            this.gbAligner.Controls.Add(this.lbAlignerBaudRate);
-            this.gbAligner.Controls.Add(this.cmbAlignerPort);
-            this.gbAligner.Controls.Add(this.lbAlignerPort);
-            this.gbAligner.Dock = System.Windows.Forms.DockStyle.Top;
-            this.gbAligner.Location = new System.Drawing.Point(3, 102);
-            this.gbAligner.Name = "gbAligner";
-            this.gbAligner.Size = new System.Drawing.Size(339, 77);
-            this.gbAligner.TabIndex = 1;
-            this.gbAligner.TabStop = false;
-            this.gbAligner.Text = "Aligner";
-            // 
-            // cbAlignerEnabled
-            // 
-            this.cbAlignerEnabled.AutoSize = true;
-            this.cbAlignerEnabled.Location = new System.Drawing.Point(9, 22);
-            this.cbAlignerEnabled.Name = "cbAlignerEnabled";
-            this.cbAlignerEnabled.Size = new System.Drawing.Size(51, 20);
-            this.cbAlignerEnabled.TabIndex = 8;
-            this.cbAlignerEnabled.Text = "啟用";
-            this.cbAlignerEnabled.UseVisualStyleBackColor = true;
-            this.cbAlignerEnabled.CheckedChanged += new System.EventHandler(this.cbAlignerEnabled_CheckedChanged);
-            // 
-            // lbAlignerStatus
-            // 
-            this.lbAlignerStatus.BackColor = System.Drawing.Color.Gray;
-            this.lbAlignerStatus.Location = new System.Drawing.Point(66, 13);
-            this.lbAlignerStatus.Name = "lbAlignerStatus";
-            this.lbAlignerStatus.Size = new System.Drawing.Size(80, 25);
-            this.lbAlignerStatus.TabIndex = 6;
-            this.lbAlignerStatus.Text = "未啟用";
-            this.lbAlignerStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // btnAlignerConnect
-            // 
-            this.btnAlignerConnect.Location = new System.Drawing.Point(65, 41);
-            this.btnAlignerConnect.Name = "btnAlignerConnect";
-            this.btnAlignerConnect.Size = new System.Drawing.Size(81, 29);
-            this.btnAlignerConnect.TabIndex = 5;
-            this.btnAlignerConnect.Text = "連線";
-            this.btnAlignerConnect.UseVisualStyleBackColor = true;
-            this.btnAlignerConnect.Click += new System.EventHandler(this.btnCylinderConnect_Click);
-            // 
-            // cmbAlignerBaudRate
-            // 
-            this.cmbAlignerBaudRate.FormattingEnabled = true;
-            this.cmbAlignerBaudRate.Items.AddRange(new object[] {
-            "9600",
-            "19200",
-            "38400",
-            "57600",
-            "115200",
-            "230400",
-            "460800",
-            "921600"});
-            this.cmbAlignerBaudRate.Location = new System.Drawing.Point(255, 44);
-            this.cmbAlignerBaudRate.Name = "cmbAlignerBaudRate";
-            this.cmbAlignerBaudRate.Size = new System.Drawing.Size(66, 24);
-            this.cmbAlignerBaudRate.TabIndex = 4;
-            this.cmbAlignerBaudRate.Text = "38400";
-            this.cmbAlignerBaudRate.SelectedIndexChanged += new System.EventHandler(this.cmbAlignerBaudRate_SelectedIndexChanged);
-            // 
-            // lbAlignerBaudRate
-            // 
-            this.lbAlignerBaudRate.AutoSize = true;
-            this.lbAlignerBaudRate.Location = new System.Drawing.Point(180, 47);
-            this.lbAlignerBaudRate.Name = "lbAlignerBaudRate";
-            this.lbAlignerBaudRate.Size = new System.Drawing.Size(69, 16);
-            this.lbAlignerBaudRate.TabIndex = 3;
-            this.lbAlignerBaudRate.Text = "Baud Rate";
-            // 
-            // cmbAlignerPort
-            // 
-            this.cmbAlignerPort.FormattingEnabled = true;
-            this.cmbAlignerPort.Location = new System.Drawing.Point(255, 13);
-            this.cmbAlignerPort.Name = "cmbAlignerPort";
-            this.cmbAlignerPort.Size = new System.Drawing.Size(66, 24);
-            this.cmbAlignerPort.TabIndex = 2;
-            this.cmbAlignerPort.Text = "COM17";
-            this.cmbAlignerPort.SelectedIndexChanged += new System.EventHandler(this.cmbAlignerPort_SelectedIndexChanged);
-            // 
-            // lbAlignerPort
-            // 
-            this.lbAlignerPort.AutoSize = true;
-            this.lbAlignerPort.Location = new System.Drawing.Point(185, 17);
-            this.lbAlignerPort.Name = "lbAlignerPort";
-            this.lbAlignerPort.Size = new System.Drawing.Size(64, 16);
-            this.lbAlignerPort.TabIndex = 1;
-            this.lbAlignerPort.Text = "Com Port";
-            // 
-            // gbCamera
-            // 
-            this.gbCamera.Controls.Add(this.cbCameraEnabled);
-            this.gbCamera.Controls.Add(this.lbCameraStatus);
-            this.gbCamera.Controls.Add(this.btnCameraConnect);
-            this.gbCamera.Controls.Add(this.cmbCameraBaudRate);
-            this.gbCamera.Controls.Add(this.lbCameraBaudRate);
-            this.gbCamera.Controls.Add(this.cmbCameraPort);
-            this.gbCamera.Controls.Add(this.lbCameraPort);
-            this.gbCamera.Dock = System.Windows.Forms.DockStyle.Top;
-            this.gbCamera.Location = new System.Drawing.Point(3, 19);
-            this.gbCamera.Name = "gbCamera";
-            this.gbCamera.Size = new System.Drawing.Size(339, 83);
-            this.gbCamera.TabIndex = 2;
-            this.gbCamera.TabStop = false;
-            this.gbCamera.Text = "Camera";
-            // 
-            // cbCameraEnabled
-            // 
-            this.cbCameraEnabled.AutoSize = true;
-            this.cbCameraEnabled.Location = new System.Drawing.Point(9, 22);
-            this.cbCameraEnabled.Name = "cbCameraEnabled";
-            this.cbCameraEnabled.Size = new System.Drawing.Size(51, 20);
-            this.cbCameraEnabled.TabIndex = 8;
-            this.cbCameraEnabled.Text = "啟用";
-            this.cbCameraEnabled.UseVisualStyleBackColor = true;
-            this.cbCameraEnabled.CheckedChanged += new System.EventHandler(this.cbCameraEnabled_CheckedChanged);
-            // 
-            // lbCameraStatus
-            // 
-            this.lbCameraStatus.BackColor = System.Drawing.Color.Gray;
-            this.lbCameraStatus.Location = new System.Drawing.Point(66, 17);
-            this.lbCameraStatus.Name = "lbCameraStatus";
-            this.lbCameraStatus.Size = new System.Drawing.Size(80, 25);
-            this.lbCameraStatus.TabIndex = 6;
-            this.lbCameraStatus.Text = "未啟用";
-            this.lbCameraStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // btnCameraConnect
-            // 
-            this.btnCameraConnect.Location = new System.Drawing.Point(65, 46);
-            this.btnCameraConnect.Name = "btnCameraConnect";
-            this.btnCameraConnect.Size = new System.Drawing.Size(81, 29);
-            this.btnCameraConnect.TabIndex = 5;
-            this.btnCameraConnect.Text = "連線";
-            this.btnCameraConnect.UseVisualStyleBackColor = true;
-            this.btnCameraConnect.Click += new System.EventHandler(this.btnCylinderConnect_Click);
-            // 
-            // cmbCameraBaudRate
-            // 
-            this.cmbCameraBaudRate.FormattingEnabled = true;
-            this.cmbCameraBaudRate.Items.AddRange(new object[] {
-            "9600",
-            "19200",
-            "38400",
-            "57600",
-            "115200",
-            "230400",
-            "460800",
-            "921600"});
-            this.cmbCameraBaudRate.Location = new System.Drawing.Point(255, 51);
-            this.cmbCameraBaudRate.Name = "cmbCameraBaudRate";
-            this.cmbCameraBaudRate.Size = new System.Drawing.Size(66, 24);
-            this.cmbCameraBaudRate.TabIndex = 4;
-            this.cmbCameraBaudRate.Text = "38400";
-            this.cmbCameraBaudRate.SelectedIndexChanged += new System.EventHandler(this.cmbCameraBaudRate_SelectedIndexChanged);
-            // 
-            // lbCameraBaudRate
-            // 
-            this.lbCameraBaudRate.AutoSize = true;
-            this.lbCameraBaudRate.Location = new System.Drawing.Point(180, 54);
-            this.lbCameraBaudRate.Name = "lbCameraBaudRate";
-            this.lbCameraBaudRate.Size = new System.Drawing.Size(69, 16);
-            this.lbCameraBaudRate.TabIndex = 3;
-            this.lbCameraBaudRate.Text = "Baud Rate";
-            // 
-            // cmbCameraPort
-            // 
-            this.cmbCameraPort.FormattingEnabled = true;
-            this.cmbCameraPort.Location = new System.Drawing.Point(255, 17);
-            this.cmbCameraPort.Name = "cmbCameraPort";
-            this.cmbCameraPort.Size = new System.Drawing.Size(66, 24);
-            this.cmbCameraPort.TabIndex = 2;
-            this.cmbCameraPort.Text = "COM71";
-            this.cmbCameraPort.SelectedIndexChanged += new System.EventHandler(this.cmbCameraPort_SelectedIndexChanged);
-            // 
-            // lbCameraPort
-            // 
-            this.lbCameraPort.AutoSize = true;
-            this.lbCameraPort.Location = new System.Drawing.Point(185, 19);
-            this.lbCameraPort.Name = "lbCameraPort";
-            this.lbCameraPort.Size = new System.Drawing.Size(64, 16);
-            this.lbCameraPort.TabIndex = 1;
-            this.lbCameraPort.Text = "Com Port";
-            // 
             // TestTabControl
             // 
             this.TestTabControl.Controls.Add(this.gbTest);
@@ -2172,7 +1909,7 @@
             this.gbMotionTest.Dock = System.Windows.Forms.DockStyle.Top;
             this.gbMotionTest.Location = new System.Drawing.Point(3, 244);
             this.gbMotionTest.Name = "gbMotionTest";
-            this.gbMotionTest.Size = new System.Drawing.Size(339, 186);
+            this.gbMotionTest.Size = new System.Drawing.Size(339, 99);
             this.gbMotionTest.TabIndex = 8;
             this.gbMotionTest.TabStop = false;
             this.gbMotionTest.Text = "動作測試";
@@ -2391,6 +2128,535 @@
             this.btnStartMonitorPresent.UseVisualStyleBackColor = true;
             this.btnStartMonitorPresent.Click += new System.EventHandler(this.btnStartMonitorPresent_Click);
             // 
+            // CommPage
+            // 
+            this.CommPage.Controls.Add(this.btnSaveParas1);
+            this.CommPage.Controls.Add(this.gbAligner02);
+            this.CommPage.Controls.Add(this.gbAligner);
+            this.CommPage.Controls.Add(this.gbCamera);
+            this.CommPage.Controls.Add(this.CylinderGroupBox);
+            this.CommPage.Location = new System.Drawing.Point(4, 25);
+            this.CommPage.Name = "CommPage";
+            this.CommPage.Padding = new System.Windows.Forms.Padding(3);
+            this.CommPage.Size = new System.Drawing.Size(351, 699);
+            this.CommPage.TabIndex = 4;
+            this.CommPage.Text = "通訊設定";
+            this.CommPage.UseVisualStyleBackColor = true;
+            // 
+            // btnSaveParas1
+            // 
+            this.btnSaveParas1.Location = new System.Drawing.Point(264, 522);
+            this.btnSaveParas1.Name = "btnSaveParas1";
+            this.btnSaveParas1.Size = new System.Drawing.Size(81, 45);
+            this.btnSaveParas1.TabIndex = 5;
+            this.btnSaveParas1.Text = "儲存參數";
+            this.btnSaveParas1.UseVisualStyleBackColor = true;
+            this.btnSaveParas1.Click += new System.EventHandler(this.btnSaveParas_Click);
+            // 
+            // gbAligner02
+            // 
+            this.gbAligner02.Controls.Add(this.lbAligner02CommTest);
+            this.gbAligner02.Controls.Add(this.btnAligner02CommTest);
+            this.gbAligner02.Controls.Add(this.tbAligner02IPAddress);
+            this.gbAligner02.Controls.Add(this.lbAligner02IPAddress);
+            this.gbAligner02.Controls.Add(this.cmbAligner02ConnectionType);
+            this.gbAligner02.Controls.Add(this.lbAligner02ConnectionType);
+            this.gbAligner02.Controls.Add(this.cbAligner02Enabled);
+            this.gbAligner02.Controls.Add(this.lbAligner02Status);
+            this.gbAligner02.Controls.Add(this.btnAligner02Connect);
+            this.gbAligner02.Controls.Add(this.cmbAligner02BaudRate);
+            this.gbAligner02.Controls.Add(this.lbAligner02BaudRate);
+            this.gbAligner02.Controls.Add(this.cmbAligner02Port);
+            this.gbAligner02.Controls.Add(this.lbAligner02Port);
+            this.gbAligner02.Location = new System.Drawing.Point(6, 356);
+            this.gbAligner02.Name = "gbAligner02";
+            this.gbAligner02.Size = new System.Drawing.Size(339, 161);
+            this.gbAligner02.TabIndex = 3;
+            this.gbAligner02.TabStop = false;
+            this.gbAligner02.Text = "Aligner02(通訊測試)";
+            // 
+            // lbAligner02CommTest
+            // 
+            this.lbAligner02CommTest.BackColor = System.Drawing.Color.Red;
+            this.lbAligner02CommTest.Location = new System.Drawing.Point(103, 124);
+            this.lbAligner02CommTest.Name = "lbAligner02CommTest";
+            this.lbAligner02CommTest.Size = new System.Drawing.Size(43, 29);
+            this.lbAligner02CommTest.TabIndex = 16;
+            this.lbAligner02CommTest.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // btnAligner02CommTest
+            // 
+            this.btnAligner02CommTest.Location = new System.Drawing.Point(9, 124);
+            this.btnAligner02CommTest.Name = "btnAligner02CommTest";
+            this.btnAligner02CommTest.Size = new System.Drawing.Size(81, 29);
+            this.btnAligner02CommTest.TabIndex = 15;
+            this.btnAligner02CommTest.Text = "通訊測試";
+            this.btnAligner02CommTest.UseVisualStyleBackColor = true;
+            this.btnAligner02CommTest.Click += new System.EventHandler(this.btnAlignerCommTest_Click);
+            // 
+            // tbAligner02IPAddress
+            // 
+            this.tbAligner02IPAddress.Location = new System.Drawing.Point(245, 130);
+            this.tbAligner02IPAddress.Name = "tbAligner02IPAddress";
+            this.tbAligner02IPAddress.Size = new System.Drawing.Size(94, 23);
+            this.tbAligner02IPAddress.TabIndex = 12;
+            this.tbAligner02IPAddress.Text = "192.168.0.135";
+            this.tbAligner02IPAddress.TextChanged += new System.EventHandler(this.tbAlignerIPAddress_TextChanged);
+            // 
+            // lbAligner02IPAddress
+            // 
+            this.lbAligner02IPAddress.AutoSize = true;
+            this.lbAligner02IPAddress.Location = new System.Drawing.Point(167, 133);
+            this.lbAligner02IPAddress.Name = "lbAligner02IPAddress";
+            this.lbAligner02IPAddress.Size = new System.Drawing.Size(72, 16);
+            this.lbAligner02IPAddress.TabIndex = 11;
+            this.lbAligner02IPAddress.Text = "IP Address";
+            // 
+            // cmbAligner02ConnectionType
+            // 
+            this.cmbAligner02ConnectionType.FormattingEnabled = true;
+            this.cmbAligner02ConnectionType.Items.AddRange(new object[] {
+            "Socket",
+            "ComPort"});
+            this.cmbAligner02ConnectionType.Location = new System.Drawing.Point(245, 14);
+            this.cmbAligner02ConnectionType.Name = "cmbAligner02ConnectionType";
+            this.cmbAligner02ConnectionType.Size = new System.Drawing.Size(92, 24);
+            this.cmbAligner02ConnectionType.TabIndex = 10;
+            this.cmbAligner02ConnectionType.Text = "ComPort";
+            this.cmbAligner02ConnectionType.SelectedIndexChanged += new System.EventHandler(this.cmbAlignerConnectionType_SelectedIndexChanged);
+            // 
+            // lbAligner02ConnectionType
+            // 
+            this.lbAligner02ConnectionType.AutoSize = true;
+            this.lbAligner02ConnectionType.Location = new System.Drawing.Point(152, 17);
+            this.lbAligner02ConnectionType.Name = "lbAligner02ConnectionType";
+            this.lbAligner02ConnectionType.Size = new System.Drawing.Size(90, 16);
+            this.lbAligner02ConnectionType.TabIndex = 9;
+            this.lbAligner02ConnectionType.Text = "Connect Type";
+            // 
+            // cbAligner02Enabled
+            // 
+            this.cbAligner02Enabled.AutoSize = true;
+            this.cbAligner02Enabled.Location = new System.Drawing.Point(9, 22);
+            this.cbAligner02Enabled.Name = "cbAligner02Enabled";
+            this.cbAligner02Enabled.Size = new System.Drawing.Size(51, 20);
+            this.cbAligner02Enabled.TabIndex = 8;
+            this.cbAligner02Enabled.Text = "啟用";
+            this.cbAligner02Enabled.UseVisualStyleBackColor = true;
+            // 
+            // lbAligner02Status
+            // 
+            this.lbAligner02Status.BackColor = System.Drawing.Color.Gray;
+            this.lbAligner02Status.Location = new System.Drawing.Point(66, 19);
+            this.lbAligner02Status.Name = "lbAligner02Status";
+            this.lbAligner02Status.Size = new System.Drawing.Size(80, 25);
+            this.lbAligner02Status.TabIndex = 6;
+            this.lbAligner02Status.Text = "未啟用";
+            this.lbAligner02Status.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // btnAligner02Connect
+            // 
+            this.btnAligner02Connect.Location = new System.Drawing.Point(65, 53);
+            this.btnAligner02Connect.Name = "btnAligner02Connect";
+            this.btnAligner02Connect.Size = new System.Drawing.Size(81, 29);
+            this.btnAligner02Connect.TabIndex = 5;
+            this.btnAligner02Connect.Text = "連線";
+            this.btnAligner02Connect.UseVisualStyleBackColor = true;
+            // 
+            // cmbAligner02BaudRate
+            // 
+            this.cmbAligner02BaudRate.FormattingEnabled = true;
+            this.cmbAligner02BaudRate.Items.AddRange(new object[] {
+            "9600",
+            "19200",
+            "38400",
+            "57600",
+            "115200",
+            "230400",
+            "460800",
+            "921600"});
+            this.cmbAligner02BaudRate.Location = new System.Drawing.Point(245, 94);
+            this.cmbAligner02BaudRate.Name = "cmbAligner02BaudRate";
+            this.cmbAligner02BaudRate.Size = new System.Drawing.Size(92, 24);
+            this.cmbAligner02BaudRate.TabIndex = 4;
+            this.cmbAligner02BaudRate.Text = "38400";
+            this.cmbAligner02BaudRate.SelectedIndexChanged += new System.EventHandler(this.cmbAlignerBaudRate_SelectedIndexChanged);
+            // 
+            // lbAligner02BaudRate
+            // 
+            this.lbAligner02BaudRate.AutoSize = true;
+            this.lbAligner02BaudRate.Location = new System.Drawing.Point(170, 97);
+            this.lbAligner02BaudRate.Name = "lbAligner02BaudRate";
+            this.lbAligner02BaudRate.Size = new System.Drawing.Size(69, 16);
+            this.lbAligner02BaudRate.TabIndex = 3;
+            this.lbAligner02BaudRate.Text = "Baud Rate";
+            // 
+            // cmbAligner02Port
+            // 
+            this.cmbAligner02Port.FormattingEnabled = true;
+            this.cmbAligner02Port.Location = new System.Drawing.Point(245, 53);
+            this.cmbAligner02Port.Name = "cmbAligner02Port";
+            this.cmbAligner02Port.Size = new System.Drawing.Size(92, 24);
+            this.cmbAligner02Port.TabIndex = 2;
+            this.cmbAligner02Port.Text = "COM17";
+            this.cmbAligner02Port.SelectedIndexChanged += new System.EventHandler(this.cmbAlignerPort_SelectedIndexChanged);
+            // 
+            // lbAligner02Port
+            // 
+            this.lbAligner02Port.AutoSize = true;
+            this.lbAligner02Port.Location = new System.Drawing.Point(175, 56);
+            this.lbAligner02Port.Name = "lbAligner02Port";
+            this.lbAligner02Port.Size = new System.Drawing.Size(64, 16);
+            this.lbAligner02Port.TabIndex = 1;
+            this.lbAligner02Port.Text = "Com Port";
+            // 
+            // gbAligner
+            // 
+            this.gbAligner.Controls.Add(this.lbAlignerCommTest);
+            this.gbAligner.Controls.Add(this.btnAlignerCommTest);
+            this.gbAligner.Controls.Add(this.tbAlignerIPAddress);
+            this.gbAligner.Controls.Add(this.lbAlignerIPAddress);
+            this.gbAligner.Controls.Add(this.cmbAlignerConnectionType);
+            this.gbAligner.Controls.Add(this.lbAlignerConnectionType);
+            this.gbAligner.Controls.Add(this.cbAlignerEnabled);
+            this.gbAligner.Controls.Add(this.lbAlignerStatus);
+            this.gbAligner.Controls.Add(this.btnAlignerConnect);
+            this.gbAligner.Controls.Add(this.cmbAlignerBaudRate);
+            this.gbAligner.Controls.Add(this.lbAlignerBaudRate);
+            this.gbAligner.Controls.Add(this.cmbAlignerPort);
+            this.gbAligner.Controls.Add(this.lbAlignerPort);
+            this.gbAligner.Location = new System.Drawing.Point(6, 189);
+            this.gbAligner.Name = "gbAligner";
+            this.gbAligner.Size = new System.Drawing.Size(339, 161);
+            this.gbAligner.TabIndex = 1;
+            this.gbAligner.TabStop = false;
+            this.gbAligner.Text = "Aligner";
+            // 
+            // lbAlignerCommTest
+            // 
+            this.lbAlignerCommTest.BackColor = System.Drawing.Color.Red;
+            this.lbAlignerCommTest.Location = new System.Drawing.Point(103, 124);
+            this.lbAlignerCommTest.Name = "lbAlignerCommTest";
+            this.lbAlignerCommTest.Size = new System.Drawing.Size(43, 29);
+            this.lbAlignerCommTest.TabIndex = 14;
+            this.lbAlignerCommTest.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // btnAlignerCommTest
+            // 
+            this.btnAlignerCommTest.Location = new System.Drawing.Point(9, 124);
+            this.btnAlignerCommTest.Name = "btnAlignerCommTest";
+            this.btnAlignerCommTest.Size = new System.Drawing.Size(81, 29);
+            this.btnAlignerCommTest.TabIndex = 13;
+            this.btnAlignerCommTest.Text = "通訊測試";
+            this.btnAlignerCommTest.UseVisualStyleBackColor = true;
+            this.btnAlignerCommTest.Click += new System.EventHandler(this.btnAlignerCommTest_Click);
+            // 
+            // tbAlignerIPAddress
+            // 
+            this.tbAlignerIPAddress.Location = new System.Drawing.Point(245, 130);
+            this.tbAlignerIPAddress.Name = "tbAlignerIPAddress";
+            this.tbAlignerIPAddress.Size = new System.Drawing.Size(94, 23);
+            this.tbAlignerIPAddress.TabIndex = 12;
+            this.tbAlignerIPAddress.Text = "192.168.0.135";
+            this.tbAlignerIPAddress.TextChanged += new System.EventHandler(this.tbAlignerIPAddress_TextChanged);
+            // 
+            // lbAlignerIPAddress
+            // 
+            this.lbAlignerIPAddress.AutoSize = true;
+            this.lbAlignerIPAddress.Location = new System.Drawing.Point(167, 133);
+            this.lbAlignerIPAddress.Name = "lbAlignerIPAddress";
+            this.lbAlignerIPAddress.Size = new System.Drawing.Size(72, 16);
+            this.lbAlignerIPAddress.TabIndex = 11;
+            this.lbAlignerIPAddress.Text = "IP Address";
+            // 
+            // cmbAlignerConnectionType
+            // 
+            this.cmbAlignerConnectionType.FormattingEnabled = true;
+            this.cmbAlignerConnectionType.Items.AddRange(new object[] {
+            "Socket",
+            "ComPort"});
+            this.cmbAlignerConnectionType.Location = new System.Drawing.Point(245, 14);
+            this.cmbAlignerConnectionType.Name = "cmbAlignerConnectionType";
+            this.cmbAlignerConnectionType.Size = new System.Drawing.Size(92, 24);
+            this.cmbAlignerConnectionType.TabIndex = 10;
+            this.cmbAlignerConnectionType.Text = "Socket";
+            this.cmbAlignerConnectionType.SelectedIndexChanged += new System.EventHandler(this.cmbAlignerConnectionType_SelectedIndexChanged);
+            // 
+            // lbAlignerConnectionType
+            // 
+            this.lbAlignerConnectionType.AutoSize = true;
+            this.lbAlignerConnectionType.Location = new System.Drawing.Point(152, 17);
+            this.lbAlignerConnectionType.Name = "lbAlignerConnectionType";
+            this.lbAlignerConnectionType.Size = new System.Drawing.Size(90, 16);
+            this.lbAlignerConnectionType.TabIndex = 9;
+            this.lbAlignerConnectionType.Text = "Connect Type";
+            // 
+            // cbAlignerEnabled
+            // 
+            this.cbAlignerEnabled.AutoSize = true;
+            this.cbAlignerEnabled.Location = new System.Drawing.Point(9, 22);
+            this.cbAlignerEnabled.Name = "cbAlignerEnabled";
+            this.cbAlignerEnabled.Size = new System.Drawing.Size(51, 20);
+            this.cbAlignerEnabled.TabIndex = 8;
+            this.cbAlignerEnabled.Text = "啟用";
+            this.cbAlignerEnabled.UseVisualStyleBackColor = true;
+            this.cbAlignerEnabled.CheckedChanged += new System.EventHandler(this.cbAlignerEnabled_CheckedChanged);
+            // 
+            // lbAlignerStatus
+            // 
+            this.lbAlignerStatus.BackColor = System.Drawing.Color.Gray;
+            this.lbAlignerStatus.Location = new System.Drawing.Point(66, 19);
+            this.lbAlignerStatus.Name = "lbAlignerStatus";
+            this.lbAlignerStatus.Size = new System.Drawing.Size(80, 25);
+            this.lbAlignerStatus.TabIndex = 6;
+            this.lbAlignerStatus.Text = "未啟用";
+            this.lbAlignerStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // btnAlignerConnect
+            // 
+            this.btnAlignerConnect.Location = new System.Drawing.Point(65, 56);
+            this.btnAlignerConnect.Name = "btnAlignerConnect";
+            this.btnAlignerConnect.Size = new System.Drawing.Size(81, 29);
+            this.btnAlignerConnect.TabIndex = 5;
+            this.btnAlignerConnect.Text = "連線";
+            this.btnAlignerConnect.UseVisualStyleBackColor = true;
+            this.btnAlignerConnect.Click += new System.EventHandler(this.btnCylinderConnect_Click);
+            // 
+            // cmbAlignerBaudRate
+            // 
+            this.cmbAlignerBaudRate.FormattingEnabled = true;
+            this.cmbAlignerBaudRate.Items.AddRange(new object[] {
+            "9600",
+            "19200",
+            "38400",
+            "57600",
+            "115200",
+            "230400",
+            "460800",
+            "921600"});
+            this.cmbAlignerBaudRate.Location = new System.Drawing.Point(245, 94);
+            this.cmbAlignerBaudRate.Name = "cmbAlignerBaudRate";
+            this.cmbAlignerBaudRate.Size = new System.Drawing.Size(92, 24);
+            this.cmbAlignerBaudRate.TabIndex = 4;
+            this.cmbAlignerBaudRate.Text = "38400";
+            this.cmbAlignerBaudRate.SelectedIndexChanged += new System.EventHandler(this.cmbAlignerBaudRate_SelectedIndexChanged);
+            // 
+            // lbAlignerBaudRate
+            // 
+            this.lbAlignerBaudRate.AutoSize = true;
+            this.lbAlignerBaudRate.Location = new System.Drawing.Point(170, 97);
+            this.lbAlignerBaudRate.Name = "lbAlignerBaudRate";
+            this.lbAlignerBaudRate.Size = new System.Drawing.Size(69, 16);
+            this.lbAlignerBaudRate.TabIndex = 3;
+            this.lbAlignerBaudRate.Text = "Baud Rate";
+            // 
+            // cmbAlignerPort
+            // 
+            this.cmbAlignerPort.FormattingEnabled = true;
+            this.cmbAlignerPort.Location = new System.Drawing.Point(245, 53);
+            this.cmbAlignerPort.Name = "cmbAlignerPort";
+            this.cmbAlignerPort.Size = new System.Drawing.Size(92, 24);
+            this.cmbAlignerPort.TabIndex = 2;
+            this.cmbAlignerPort.Text = "COM17";
+            this.cmbAlignerPort.SelectedIndexChanged += new System.EventHandler(this.cmbAlignerPort_SelectedIndexChanged);
+            // 
+            // lbAlignerPort
+            // 
+            this.lbAlignerPort.AutoSize = true;
+            this.lbAlignerPort.Location = new System.Drawing.Point(175, 56);
+            this.lbAlignerPort.Name = "lbAlignerPort";
+            this.lbAlignerPort.Size = new System.Drawing.Size(64, 16);
+            this.lbAlignerPort.TabIndex = 1;
+            this.lbAlignerPort.Text = "Com Port";
+            // 
+            // gbCamera
+            // 
+            this.gbCamera.Controls.Add(this.cbCameraEnabled);
+            this.gbCamera.Controls.Add(this.lbCameraStatus);
+            this.gbCamera.Controls.Add(this.btnCameraConnect);
+            this.gbCamera.Controls.Add(this.cmbCameraBaudRate);
+            this.gbCamera.Controls.Add(this.lbCameraBaudRate);
+            this.gbCamera.Controls.Add(this.cmbCameraPort);
+            this.gbCamera.Controls.Add(this.lbCameraPort);
+            this.gbCamera.Location = new System.Drawing.Point(6, 100);
+            this.gbCamera.Name = "gbCamera";
+            this.gbCamera.Size = new System.Drawing.Size(339, 83);
+            this.gbCamera.TabIndex = 2;
+            this.gbCamera.TabStop = false;
+            this.gbCamera.Text = "Camera";
+            // 
+            // cbCameraEnabled
+            // 
+            this.cbCameraEnabled.AutoSize = true;
+            this.cbCameraEnabled.Location = new System.Drawing.Point(9, 22);
+            this.cbCameraEnabled.Name = "cbCameraEnabled";
+            this.cbCameraEnabled.Size = new System.Drawing.Size(51, 20);
+            this.cbCameraEnabled.TabIndex = 8;
+            this.cbCameraEnabled.Text = "啟用";
+            this.cbCameraEnabled.UseVisualStyleBackColor = true;
+            this.cbCameraEnabled.CheckedChanged += new System.EventHandler(this.cbAlignerEnabled_CheckedChanged);
+            // 
+            // lbCameraStatus
+            // 
+            this.lbCameraStatus.BackColor = System.Drawing.Color.Gray;
+            this.lbCameraStatus.Location = new System.Drawing.Point(66, 16);
+            this.lbCameraStatus.Name = "lbCameraStatus";
+            this.lbCameraStatus.Size = new System.Drawing.Size(80, 25);
+            this.lbCameraStatus.TabIndex = 6;
+            this.lbCameraStatus.Text = "未啟用";
+            this.lbCameraStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // btnCameraConnect
+            // 
+            this.btnCameraConnect.Location = new System.Drawing.Point(65, 46);
+            this.btnCameraConnect.Name = "btnCameraConnect";
+            this.btnCameraConnect.Size = new System.Drawing.Size(81, 29);
+            this.btnCameraConnect.TabIndex = 5;
+            this.btnCameraConnect.Text = "連線";
+            this.btnCameraConnect.UseVisualStyleBackColor = true;
+            this.btnCameraConnect.Click += new System.EventHandler(this.btnCylinderConnect_Click);
+            // 
+            // cmbCameraBaudRate
+            // 
+            this.cmbCameraBaudRate.FormattingEnabled = true;
+            this.cmbCameraBaudRate.Items.AddRange(new object[] {
+            "9600",
+            "19200",
+            "38400",
+            "57600",
+            "115200",
+            "230400",
+            "460800",
+            "921600"});
+            this.cmbCameraBaudRate.Location = new System.Drawing.Point(245, 51);
+            this.cmbCameraBaudRate.Name = "cmbCameraBaudRate";
+            this.cmbCameraBaudRate.Size = new System.Drawing.Size(92, 24);
+            this.cmbCameraBaudRate.TabIndex = 4;
+            this.cmbCameraBaudRate.Text = "38400";
+            this.cmbCameraBaudRate.SelectedIndexChanged += new System.EventHandler(this.cmbAlignerBaudRate_SelectedIndexChanged);
+            // 
+            // lbCameraBaudRate
+            // 
+            this.lbCameraBaudRate.AutoSize = true;
+            this.lbCameraBaudRate.Location = new System.Drawing.Point(170, 54);
+            this.lbCameraBaudRate.Name = "lbCameraBaudRate";
+            this.lbCameraBaudRate.Size = new System.Drawing.Size(69, 16);
+            this.lbCameraBaudRate.TabIndex = 3;
+            this.lbCameraBaudRate.Text = "Baud Rate";
+            // 
+            // cmbCameraPort
+            // 
+            this.cmbCameraPort.FormattingEnabled = true;
+            this.cmbCameraPort.Location = new System.Drawing.Point(245, 17);
+            this.cmbCameraPort.Name = "cmbCameraPort";
+            this.cmbCameraPort.Size = new System.Drawing.Size(92, 24);
+            this.cmbCameraPort.TabIndex = 2;
+            this.cmbCameraPort.Text = "COM71";
+            this.cmbCameraPort.SelectedIndexChanged += new System.EventHandler(this.cmbAlignerPort_SelectedIndexChanged);
+            // 
+            // lbCameraPort
+            // 
+            this.lbCameraPort.AutoSize = true;
+            this.lbCameraPort.Location = new System.Drawing.Point(170, 20);
+            this.lbCameraPort.Name = "lbCameraPort";
+            this.lbCameraPort.Size = new System.Drawing.Size(64, 16);
+            this.lbCameraPort.TabIndex = 1;
+            this.lbCameraPort.Text = "Com Port";
+            // 
+            // CylinderGroupBox
+            // 
+            this.CylinderGroupBox.Controls.Add(this.cbCylinderEnabled);
+            this.CylinderGroupBox.Controls.Add(this.lbCylinderStatus);
+            this.CylinderGroupBox.Controls.Add(this.btnCylinderConnect);
+            this.CylinderGroupBox.Controls.Add(this.cmbCylinderBaudRate);
+            this.CylinderGroupBox.Controls.Add(this.lbCylinderBaudRate);
+            this.CylinderGroupBox.Controls.Add(this.cmbCylinderPort);
+            this.CylinderGroupBox.Controls.Add(this.lbCylinderPort);
+            this.CylinderGroupBox.Location = new System.Drawing.Point(6, 8);
+            this.CylinderGroupBox.Name = "CylinderGroupBox";
+            this.CylinderGroupBox.Size = new System.Drawing.Size(339, 86);
+            this.CylinderGroupBox.TabIndex = 0;
+            this.CylinderGroupBox.TabStop = false;
+            this.CylinderGroupBox.Text = "Cylinder";
+            // 
+            // cbCylinderEnabled
+            // 
+            this.cbCylinderEnabled.AutoSize = true;
+            this.cbCylinderEnabled.Location = new System.Drawing.Point(9, 25);
+            this.cbCylinderEnabled.Name = "cbCylinderEnabled";
+            this.cbCylinderEnabled.Size = new System.Drawing.Size(51, 20);
+            this.cbCylinderEnabled.TabIndex = 7;
+            this.cbCylinderEnabled.Text = "啟用";
+            this.cbCylinderEnabled.UseVisualStyleBackColor = true;
+            this.cbCylinderEnabled.CheckedChanged += new System.EventHandler(this.cbAlignerEnabled_CheckedChanged);
+            // 
+            // lbCylinderStatus
+            // 
+            this.lbCylinderStatus.BackColor = System.Drawing.Color.Gray;
+            this.lbCylinderStatus.Location = new System.Drawing.Point(66, 19);
+            this.lbCylinderStatus.Name = "lbCylinderStatus";
+            this.lbCylinderStatus.Size = new System.Drawing.Size(80, 25);
+            this.lbCylinderStatus.TabIndex = 6;
+            this.lbCylinderStatus.Text = "未啟用";
+            this.lbCylinderStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // btnCylinderConnect
+            // 
+            this.btnCylinderConnect.Location = new System.Drawing.Point(65, 52);
+            this.btnCylinderConnect.Name = "btnCylinderConnect";
+            this.btnCylinderConnect.Size = new System.Drawing.Size(81, 29);
+            this.btnCylinderConnect.TabIndex = 5;
+            this.btnCylinderConnect.Text = "連線";
+            this.btnCylinderConnect.UseVisualStyleBackColor = true;
+            this.btnCylinderConnect.Click += new System.EventHandler(this.btnCylinderConnect_Click);
+            // 
+            // cmbCylinderBaudRate
+            // 
+            this.cmbCylinderBaudRate.FormattingEnabled = true;
+            this.cmbCylinderBaudRate.Items.AddRange(new object[] {
+            "9600",
+            "19200",
+            "38400",
+            "57600",
+            "115200",
+            "230400",
+            "460800",
+            "921600"});
+            this.cmbCylinderBaudRate.Location = new System.Drawing.Point(245, 52);
+            this.cmbCylinderBaudRate.Name = "cmbCylinderBaudRate";
+            this.cmbCylinderBaudRate.Size = new System.Drawing.Size(92, 24);
+            this.cmbCylinderBaudRate.TabIndex = 4;
+            this.cmbCylinderBaudRate.Text = "38400";
+            this.cmbCylinderBaudRate.SelectedIndexChanged += new System.EventHandler(this.cmbAlignerBaudRate_SelectedIndexChanged);
+            // 
+            // lbCylinderBaudRate
+            // 
+            this.lbCylinderBaudRate.AutoSize = true;
+            this.lbCylinderBaudRate.Location = new System.Drawing.Point(170, 52);
+            this.lbCylinderBaudRate.Name = "lbCylinderBaudRate";
+            this.lbCylinderBaudRate.Size = new System.Drawing.Size(69, 16);
+            this.lbCylinderBaudRate.TabIndex = 3;
+            this.lbCylinderBaudRate.Text = "Baud Rate";
+            // 
+            // cmbCylinderPort
+            // 
+            this.cmbCylinderPort.FormattingEnabled = true;
+            this.cmbCylinderPort.Location = new System.Drawing.Point(245, 20);
+            this.cmbCylinderPort.Name = "cmbCylinderPort";
+            this.cmbCylinderPort.Size = new System.Drawing.Size(92, 24);
+            this.cmbCylinderPort.TabIndex = 2;
+            this.cmbCylinderPort.Text = "COM24";
+            this.cmbCylinderPort.SelectedIndexChanged += new System.EventHandler(this.cmbAlignerPort_SelectedIndexChanged);
+            // 
+            // lbCylinderPort
+            // 
+            this.lbCylinderPort.AutoSize = true;
+            this.lbCylinderPort.Location = new System.Drawing.Point(170, 23);
+            this.lbCylinderPort.Name = "lbCylinderPort";
+            this.lbCylinderPort.Size = new System.Drawing.Size(64, 16);
+            this.lbCylinderPort.TabIndex = 1;
+            this.lbCylinderPort.Text = "Com Port";
+            // 
             // panel1
             // 
             this.panel1.Controls.Add(this.DisplayImageBox);
@@ -2441,7 +2707,7 @@
             this.Controls.Add(this.statusStrip1);
             this.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.Name = "FormMain";
-            this.Text = "Aligner Verification - Ver.1.03";
+            this.Text = "Aligner Verification - Ver.1.05";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.BottomPanel.ResumeLayout(false);
@@ -2498,12 +2764,6 @@
             this.gbAdvanceParas.ResumeLayout(false);
             this.gbAdvanceParas.PerformLayout();
             this.gbOutputFolder.ResumeLayout(false);
-            this.CylinderGroupBox.ResumeLayout(false);
-            this.CylinderGroupBox.PerformLayout();
-            this.gbAligner.ResumeLayout(false);
-            this.gbAligner.PerformLayout();
-            this.gbCamera.ResumeLayout(false);
-            this.gbCamera.PerformLayout();
             this.TestTabControl.ResumeLayout(false);
             this.gbTest.ResumeLayout(false);
             this.gbMotionTest.ResumeLayout(false);
@@ -2515,6 +2775,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.udPresentMonitorSec)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.udPresentMonitorMin)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.udPresentMonitorHour)).EndInit();
+            this.CommPage.ResumeLayout(false);
+            this.gbAligner02.ResumeLayout(false);
+            this.gbAligner02.PerformLayout();
+            this.gbAligner.ResumeLayout(false);
+            this.gbAligner.PerformLayout();
+            this.gbCamera.ResumeLayout(false);
+            this.gbCamera.PerformLayout();
+            this.CylinderGroupBox.ResumeLayout(false);
+            this.CylinderGroupBox.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
@@ -2714,6 +2983,28 @@
         private System.Windows.Forms.Button btnRepeatMotionTest;
         private System.Windows.Forms.NumericUpDown udCrabDelayTime;
         private System.Windows.Forms.Label lbCrabDelayTime;
+        private System.Windows.Forms.TabPage CommPage;
+        private System.Windows.Forms.Label lbAlignerConnectionType;
+        private System.Windows.Forms.ComboBox cmbAlignerConnectionType;
+        private System.Windows.Forms.TextBox tbAlignerIPAddress;
+        private System.Windows.Forms.Label lbAlignerIPAddress;
+        private System.Windows.Forms.GroupBox gbAligner02;
+        private System.Windows.Forms.TextBox tbAligner02IPAddress;
+        private System.Windows.Forms.Label lbAligner02IPAddress;
+        private System.Windows.Forms.ComboBox cmbAligner02ConnectionType;
+        private System.Windows.Forms.Label lbAligner02ConnectionType;
+        private System.Windows.Forms.CheckBox cbAligner02Enabled;
+        private System.Windows.Forms.Label lbAligner02Status;
+        private System.Windows.Forms.Button btnAligner02Connect;
+        private System.Windows.Forms.ComboBox cmbAligner02BaudRate;
+        private System.Windows.Forms.Label lbAligner02BaudRate;
+        private System.Windows.Forms.ComboBox cmbAligner02Port;
+        private System.Windows.Forms.Label lbAligner02Port;
+        private System.Windows.Forms.Label lbAlignerCommTest;
+        private System.Windows.Forms.Button btnAlignerCommTest;
+        private System.Windows.Forms.Label lbAligner02CommTest;
+        private System.Windows.Forms.Button btnAligner02CommTest;
+        private System.Windows.Forms.Button btnSaveParas1;
     }
 }
 

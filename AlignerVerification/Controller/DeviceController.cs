@@ -100,8 +100,6 @@ namespace AlignerVerification.Controller
                 if (_Config.Vendor.ToUpper().Equals("SANWA"))
                     msg = msg + "\r";
 
-                //if (ConnReport != null)
-                //    ConnReport.On_Message_Log(_Config.DeviceName , " Send: "+ info);
                 logger.Info(_Config.DeviceName + " Send: " + info);
 
                 conn.Send(msg);

@@ -42,7 +42,8 @@ namespace AlignerVerification.Comm
             }
             catch (Exception e)
             {
-                logger.Error(e.StackTrace);
+                //logger.Error(e.StackTrace);
+                ConnReport.On_Connection_Error("(ConnectServer )" + e.Message + "\n" + e.StackTrace);
                 return false;
             }
             return true;
@@ -157,50 +158,96 @@ namespace AlignerVerification.Comm
         {
 
             string data = "";
-            switch (Config.Vendor.ToUpper())
+            try
             {
-                case "TDK":
+                switch (Config.Vendor.ToUpper())
+                {
+                    case "TDK":
+
+                        S += Encoding.Default.GetString(OrgData, 0, OrgData.Length);
+                        if (S.LastIndexOf(Convert.ToChar(3)) != -1)
+                        {
+                            //logger.Debug("s:" + S);
+                            data = S.Substring(0, S.LastIndexOf(Convert.ToChar(3)) + 1);
+                            //logger.Debug("data:" + data);
+
+                            S = S.Substring(S.LastIndexOf(Convert.ToChar(3)) + 1);
+                            //logger.Debug("s:" + S);
+                            ThreadPool.QueueUserWorkItem(new WaitCallback(ConnReport.On_Connection_Message), data);
+                            break;
+                        }
 
 
-                    S += Encoding.Default.GetString(OrgData, 0, OrgData.Length);
-                    if (S.LastIndexOf(Convert.ToChar(3)) != -1)
-                    {
-                        //logger.Debug("s:" + S);
-                        data = S.Substring(0, S.LastIndexOf(Convert.ToChar(3)) + 1);
-                        //logger.Debug("data:" + data);
-
-                        S = S.Substring(S.LastIndexOf(Convert.ToChar(3)) + 1);
-                        //logger.Debug("s:" + S);
-                        ThreadPool.QueueUserWorkItem(new WaitCallback(ConnReport. On_Connection_Message), data);
                         break;
-                    }
+                    case "SANWA":
+                        if (Config.DeviceName.ToUpper().Equals("ALIGNER") || Config.DeviceName.ToUpper().Equals("ALIGNER02"))
+                        {
+                            S += Encoding.Default.GetString(OrgData, 0, OrgData.Length);
+
+                            if (S.Contains("$") && S.Contains("\r"))
+                            {
+                                if (S.Substring(0, 1).Equals("$"))
+                                {
+                                    while (S.Substring(0, 1).Equals("$") && S.Contains("\r"))
+                                    {
+                                        data = S.Substring(0, S.IndexOf("\r"));
+
+                                        S = S.Substring(S.IndexOf("\r") + 1);
+
+                                        ThreadPool.QueueUserWorkItem(new WaitCallback(ConnReport.On_Connection_Message), data);
 
 
-                    break;
-                case "SANWA":
+                                        if (S.Equals(""))
+                                            break;
+                                    }
+                                }
+                                else if (S.Contains("ACK:ALIGN:9\r"))
+                                {
+                                    ThreadPool.QueueUserWorkItem(new WaitCallback(ConnReport.On_Connection_Message), S);
+                                    S = "";
+                                }
+                            }
+                        }
+                        else if (Config.DeviceName.ToUpper().Equals("CYLINDER"))
+                        {
+                            data = "";
+                            ThreadPool.QueueUserWorkItem(new WaitCallback(ConnReport.On_Connection_Message), data);
+                        }
+                        else
+                        {
+                            data = "";
+                            data = Encoding.Default.GetString(OrgData, 0, OrgData.Length);
+                            ThreadPool.QueueUserWorkItem(new WaitCallback(ConnReport.On_Connection_Message), data);
+                        }
 
-                    S += Encoding.Default.GetString(OrgData, 0, OrgData.Length);
+                        //S += Encoding.Default.GetString(OrgData, 0, OrgData.Length);
 
-                    if (S.LastIndexOf("\r") != -1)
-                    {
-                        //logger.Debug("s:" + S);
-                        data = S.Substring(0, S.LastIndexOf("\r"));
-                        //logger.Debug("data:" + data);
+                        //if (S.LastIndexOf("\r") != -1)
+                        //{
+                        //    //logger.Debug("s:" + S);
+                        //    data = S.Substring(0, S.LastIndexOf("\r"));
+                        //    //logger.Debug("data:" + data);
 
-                        S = S.Substring(S.LastIndexOf("\r") + 1);
-                        //logger.Debug("s:" + S);
+                        //    S = S.Substring(S.LastIndexOf("\r") + 1);
+                        //    //logger.Debug("s:" + S);
+                        //    ThreadPool.QueueUserWorkItem(new WaitCallback(ConnReport.On_Connection_Message), data);
+                        //    break;
+                        //}
+
+                        break;
+                    default:
+                        data = Encoding.Default.GetString(OrgData, 0, OrgData.Length);
+
                         ThreadPool.QueueUserWorkItem(new WaitCallback(ConnReport.On_Connection_Message), data);
+
                         break;
-                    }
-
-                    break;
-                default:
-                    data = Encoding.Default.GetString(OrgData, 0, OrgData.Length);
-
-                    ThreadPool.QueueUserWorkItem(new WaitCallback(ConnReport.On_Connection_Message), data);
-
-                    break;
+                }
             }
+            catch (Exception e1)
+            {
+                ConnReport.On_Connection_Error("(Sanwa_DataReceived )" + e1.Message + "\n" + e1.StackTrace);
+            }
+
         }
         public void WaitForData(bool Enable)
         {

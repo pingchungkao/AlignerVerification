@@ -379,8 +379,6 @@ namespace AlignerVerification.UIUpdate
             }
 
         }
-
-
         private static void DrawCrossPoint(Mat mat, Point point, MCvScalar color, int length, int thickness)
         {
             Point crossPt1 = new Point(point.X - length, point.Y - length);
@@ -441,6 +439,31 @@ namespace AlignerVerification.UIUpdate
                             ts.Minutes.ToString().PadLeft(2, '0') + ":" + 
                             ts.Seconds.ToString().PadLeft(2, '0');
                     }
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Debug(e.StackTrace);
+            }
+        }
+        delegate void UpdateCommTestStatus(string devicename);
+        public static void CommTestStatusUpdate(string devicename)
+        {
+            try
+            {
+                Form form = Application.OpenForms["FormMain"];
+                if (form.InvokeRequired)
+                {
+                    UpdateCommTestStatus ph = new UpdateCommTestStatus(CommTestStatusUpdate);
+                    form.BeginInvoke(ph, devicename);
+                }
+                else
+                {
+                    Label lb = null;
+                    lb = form.Controls.Find("lb" + devicename + "CommTest", true).FirstOrDefault() as Label;
+
+                    if(lb != null)
+                        lb.BackColor = Color.LimeGreen;
                 }
             }
             catch (Exception e)

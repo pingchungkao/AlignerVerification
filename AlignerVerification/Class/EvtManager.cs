@@ -26,5 +26,7 @@ namespace AlignerVerification.Class
         public static EventWaitHandle AlignerMovdpFinishEvt = new EventWaitHandle(false, EventResetMode.AutoReset);
         public static EventWaitHandle AlignerGetRIOEvt = new EventWaitHandle(false, EventResetMode.AutoReset);
 
+        public static EventWaitHandle AlignerLOGSVFinishEvt = new EventWaitHandle(false, EventResetMode.AutoReset);
+
     }
 }

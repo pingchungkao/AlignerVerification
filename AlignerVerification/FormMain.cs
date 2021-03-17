@@ -12,6 +12,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Net;
+
 using log4net;
 using log4net.Config;
 using AlignerVerification.Class;
@@ -27,6 +29,8 @@ using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.CV.CvEnum;
 using Emgu.CV.UI;
+
+
 
 namespace AlignerVerification
 {
@@ -328,7 +332,6 @@ namespace AlignerVerification
         {
             FormMainUpdate.MessageLogUpdate(Type, Message);
         }
-
         void IConnectionReport.On_Connection_Message(object Msg)
         {
             DeviceMsg dcmsg = (DeviceMsg)Msg;
@@ -345,7 +348,8 @@ namespace AlignerVerification
                     break;
 
                 case "ALIGNER":
-                    DeviceController dc = deviceMap["Aligner"];
+                case "ALIGNER02":
+                    DeviceController dc = deviceMap[dcmsg.config.DeviceName];
                     string ReturnComand = returnMsg.Length >= 11 ? returnMsg.Substring(6, 5) : "";
                     string ReturnType = "";
                     if(returnMsg.Contains("$1ACK"))
@@ -367,6 +371,7 @@ namespace AlignerVerification
                     }
 
                     string ReturnCode;
+                    string[] lines;
 
                     switch (ReturnType.ToUpper())
                     {
@@ -388,11 +393,7 @@ namespace AlignerVerification
                                     break;
 
                                 case "RIO__":
-                                    string[] lines = returnMsg.Split(':');
-                                    //lines[0] $1ACK
-                                    //lines[1] RIO__
-                                    //lines[2] bit,status
-
+                                    lines = returnMsg.Split(':');
                                     lines[2] = lines[2].Trim();
                                     string[] ioDevice = lines[2].Split(',');
                                     //ioDevice[0] bit
@@ -406,7 +407,18 @@ namespace AlignerVerification
                                     }
 
                                     break;
+                                case "VER__":
+                                    FormMainUpdate.CommTestStatusUpdate(dcmsg.config.DeviceName);
 
+                                    lines = returnMsg.Split(':');
+                                    FormMainUpdate.MessageLogUpdate(dcmsg.config.DeviceName, lines[2]);
+                                    FormMainUpdate.MessageLogUpdate(dcmsg.config.DeviceName, "通訊測試結束");
+                                    break;
+
+                                case "LOGSV":
+                                    EvtManager.AlignerLOGSVFinishEvt.Set();
+                                    break;
+                                
                                 default:
                                     break;
 
@@ -504,18 +516,15 @@ namespace AlignerVerification
             FormMainUpdate.ConnectReportUpdate(dc, EConnectionReport.eError);
             FormMainUpdate.MessageLogUpdate(dc.DeviceName, "異常");
         }
-
         private void ShowTaskTimeLabel_Click(object sender, EventArgs e)
         {
 
         }
-
         private void NotchTypeComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             ////Aligner形式
             MachineParas.MachineType = cmbNotchType.SelectedIndex;
         }
-
         private void Form1_Load(object sender, EventArgs e)
         {
             string strCom;
@@ -525,6 +534,7 @@ namespace AlignerVerification
                 cmbCylinderPort.Items.Add(strCom);
                 cmbAlignerPort.Items.Add(strCom);
                 cmbCameraPort.Items.Add(strCom);
+                cmbAligner02Port.Items.Add(strCom);
             }
             DeviceConfig CylinderDC = new DeviceConfig
             {
@@ -536,7 +546,9 @@ namespace AlignerVerification
                 ConnectionType = "ComPort",
                 DataBits = 8,
                 ParityBit = "None",
-                StopBit = "One"
+                StopBit = "One",
+                IPAdress = "192.168.0.135",
+                Port = 23
             };
             deviceConfig.Add(CylinderDC.DeviceName, CylinderDC);
 
@@ -547,10 +559,12 @@ namespace AlignerVerification
                 PortName = "COM24",
                 BaudRate = 38400,
                 Vendor = "Sanwa",
-                ConnectionType = "ComPort",
+                ConnectionType = "Socket",
                 DataBits = 8,
                 ParityBit = "None",
-                StopBit = "One"
+                StopBit = "One",
+                IPAdress = "192.168.0.135",
+                Port = 23
             };
             deviceConfig.Add(AlignerDC.DeviceName, AlignerDC);
 
@@ -564,9 +578,27 @@ namespace AlignerVerification
                 ConnectionType = "ComPort",
                 DataBits = 8,
                 ParityBit = "None",
-                StopBit = "One"
+                StopBit = "One",
+                IPAdress = "192.168.0.135",
+                Port = 23
             };
             deviceConfig.Add(CameraDC.DeviceName, CameraDC);
+
+            DeviceConfig Aligner02DC = new DeviceConfig
+            {
+                DeviceName = "Aligner02",
+                Enable = true,
+                PortName = "COM24",
+                BaudRate = 38400,
+                Vendor = "Sanwa",
+                ConnectionType = "ComPort",
+                DataBits = 8,
+                ParityBit = "None",
+                StopBit = "One",
+                IPAdress = "192.168.0.135",
+                Port = 23
+            };
+            deviceConfig.Add(Aligner02DC.DeviceName, Aligner02DC);
 
             //設定 Buffer
             cameraBasic.ImageBuffer.SetBufferInfo(360, 3840, 2748, DepthType.Cv8U, 3);
@@ -588,7 +620,6 @@ namespace AlignerVerification
 
             PreventMultiClick = DateTime.Now;
         }
-
         private void cmbTestMode_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (loadParas) return;
@@ -619,7 +650,6 @@ namespace AlignerVerification
             MachineParas.TestMode = cmbTestMode.SelectedIndex;
 
         }
-
         private void RichTextBox_TextChanged(object sender, EventArgs e)
         {
             RichTextBox1.SelectionStart = RichTextBox1.TextLength;
@@ -629,48 +659,19 @@ namespace AlignerVerification
         {
             string strValue = (string)Registry.GetValue(RegRoot, dc.DeviceName+"_Enable", dc.Enable.ToString());
             dc.Enable = strValue.ToUpper().Equals("TRUE") ? true : false;
+            dc.ConnectionType = (string)Registry.GetValue(RegRoot, dc.DeviceName + "_ConnectionType", dc.ConnectionType);
             dc.PortName = (string)Registry.GetValue(RegRoot, dc.DeviceName + "_COMPort", "COM24");
             dc.BaudRate = (int)Registry.GetValue(RegRoot, dc.DeviceName + "_BaudRate", 38400);
+            dc.IPAdress = (string)Registry.GetValue(RegRoot, dc.DeviceName + "_IPAdress", dc.IPAdress);
+            //dc.Port = (int)Registry.GetValue(RegRoot, dc.DeviceName + "_Port", 23);
         }
-
         private void WriteDeviceRegConfig(string RegRoot, DeviceConfig dc)
         {
             Registry.SetValue(RegRoot, dc.DeviceName + "_Enable", dc.Enable.ToString());
             Registry.SetValue(RegRoot, dc.DeviceName + "_COMPort", dc.PortName);
             Registry.SetValue(RegRoot, dc.DeviceName + "_BaudRate", dc.BaudRate);
-        }
-        private void ReadDeviceIniConfig(IniManager iniManager, DeviceConfig dc)
-        {
-            int iValue;
-            string strValue;
-            strValue = iniManager.ReadIniFile(dc.DeviceName, "Enabled", "true");
-            dc.Enable = strValue.ToUpper().Equals("TRUE") ? true : false;
-            dc.PortName = iniManager.ReadIniFile(dc.DeviceName, "COMPort", "COM24");
-            strValue = iniManager.ReadIniFile(dc.DeviceName, "BaudRate", "38400");
-            if (!Int32.TryParse(strValue, out iValue))
-            {
-                logger.Debug("ReadDeviceIniConfig() :" + dc.DeviceName + 
-                    ": if (!Int32.TryParse(returnValue, out BaudRate))");
-            }
-            else
-            {
-                dc.BaudRate = iValue;
-            }
-        }
-
-        private void WriteDeviceIniConfig(IniManager iniManager, DeviceConfig dc)
-        {
-            iniManager.WriteIniFile(dc.DeviceName, "Enabled", dc.Enable.ToString());
-            iniManager.WriteIniFile(dc.DeviceName, "COMPort", dc.PortName);
-            iniManager.WriteIniFile(dc.DeviceName, "BaudRate", dc.BaudRate.ToString());
-        }
-
-        private void ReadIntInIni(IniManager iniManager, string sItem, string Name, ref int Value)
-        {
-            string strValue;
-            strValue = iniManager.ReadIniFile(sItem, Name, Value.ToString());
-            if (!Int32.TryParse(strValue, out Value))
-                logger.Debug("ReadIntInIni() : " + sItem +"->"+Name + " : Error");            
+            Registry.SetValue(RegRoot, dc.DeviceName + "_ConnectionType", dc.ConnectionType);
+            Registry.SetValue(RegRoot, dc.DeviceName + "_IPAdress", dc.IPAdress);
         }
         private void LoadRegFile()
         {
@@ -847,175 +848,6 @@ namespace AlignerVerification
             //N offset 規格上限
             Registry.SetValue(RegRoot, "NOffsetUpLimit", MachineParas.dNOffsetUpLimit.ToString());
         }
-        private void LoadINIFile(string path = "")
-        {
-            DeviceConfig dc;
-
-
-            string strFileName = Environment.CurrentDirectory;
-            strFileName = strFileName + @"\INI\Config.ini";
-
-            if (path != "")
-                strFileName = path;
-
-
-            IniManager iniManager = new IniManager(strFileName);
-
-            string strValue;
-            int iValue = 0;
-
-            ////Wafer 半徑
-            ReadIntInIni(iniManager, "MachineParas", "WaferRadius", ref MachineParas.WaferRadius);
-            ////測試速度
-            strValue = iniManager.ReadIniFile("MachineParas", "TestSpeed", MachineParas.TestSpeed.ToString());
-            if (!Int32.TryParse(strValue, out MachineParas.TestSpeed))
-            {
-                logger.Debug("LoadINIFile() :" + "if (!Int32.TryParse(strValue, out MachineParas.TestSpeed))");
-            }
-
-            ////Aligner後旋轉角度(mdeg)
-            ReadIntInIni(iniManager, "MachineParas", "NotchAngle", ref MachineParas.NotchAngle);
-
-            ////Aligner後X方向位移(um)
-            ReadIntInIni(iniManager, "MachineParas", "AlignXOffset", ref MachineParas.AlignXOffset);
-
-            ////輸出資料夾
-            MachineParas.ExportFolder = iniManager.ReadIniFile("MachineParas", "ExportFolder", MachineParas.ExportFolder);
-
-            ////Aligner形式 
-            ReadIntInIni(iniManager, "MachineParas", "MachineType", ref MachineParas.MachineType);
-
-            ////Wafer形式(Notch、Flat、Circle)
-            ReadIntInIni(iniManager, "MachineParas", "WaferType", ref MachineParas.WaferType);
-
-            ////Align模式
-            ReadIntInIni(iniManager, "MachineParas", "TestMode", ref MachineParas.TestMode);
-
-            ////Align測試後位移(X)
-            ReadIntInIni(iniManager, "MachineParas", "TestModeXOffset", ref MachineParas.TestModeXOffset);
-
-            ////Align測試後位移(Y)
-            ReadIntInIni(iniManager, "MachineParas", "TestModeYOffset", ref MachineParas.TestModeYOffset);
-
-            ////Align測試後位移(T)
-            ReadIntInIni(iniManager, "MachineParas", "TestModeTOffset", ref MachineParas.TestModeTOffset);
-
-            MachineParas.OutputFolder = iniManager.ReadIniFile("MachineParas", "OutputFolder", MachineParas.OutputFolder);
-
-            strValue = iniManager.ReadIniFile("MachineParas", "PresentMonitorHour", MachineParas.PresentMonitorHour.ToString());
-            Double.TryParse(strValue, out MachineParas.PresentMonitorHour);
-
-            strValue = iniManager.ReadIniFile("MachineParas", "PresentMonitorMin", MachineParas.PresentMonitorMin.ToString());
-            Double.TryParse(strValue, out MachineParas.PresentMonitorMin);
-
-            strValue = iniManager.ReadIniFile("MachineParas", "PresentMonitorSec", MachineParas.PresentMonitorSec.ToString());
-            Double.TryParse(strValue, out MachineParas.PresentMonitorSec);
-
-            strValue = iniManager.ReadIniFile("MachineParas", "CheckWaferPresentInAutoRun", MachineParas.CheckWaferPresentInAutoRun.ToString());
-            MachineParas.CheckWaferPresentInAutoRun = strValue.ToUpper().Equals("TRUE") ? true : false;
-
-            //Statistics 偏移量計算形式
-            ReadIntInIni(iniManager, "Statistics", "OffsetType", ref Statistics.OffsetType);
-
-            //Cylinder
-            dc = deviceConfig["Cylinder"];
-            ReadDeviceIniConfig(iniManager, dc);
-
-            //Aligner
-            dc = deviceConfig["Aligner"];
-            ReadDeviceIniConfig(iniManager, dc);
-
-            //Camera
-            dc = deviceConfig["Camera"];
-            ReadDeviceIniConfig(iniManager, dc);
-
-            ReadIntInIni(iniManager, "AOI", "ROITop", ref iValue);
-            cameraBasic.AOITool.SetROITop(iValue);
-
-            ReadIntInIni(iniManager, "AOI", "ROIBottom", ref iValue);
-            cameraBasic.AOITool.SetROIBottom(iValue);
-            
-            strValue = "FALSE";
-            strValue = iniManager.ReadIniFile("AOI", "ManualBinary", strValue);
-            cameraBasic.AOITool.ManualBinary = strValue.ToUpper().Equals("TRUE") ? true : false;
-
-            ReadIntInIni(iniManager, "AOI", "BinaryTHL", ref iValue);
-            cameraBasic.AOITool.BinaryTHL = (byte)iValue;
-
-            ReadIntInIni(iniManager, "AOI", "FilterMask", ref cameraBasic.AOITool.FilterMask);
-
-            strValue = "FALSE";
-            strValue = iniManager.ReadIniFile("AOI", "FillWafer", strValue);
-            cameraBasic.AOITool.FillWafer = strValue.ToUpper().Equals("TRUE") ? true : false;
-
-        }
-
-        private void SaveINIFile()
-        {
-            //DeviceConfig dc;
-            string strFileName = Environment.CurrentDirectory;
-            strFileName = strFileName + @"\INI\Config.ini";
-            IniManager iniManager = new IniManager(strFileName);
-            
-            //WaferRadius
-            iniManager.WriteIniFile("MachineParas", "WaferRadius", MachineParas.WaferRadius.ToString());
-
-            ////測試速度
-            iniManager.WriteIniFile("MachineParas", "TestSpeed", MachineParas.TestSpeed.ToString());
-
-            ////Aligner後旋轉角度(mdeg)
-            iniManager.WriteIniFile("MachineParas", "NotchAngle", MachineParas.NotchAngle.ToString());
-
-            ////Aligner後X方向位移(um)
-            iniManager.WriteIniFile("MachineParas", "AlignXOffset", MachineParas.AlignXOffset.ToString());
-
-            ////輸出資料夾
-            iniManager.WriteIniFile("MachineParas", "ExportFolder", MachineParas.ExportFolder);
-
-            ////Aligner形式 
-            iniManager.WriteIniFile("MachineParas", "MachineType", MachineParas.MachineType.ToString());
-
-            ////Wafer形式(Notch、Flat、Circle)
-            iniManager.WriteIniFile("MachineParas", "WaferType", MachineParas.WaferType.ToString());
-
-            ////Align模式
-            iniManager.WriteIniFile("MachineParas", "TestMode", MachineParas.TestMode.ToString());
-
-            ////Align測試後位移(X)
-            iniManager.WriteIniFile("MachineParas", "TestModeXOffset", MachineParas.TestModeXOffset.ToString());
-
-            ////Align測試後位移(Y)
-            iniManager.WriteIniFile("MachineParas", "TestModeYOffset", MachineParas.TestModeYOffset.ToString());
-
-            ////Align測試後位移(T)
-            iniManager.WriteIniFile("MachineParas", "TestModeTOffset", MachineParas.TestModeTOffset.ToString());
-
-            //輸出資料夾位置
-            iniManager.WriteIniFile("MachineParas", "OutputFolder", MachineParas.OutputFolder);
-
-            iniManager.WriteIniFile("MachineParas", "PresentMonitorHour", MachineParas.PresentMonitorHour.ToString());
-
-            iniManager.WriteIniFile("MachineParas", "PresentMonitorMin", MachineParas.PresentMonitorMin.ToString());
-
-            iniManager.WriteIniFile("MachineParas", "PresentMonitorSec", MachineParas.PresentMonitorSec.ToString());
-
-            iniManager.WriteIniFile("MachineParas", "CheckWaferPresentInAutoRun", MachineParas.CheckWaferPresentInAutoRun.ToString());
-
-            //Statistics 偏移量計算形式
-            iniManager.WriteIniFile("Statistics", "OffsetType", Statistics.OffsetType.ToString());
-
-            foreach (DeviceConfig dc in deviceConfig.Values)
-                WriteDeviceIniConfig(iniManager, dc);
-
-            iniManager.WriteIniFile("AOI", "ROITop", cameraBasic.AOITool.Top.ToString());
-            iniManager.WriteIniFile("AOI", "ROIBottom", cameraBasic.AOITool.Bottom.ToString());
-            iniManager.WriteIniFile("AOI", "ManualBinary", cameraBasic.AOITool.ManualBinary.ToString());
-            iniManager.WriteIniFile("AOI", "BinaryTHL", cameraBasic.AOITool.BinaryTHL.ToString());
-            iniManager.WriteIniFile("AOI", "FilterMask", cameraBasic.AOITool.FilterMask.ToString());
-            iniManager.WriteIniFile("AOI", "FillWafer", cameraBasic.AOITool.FillWafer.ToString());
-
-        }
-
         private void UpdateUI()
         {
             loadParas = true;
@@ -1084,10 +916,22 @@ namespace AlignerVerification
             cmbAlignerPort.Text = dc.PortName;
             cmbAlignerBaudRate.Text = dc.BaudRate.ToString();
 
+            cmbAlignerConnectionType.Text = dc.ConnectionType;
+            tbAlignerIPAddress.Text = dc.IPAdress;
+
             dc = deviceConfig["Camera"];
             cbCameraEnabled.Checked = dc.Enable;
             cmbCameraPort.Text = dc.PortName;
             cmbCameraBaudRate.Text = dc.BaudRate.ToString();
+
+            dc = deviceConfig["Aligner02"];
+            cbAligner02Enabled.Checked = dc.Enable;
+            cmbAligner02Port.Text = dc.PortName;
+            cmbAligner02BaudRate.Text = dc.BaudRate.ToString();
+
+            cmbAligner02ConnectionType.Text = dc.ConnectionType;
+            tbAligner02IPAddress.Text = dc.IPAdress;
+
 
             //影像相關
             tkbrROITop.Value = cameraBasic.AOITool.Top;
@@ -1188,6 +1032,9 @@ namespace AlignerVerification
             else
                 logger.Debug("SetParas() :" + "if (!Int32.TryParse(cmbAlignerBaudRate.Text, out iValue))");
 
+            dc.ConnectionType = cmbAlignerConnectionType.Text;
+            dc.IPAdress = tbAlignerIPAddress.Text;
+
             dc = deviceConfig["Camera"];
             dc.Enable = cbCameraEnabled.Checked;
             dc.PortName = cmbCameraPort.Text;
@@ -1195,6 +1042,18 @@ namespace AlignerVerification
                 dc.BaudRate = iValue;
             else
                 logger.Debug("SetParas() :" + "if (!Int32.TryParse(cmbCameraBaudRate.Text, out iValue))");
+
+
+            dc = deviceConfig["Aligner02"];
+            dc.Enable = cbAligner02Enabled.Checked;
+            dc.PortName = cmbAligner02Port.Text;
+            if (Int32.TryParse(cmbAligner02BaudRate.Text, out iValue))
+                dc.BaudRate = iValue;
+            else
+                logger.Debug("SetParas() :" + "if (!Int32.TryParse(cmbAligner02BaudRate.Text, out iValue))");
+
+            dc.ConnectionType = cmbAligner02ConnectionType.Text;
+            dc.IPAdress = tbAligner02IPAddress.Text;
 
             //影像相關
             cameraBasic.AOITool.SetROITop(tkbrROITop.Value);
@@ -1258,6 +1117,9 @@ namespace AlignerVerification
                     break;
                 case "btnCameraConnect":
                     deviceName = "Camera";
+                    break;
+                case "btnAligner02Connect":
+                    deviceName = "Aligner02";
                     break;
             }
 
@@ -1617,89 +1479,87 @@ namespace AlignerVerification
             MachineParas.TestModeTOffset = decimal.ToInt32(udTestModeTOffset.Value);
         }
 
-        private void cbCylinderEnabled_CheckedChanged(object sender, EventArgs e)
-        {
-            if (loadParas) return;
-            DeviceConfig dc = deviceConfig["Cylinder"];
-            dc.Enable = cbCylinderEnabled.Checked;
-        }
-
-        private void cmbCylinderPort_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (loadParas) return;
-
-            DeviceConfig dc = deviceConfig["Cylinder"];
-            dc.PortName = cmbCylinderPort.Text;
-        }
-
-        private void cmbCylinderBaudRate_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (loadParas) return;
-
-            DeviceConfig dc = deviceConfig["Cylinder"];
-
-            if (Int32.TryParse(cmbCylinderBaudRate.Text, out int iValue))
-                dc.BaudRate = iValue;
-            else
-                logger.Debug("cmbCylinderBaudRate_SelectedIndexChanged(object sender, EventArgs e) :" + 
-                    "if (!Int32.TryParse(cmbCylinderBaudRate.Text, out iValue))");
-        }
-
         private void cbAlignerEnabled_CheckedChanged(object sender, EventArgs e)
         {
             if (loadParas) return;
 
-            DeviceConfig dc = deviceConfig["Aligner"];
-            dc.Enable = cbAlignerEnabled.Checked;
+            CheckBox cb = (CheckBox)sender;
+            DeviceConfig dc = null;
+            switch (cb.Name)
+            {
+                case "cbAlignerEnabled":
+                    dc = deviceConfig["Aligner"];
+                    break;
+                case "cbAligner02Enabled":
+                    dc = deviceConfig["Aligner02"];
+                    break;
+                case "cbCylinderEnabled":
+                    dc = deviceConfig["Cylinder"];
+                    break;
+                case "cbCameraEnabled":
+                    dc = deviceConfig["Camera"];
+                    break;
+                default:
+                    break;
+            }
+
+            if(dc != null)
+                dc.Enable = cb.Checked;
         }
 
         private void cmbAlignerPort_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (loadParas) return;
 
-            DeviceConfig dc = deviceConfig["Aligner"];
-            dc.PortName = cmbAlignerPort.Text;
+            ComboBox cb = (ComboBox)sender;
+            DeviceConfig dc = null;
+            switch (cb.Name)
+            {
+                case "cmbAlignerPort":
+                    dc = deviceConfig["Aligner"];
+                    break;
+                case "cmbAligner02Port":
+                    dc = deviceConfig["Aligner02"];
+                    break;
+                case "cmbCylinderPort":
+                    dc = deviceConfig["Cylinder"];
+                    break;
+                case "cmbCameraPort":
+                    dc = deviceConfig["Camera"];
+                    break;
+            }
+
+            if (dc != null)
+                dc.PortName = cb.Text;
         }
 
         private void cmbAlignerBaudRate_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (loadParas) return;
 
-            DeviceConfig dc = deviceConfig["Aligner"];
+            ComboBox cb = (ComboBox)sender;
+            DeviceConfig dc = null;
+            switch (cb.Name)
+            {
+                case "cmbAlignerBaudRate":
+                    dc = deviceConfig["Aligner"];
+                    break;
+                case "cmbAligner02BaudRate":
+                    dc = deviceConfig["Aligner02"];
+                    break;
+                case "cmbCylinderBaudRate":
+                    dc = deviceConfig["Cylinder"];
+                    break;
+                case "cmbCameraBaudRate":
+                    dc = deviceConfig["Camera"];
+                    break;
+            }
 
-            if (Int32.TryParse(cmbAlignerBaudRate.Text, out int iValue))
+            if (Int32.TryParse(cb.Text, out int iValue))
                 dc.BaudRate = iValue;
             else
-                logger.Debug("cmbAlignerBaudRate_SelectedIndexChanged() :" + 
-                    "if (!Int32.TryParse(cmbAlignerBaudRate.Text, out iValue))");
-        }
-
-        private void cbCameraEnabled_CheckedChanged(object sender, EventArgs e)
-        {
-            if (loadParas) return;
-
-            DeviceConfig dc = deviceConfig["Camera"];
-            dc.Enable = cbCameraEnabled.Checked;
-        }
-
-        private void cmbCameraPort_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (loadParas) return;
-
-            DeviceConfig dc = deviceConfig["Camera"];
-            dc.PortName = cmbCameraPort.Text;
-        }
-
-        private void cmbCameraBaudRate_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (loadParas) return;
-
-            DeviceConfig dc = deviceConfig["Camera"];
-            if (Int32.TryParse(cmbCameraBaudRate.Text, out int iValue))
-                dc.BaudRate = iValue;
-            else
-                logger.Debug("cmbCameraBaudRate_SelectedIndexChanged() :" + 
-                    "if (!Int32.TryParse(cmbCameraBaudRate.Text, out iValue))");
+                logger.Debug("cmbAlignerBaudRate_SelectedIndexChanged() :" +
+                    "if (!Int32.TryParse(cb.Text, out int iValue)))");
         }
 
         private void btnOpenImageFolder_Click(object sender, EventArgs e)
@@ -2133,6 +1993,9 @@ namespace AlignerVerification
             }
             else
             {
+
+                MessageBox.Show("未匯入Buffer");
+                logger.Info("未匯入Buffer");
                 return;
             }
 
@@ -2170,7 +2033,8 @@ namespace AlignerVerification
             FormMainUpdate.ScreenCopy(strSubDirectory + timeString + @"_Screen.jpg");
 
             //3.儲存當下參數檔
-            File.Copy(strSourceDirectory + @"\INI\Config.ini" , strSubDirectory + timeString + @"_Config.ini");
+            //File.Copy(strSourceDirectory + @"\INI\Config.ini" , strSubDirectory + timeString + @"_Config.ini");
+            RegExport(strSubDirectory + timeString + @"_Config.reg", @"HKEY_CURRENT_USER\Software\AlignerVerification");
 
             //4.儲存當下那張影像
             cameraBasic.MatFrame.Save(strSubDirectory + timeString + @"_Image.bmp");
@@ -2178,6 +2042,32 @@ namespace AlignerVerification
 
             logger.Info("備份完畢");
             MessageBox.Show("備份完畢");
+        }
+
+        private void RegExport(string exportPath, string registryPath)
+        {
+            string path = "\"" + exportPath + "\"";
+            string key = "\"" + registryPath + "\"";
+            using (Process proc = new Process())
+            {
+                try
+                {
+                    proc.StartInfo.FileName = "reg.exe";
+                    proc.StartInfo.UseShellExecute = false;
+                    proc.StartInfo.RedirectStandardOutput = true;
+                    proc.StartInfo.RedirectStandardError = true;
+                    proc.StartInfo.CreateNoWindow = true;
+                    proc.StartInfo.Arguments = "export \"" + key + "\" \"" + path + "\" /y";
+                    proc.Start();
+                    string stdout = proc.StandardOutput.ReadToEnd();
+                    string stderr = proc.StandardError.ReadToEnd();
+                    proc.WaitForExit();
+                }
+                catch (Exception)
+                {
+                    // handle exceptions
+                }
+            }
         }
 
         private void ContinousTestCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -2191,6 +2081,13 @@ namespace AlignerVerification
         {
             ImageBuffer imageBuffer = (ImageBuffer)e.Argument;
 
+            string strImgBufDirectory = RootDirectory + @"Image\";
+
+            if(Directory.Exists(strImgBufDirectory))
+                DeleteFolder(strImgBufDirectory);
+
+            Directory.CreateDirectory(strImgBufDirectory);
+
             for (int i = 0; i < imageBuffer.ImageCount; i++)
             {
                 ImageInfo Info = null;
@@ -2199,10 +2096,6 @@ namespace AlignerVerification
 
                 cameraBasic.SetImage(Info.MatImage);
 
-                //DisplayImageBox.Image = cameraBasic.MatFrame;
-                //DisplayImageBox.Refresh();
-
-                //ShowResult();
                 cameraBasic.AOITool.Calculate();
                 PointD O = new PointD
                 {
@@ -2231,7 +2124,7 @@ namespace AlignerVerification
 
                 Statistics.FindCalibrateOffset();
 
-                FormMainUpdate.DisplayImageUpdate(RootDirectory ,cameraBasic.MatFrame, cameraBasic.AOITool, (float)ZoomRadioX, (float)ZoomRadioY, Info.ID + 1, false);
+                FormMainUpdate.DisplayImageUpdate(strImgBufDirectory, cameraBasic.MatFrame, cameraBasic.AOITool, (float)ZoomRadioX, (float)ZoomRadioY, Info.ID + 1, bSaveBuffer);
 
                 Thread.Sleep(300);
 
@@ -2243,11 +2136,14 @@ namespace AlignerVerification
         {
             pbrContinusTest.Value = e.ProgressPercentage;
         }
+
+        bool bSaveBuffer = false;
         private void btnContinusTest_Click(object sender, EventArgs e)
         {
             if(!bwContinousTest.IsBusy)
             {
                 ImageBuffer imageBuffer;
+                bSaveBuffer = false;
 
                 UIInitial();
                 Statistics.Reset();
@@ -2259,10 +2155,13 @@ namespace AlignerVerification
                 }
                 else if (TestButton.BackColor == Color.Green)
                 {
+                    bSaveBuffer = true;
                     imageBuffer = cameraBasic.ImageBuffer;
                 }
                 else
                 {
+                    MessageBox.Show("未匯入Buffer");
+                    logger.Info("未匯入Buffer");
                     return;
                 }
 
@@ -2374,12 +2273,13 @@ namespace AlignerVerification
             FormMainUpdate.MessageLogUpdate("GetAlignerRawData", "Start");
 
             //2.生成輸出資料夾
-            string strDirectory = MachineParas.OutputFolder;
-            DateTime dt = DateTime.Now;
-            string dateString = dt.ToString("yyyyMMdd");
-            dateString = @"\" + dateString + "_" + MachineParas.ExportFolder + @"\";
-            string strSubDirectory = strDirectory + dateString;
+            //string strDirectory = MachineParas.OutputFolder;
+            //DateTime dt = DateTime.Now;
+            //string dateString = dt.ToString("yyyyMMdd");
+            //dateString = @"\" + dateString + "_" + MachineParas.ExportFolder + @"\";
 
+            //string strSubDirectory = strDirectory + dateString;
+            string strSubDirectory = RootDirectory;
             if (!Directory.Exists(strSubDirectory))
                 Directory.CreateDirectory(strSubDirectory);
 
@@ -2412,6 +2312,52 @@ namespace AlignerVerification
             }
 
             FormMainUpdate.MessageLogUpdate("GetAlignerRawData", "Finsih");
+        }
+
+        private void GetAlignerRawDataByFtp(int n)
+        {
+
+            FormMainUpdate.MessageLogUpdate("GetAlignerRawDataByFtp", "Start");
+
+            string ftpURL = @"ftp://192.168.0.135:21/";
+            string ftpFilePath = ftpURL + @"aligner_ccd_data.csv";
+
+            string tempStoragePath = RootDirectory + "n" + n.ToString() + ".csv";
+
+
+            EvtManager.AlignerLOGSVFinishEvt.Reset();
+            SetAlignerCommand("$1SET:LOGSV");
+            if (!EvtManager.AlignerLOGSVFinishEvt.WaitOne(120000))
+            {
+                FormMainUpdate.MessageLogUpdate("GetAlignerRawDataByFtp", "Timeout");
+                return;
+            }
+
+            //FtpWebRequest
+            FtpWebRequest ftpRequest = (FtpWebRequest)FtpWebRequest.Create(ftpFilePath);
+            ftpRequest.Method = WebRequestMethods.Ftp.DownloadFile;
+
+            //FtpWebResponse
+            FtpWebResponse ftpResponse = (FtpWebResponse)ftpRequest.GetResponse();
+            //Get Stream From FtpWebResponse
+            Stream ftpStream = ftpResponse.GetResponseStream();
+            using (FileStream fileStream = new FileStream(tempStoragePath, FileMode.Create))
+            {
+                int bufferSize = 2048;
+                int readCount;
+                byte[] buffer = new byte[bufferSize];
+
+                readCount = ftpStream.Read(buffer, 0, bufferSize);
+                while (readCount > 0)
+                {
+                    fileStream.Write(buffer, 0, readCount);
+                    readCount = ftpStream.Read(buffer, 0, bufferSize);
+                }
+            }
+            ftpStream.Close();
+            ftpResponse.Close();
+
+            FormMainUpdate.MessageLogUpdate("GetAlignerRawDataByFtp", "End");
         }
 
         private void SetAlignerCommand(string cmd)
@@ -3061,7 +3007,16 @@ namespace AlignerVerification
                 {
                     FormMainUpdate.MessageLogUpdate("AutoRun", "Download Data");
 
-                    GetAlignerRawData(CurrntCnt+1);
+                    DeviceConfig AlignerConfig = deviceConfig["Aligner"];
+                    if (AlignerConfig.ConnectionType.Equals("ComPort"))
+                    {
+                        GetAlignerRawData(CurrntCnt + 1);
+                    }
+                    else
+                    if (AlignerConfig.ConnectionType.Equals("Socket"))
+                    {
+                        GetAlignerRawDataByFtp(CurrntCnt + 1);
+                    }
 
                     if (AlignError)
                     {
@@ -3230,7 +3185,16 @@ namespace AlignerVerification
                         {
                             FormMainUpdate.MessageLogUpdate("AutoRun_", "Alarm Stop Download Data");
 
-                            GetAlignerRawData(CurrntCnt + 1);
+                            DeviceConfig AlignerConfig = deviceConfig["Aligner"];
+                            if (AlignerConfig.ConnectionType.Equals("ComPort"))
+                            {
+                                GetAlignerRawData(CurrntCnt + 1);
+                            }
+                            else
+                            if (AlignerConfig.ConnectionType.Equals("Socket"))
+                            {
+                                GetAlignerRawDataByFtp(CurrntCnt + 1);
+                            }
                         }
 
                     }
@@ -3303,7 +3267,17 @@ namespace AlignerVerification
 
         void DoDownloadData(object sender, DoWorkEventArgs e)
         {
-            GetAlignerRawData(-1);
+            DeviceConfig  dc = deviceConfig["Aligner"];
+
+            if(dc.ConnectionType.Equals("ComPort"))
+            {
+                GetAlignerRawData(-1);
+            }
+            else
+            if(dc.ConnectionType.Equals("Socket"))
+            {
+                GetAlignerRawDataByFtp(-1);
+            }
         }
 
         private void Calibrate_Click(object sender, EventArgs e)
@@ -3567,7 +3541,7 @@ namespace AlignerVerification
                     //Get the path of specified file
                     string filePath = openFileDialog.FileName;
 
-                    LoadINIFile(filePath);
+                    //LoadINIFile(filePath);
 
                     UpdateUI();
 
@@ -3657,6 +3631,91 @@ namespace AlignerVerification
         private void udCrabDelayTime_ValueChanged(object sender, EventArgs e)
         {
             iCrabDelayTime = (int)udCrabDelayTime.Value;
+        }
+
+        private void cmbAlignerConnectionType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (loadParas) return;
+
+            ComboBox cmb = (ComboBox)sender;
+            DeviceConfig dc = null;
+            switch(cmb.Name)
+            {
+                case "cmbAlignerConnectionType":
+                    dc = deviceConfig["Aligner"];
+                    break;
+
+                case "cmbAligner02ConnectionType":
+                    dc = deviceConfig["Aligner02"];
+                    break;
+
+                default:
+                    break;
+            }
+
+            if(dc != null)
+                dc.ConnectionType = cmb.Text;
+
+            //DeviceConfig dc = deviceConfig["Aligner"];
+            //dc.ConnectionType = cmbAlignerConnectionType.Text;
+        }
+
+        private void tbAlignerIPAddress_TextChanged(object sender, EventArgs e)
+        {
+            if (loadParas) return;
+
+            TextBox tb = (TextBox)sender;
+            DeviceConfig dc = null;
+
+            switch (tb.Name)
+            {
+                case "tbAlignerIPAddress":
+                    dc = deviceConfig["Aligner"];
+                    break;
+
+                case "tbAligner02IPAddress":
+                    dc = deviceConfig["Aligner02"];
+                    break;
+
+                default:
+                    break;
+            }
+
+            if (dc != null)
+                dc.IPAdress = tbAlignerIPAddress.Text;
+
+
+            //DeviceConfig dc = deviceConfig["Aligner"];
+            //dc.IPAdress = tbAlignerIPAddress.Text;
+        }
+
+        private void btnAlignerCommTest_Click(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            string DeviceName = "";
+            switch (btn.Name)
+            {
+                case "btnAlignerCommTest":
+                    DeviceName = "Aligner";
+                    lbAlignerCommTest.BackColor = Color.Red;
+                    break;
+
+                case "btnAligner02CommTest":
+                    DeviceName = "Aligner02";
+                    lbAligner02CommTest.BackColor = Color.Red;
+                    break;
+                default:
+                    break;
+            }
+
+            if(!DeviceName.Equals(""))
+            {
+                DeviceController dctrl = deviceMap[DeviceName];
+                if (dctrl._Config.Enable) dctrl.sendCommand("$1GET:VER__");
+
+                FormMainUpdate.MessageLogUpdate(DeviceName, "通訊測試開始");
+                FormMainUpdate.MessageLogUpdate(DeviceName, "詢問版本號");
+            }
         }
     }
 

@@ -222,7 +222,7 @@ namespace AlignerVerification.Comm
         {
             try
             {
-                if (cfg.DeviceName.ToUpper().Equals("ALIGNER"))
+                if (cfg.DeviceName.ToUpper().Equals("ALIGNER") || cfg.DeviceName.ToUpper().Equals("ALIGNER02"))
                 {
                     S += port.ReadExisting();
 
@@ -262,50 +262,9 @@ namespace AlignerVerification.Comm
                     ThreadPool.QueueUserWorkItem(new WaitCallback(ConnReport.On_Connection_Message), data);
                 }
 
-
-                //if (S.LastIndexOf("\r") != -1)
-                //{
-
-                //    data = S.Substring(0, S.LastIndexOf("\r"));
-
-
-                //    S = S.Substring(S.LastIndexOf("\r") + 1);
-                //    //S = S.Replace("\0", "");
-
-                //    ThreadPool.QueueUserWorkItem(new WaitCallback(ConnReport.On_Connection_Message), data);
-                //}
-
-                //ThreadPool.QueueUserWorkItem(new WaitCallback(ConnReport.On_Connection_Message), data);
-
-                //char[] buf = new char[256];
-                //port.Read(buf, 0, buf.Length);
-                //string Buf = new string(buf);
-
-                //S += Buf;
-
-                //if (S.LastIndexOf("\r") != -1)
-                //{
-
-                //    data = S.Substring(0, S.LastIndexOf("\r"));
-
-
-                //    S = S.Substring(S.LastIndexOf("\r") + 1);
-                //    S = S.Replace("\0","");
-
-
-                //    ThreadPool.QueueUserWorkItem(new WaitCallback(ConnReport.On_Connection_Message), data);
-                //}
-
-                //if(S.ToUpper().Equals("$1ACK:ALIGN:"))
-                //{
-                //    ThreadPool.QueueUserWorkItem(new WaitCallback(ConnReport.On_Connection_Message), S);
-                //    S = "";
-                //}
-
             }
             catch (Exception e1)
             {
-                //logger.Error("(ConnectServer " + RmIp + ":" + SPort + ")" + e.Message + "\n" + e.StackTrace);
                 ConnReport.On_Connection_Error("(Sanwa_DataReceived )" + e1.Message + "\n" + e1.StackTrace);
             }
         }
