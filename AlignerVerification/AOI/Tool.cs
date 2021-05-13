@@ -208,14 +208,38 @@ namespace AlignerVerification.AOI
 
             img1 = MatBinary.ToImage<Gray, byte>();
 
-            foreach (CvBlob item in blobs.Values)
+            if (!FillWafer)
             {
-                //Blob過小的時候視為雜訊
-                if (item.BoundingBox.Right - item.BoundingBox.Left < maxwidth / 3)
+                //雜訊太多就不補了
+                if (blobs.Values.Count < 50 )
                 {
-                    for (int y = item.BoundingBox.Top; y < item.BoundingBox.Bottom; y++)
-                        for (int x = item.BoundingBox.Left; x < item.BoundingBox.Right; x++)
-                            img1.Data[y, x, 0] = 0x00;
+                    int[] TopSide = new int[3840];
+
+                    for (int x = 0; x < ROI.Width; x++)
+                    {
+                        for (int y = 0; y < ROI.Height; y++)
+                        {
+                            if(img1.Data[y, x, 0] == 0xFF)
+                            {
+                                y = TopSide[x];
+                                break;
+                            }
+                        }
+                    }
+                    foreach (CvBlob item in blobs.Values)
+                    {
+                        //Blob過小的時候視為雜訊
+                        if (item.BoundingBox.Right - item.BoundingBox.Left < maxwidth / 3)
+                        {
+                            for (int y = item.BoundingBox.Top; y < item.BoundingBox.Bottom; y++)
+                                for (int x = item.BoundingBox.Left; x < item.BoundingBox.Right; x++)
+                                {
+                                    if( y > TopSide[x])
+                                        img1.Data[y, x, 0] = 0x00;
+                                }
+
+                        }
+                    }
                 }
             }
 
@@ -353,32 +377,35 @@ namespace AlignerVerification.AOI
             double da1 = 0.0;
             double db1 = 0.0;
             CalculateLineKB(RightEage, ref da1, ref db1);
-            List<Point> List1 = new List<Point>();
-            List<Point> List2 = new List<Point>();
+            //List<Point> List1 = new List<Point>();
+            //List<Point> List2 = new List<Point>();
 
-            for (int i = 0; i<10; i++)
-            {
-                List1.Add(RightEage[i]);
-                List2.Add(RightEage[RightEage.Count - 1 - i]);
-            }
-            
-            Point pt1 = new Point((int)(List1.Average(x => x.X) + 0.5), (int)(List1.Average(y => y.Y) + 0.5));
-            Point pt2 = new Point((int)(List2.Average(x => x.X) + 0.5), (int)(List2.Average(y => y.Y) + 0.5));
+            //for (int i = 0; i<10; i++)
+            //{
+            //    List1.Add(RightEage[i]);
+            //    List2.Add(RightEage[RightEage.Count - 1 - i]);
+            //}
 
-            //計算Notch角度
-            if(pt1.X - pt2.X == 0)
-            {
-                if(pt1.Y - pt2.Y > 0)
-                {
-                    Notch_Theta = 90.0;
-                }
-                else
-                {
-                    Notch_Theta = -90.0;
-                }
-            }
-            else
-                Notch_Theta = Math.Atan((double)(pt1.Y - pt2.Y) / (double)(pt1.X - pt2.X)) / Math.PI * 180;
+            ////Point pt1 = new Point((int)(List1.Average(x => x.X) + 0.5), (int)(List1.Average(y => y.Y) + 0.5));
+            ////Point pt2 = new Point((int)(List2.Average(x => x.X) + 0.5), (int)(List2.Average(y => y.Y) + 0.5));
+            //Point pt1 = new Point((int)(List1.Max(x => x.X)), (int)(List1.Min(y => y.Y)));
+            //Point pt2 = new Point((int)(List2.Max(x => x.X)), (int)(List2.Min(y => y.Y)));
+
+
+            ////計算Notch角度
+            //if (pt1.X - pt2.X == 0)
+            //{
+            //    if(pt1.Y - pt2.Y > 0)
+            //    {
+            //        Notch_Theta = 90.0;
+            //    }
+            //    else
+            //    {
+            //        Notch_Theta = -90.0;
+            //    }
+            //}
+            //else
+            //    Notch_Theta = Math.Atan((double)(pt1.Y - pt2.Y) / (double)(pt1.X - pt2.X)) / Math.PI * 180;
 
             //計算直線與圓的交點(計算Notch點)
             double a = 1.0 + da1 * da1;
@@ -442,6 +469,16 @@ namespace AlignerVerification.AOI
             TopMMPt.X = (double)TopPt.X / PixelPerMM;
             TopMMPt.Y = (double)TopPt.Y / PixelPerMM;
             //----------------------------------------
+
+            //計算Notch角度
+            if (NotchPt.X - CenterPt.X == 0)
+            {
+                Notch_Theta = 90.0;
+            }
+            else
+                Notch_Theta = Math.Atan((double)(NotchPt.Y - CenterPt.Y) / (double)(NotchPt.X - CenterPt.X)) / Math.PI * 180;
+
+            if (Notch_Theta < 0.0) Notch_Theta += 180.0;
 
 
             return bReturn;
@@ -693,6 +730,8 @@ namespace AlignerVerification.AOI
             }
             else
                 Notch_Theta = Math.Atan((double)(NotchPt.Y - CenterPt.Y) / (double)(NotchPt.X - CenterPt.X)) / Math.PI * 180;
+
+            if (Notch_Theta < 0.0) Notch_Theta += 180.0;
 
             return bReturn;
         }

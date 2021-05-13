@@ -303,6 +303,41 @@ namespace AlignerVerification.UIUpdate
                     }
 
 
+
+                    lb = null;
+                    lb = form.Controls.Find("lbCpkMMOffset", true).FirstOrDefault() as Label;
+                    if (lb != null)
+                    {
+                        lb.Visible = false;
+                        lb.Text = string.Format("Cpk(mm)_{0:F3}", Statistics.CpkOffsetT);
+                    }
+
+
+                    lb = null;
+                    lb = form.Controls.Find("lbCpkDegOffset", true).FirstOrDefault() as Label;
+                    if (lb != null)
+                    {
+                        lb.Visible = false;
+                        lb.Text = string.Format("Cpk(Deg)_{0:F3}", Statistics.CpkOffsetDeg);
+                    }
+
+                    lb = null;
+                    lb = form.Controls.Find("lbCpkMMXOffset", true).FirstOrDefault() as Label;
+                    if (lb != null)
+                    {
+                        lb.Visible = false;
+                        lb.Text = string.Format("Cpk(X_mm)_{0:F3}", Statistics.CpkXOffsetT);
+                    }
+
+                    lb = null;
+                    lb = form.Controls.Find("lbCpkMMYOffset", true).FirstOrDefault() as Label;
+                    if (lb != null)
+                    {
+                        lb.Visible = false;
+                        lb.Text = string.Format("Cpk(Y_mm)_{0:F3}", Statistics.CpkYOffsetT);
+                    }
+
+
                     form.Refresh();
 
                     if (saveImg)

@@ -38,7 +38,7 @@ namespace AlignerVerification.Class
         public static List<PointD> OriginList = new List<PointD>();
         public static List<PointD> NotchList = new List<PointD>();
         public static List<PointD> TopList = new List<PointD>();
-
+        public static List<double> NotchDegList = new List<double>();
 
         public static List<Point> OPTList = new List<Point>();
         public static List<Point> NPTList = new List<Point>();
@@ -58,6 +58,15 @@ namespace AlignerVerification.Class
 
         //Notch與原點之間的距離
         public static double AvgDistance;
+        /// <summary>
+        /// 規格寬度（規格上限-規格下限）
+        /// </summary>
+        public static double CpkTSpcFullRange = 0.2;
+        public static double CpkDegSpcFullRange = 0.2;
+        public static double CpkOffsetT = 0;
+        public static double CpkXOffsetT = 0;
+        public static double CpkYOffsetT = 0;
+        public static double CpkOffsetDeg = 0;
 
         public static void Reset()
         {
@@ -98,6 +107,7 @@ namespace AlignerVerification.Class
             NotchList.Clear();
             TackTimeList.Clear();
             TopList.Clear();
+            NotchDegList.Clear();
 
             OPTList.Clear();
             NPTList.Clear();
@@ -111,6 +121,11 @@ namespace AlignerVerification.Class
 
             NowTPT.X = 0;
             NowTPT.Y = 0;
+
+            CpkOffsetT = 0.0;
+            CpkOffsetDeg = 0.0;
+            CpkXOffsetT = 0.0;
+            CpkYOffsetT = 0.0;
         }
         
         public static void AddCalibrationPT(Point Opt, Point Npt, Point Tpt)
@@ -134,8 +149,84 @@ namespace AlignerVerification.Class
             MinTackTime = TackTimeList.Min();
             AvgTackTime = TackTimeList.Average();
         }
+        /// <summary>
+        /// Cpk 計算
+        /// </summary>
+        /// <param name="CpkDeg">角度Cpk計算</param>
+        /// <param name="CpkOffset">位移Cpk計算</param>
+        public static void CaculateCpk()
+        {
+            if (TopList.Count <= 1) return;
+
+            //平移 Ck(誤差量)
+            //Ck = (M-X)/(T/2)
+            //Cp = T/6Sigma
+            //Cpk = (1 - Ck)*Cp
+            List<double> errorList = new List<double>();
+            foreach (PointD pt in TopList)
+            {
+                errorList.Add(Math.Sqrt(Math.Pow((AvgTop.X - pt.X), 2) + Math.Pow((AvgTop.Y - pt.Y), 2)));
+            }
+
+            double Sigma = 0.0;
+            foreach(double err in errorList)
+            {
+                Sigma += Math.Pow((err - errorList.Average(x => x)), 2);
+            }
+
+            CpkOffsetT = (1 -(- (errorList.Average(x => x) / (CpkTSpcFullRange / 2.0)))) * (CpkTSpcFullRange / (6 * (Math.Sqrt(Sigma / (errorList.Count - 1)))));
+
+            errorList.Clear();
+            foreach (PointD pt in TopList)
+            {
+                errorList.Add(AvgTop.X - pt.X);
+            }
+
+            Sigma = 0.0;
+            foreach (double err in errorList)
+            {
+                Sigma += Math.Pow((err - errorList.Average(x => x)), 2);
+            }
+
+            CpkXOffsetT = (1 - (-(errorList.Average(x => x) / (CpkTSpcFullRange / 2.0)))) * (CpkTSpcFullRange / (6 * (Math.Sqrt(Sigma / (errorList.Count - 1)))));
+
+
+            errorList.Clear();
+            foreach (PointD pt in TopList)
+            {
+                errorList.Add(AvgTop.Y - pt.Y);
+            }
+
+            Sigma = 0.0;
+            foreach (double err in errorList)
+            {
+                Sigma += Math.Pow((err - errorList.Average(x => x)), 2);
+            }
+
+            CpkYOffsetT = (1 - (-(errorList.Average(x => x) / (CpkTSpcFullRange / 2.0)))) * (CpkTSpcFullRange / (6 * (Math.Sqrt(Sigma / (errorList.Count - 1)))));
+
+
+            errorList.Clear();
+
+            foreach (double deg in NotchDegList)
+            {
+                errorList.Add(NotchDegList.Average(x => x) - deg);
+            }
+
+
+            Sigma = 0.0;
+            foreach (double err in errorList)
+            {
+                Sigma += Math.Pow((err - errorList.Average(x => x)), 2);
+            }
+
+            CpkOffsetDeg = (1 - ( -(errorList.Average(x => x)) / (CpkDegSpcFullRange / 2.0))) * (CpkDegSpcFullRange / (6 * (Math.Sqrt(Sigma / (errorList.Count - 1)))));
+
+        }
         public static void AddNotchDeg(double nowNotchDeg)
         {
+            NotchDegList.Add(nowNotchDeg);
+
             NowNotchDeg = nowNotchDeg;
 
             if (NowNotchDeg > MaxNotchDeg) MaxNotchDeg = nowNotchDeg;
@@ -167,9 +258,18 @@ namespace AlignerVerification.Class
             }
             else
             {
-                Temp = Math.Sqrt((nowPtD.X - AvgTop.X) * (nowPtD.X - AvgTop.X) + (nowPtD.Y - AvgTop.Y) * (nowPtD.Y - AvgTop.Y));
+                //Temp = Math.Sqrt((nowPtD.X - AvgTop.X) * (nowPtD.X - AvgTop.X) + (nowPtD.Y - AvgTop.Y) * (nowPtD.Y - AvgTop.Y));
+                //
+                //if (Temp > TOffset) TOffset = Temp;
 
-                if (Temp > TOffset) TOffset = Temp;
+
+                foreach (PointD pt in TopList)
+                {
+                    Temp = Math.Sqrt((pt.X - AvgTop.X) * (pt.X - AvgTop.X) + (pt.Y - AvgTop.Y) * (pt.Y - AvgTop.Y));
+
+                    if (Temp > TOffset) TOffset = Temp;
+                }
+
             }
 
         }

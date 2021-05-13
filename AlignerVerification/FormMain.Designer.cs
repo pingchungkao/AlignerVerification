@@ -238,6 +238,10 @@
             this.cmbCylinderPort = new System.Windows.Forms.ComboBox();
             this.lbCylinderPort = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.lbCpkMMYOffset = new System.Windows.Forms.Label();
+            this.lbCpkMMXOffset = new System.Windows.Forms.Label();
+            this.lbCpkDegOffset = new System.Windows.Forms.Label();
+            this.lbCpkMMOffset = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -1939,7 +1943,7 @@
             this.lbCrabDelayTime.Name = "lbCrabDelayTime";
             this.lbCrabDelayTime.Size = new System.Drawing.Size(92, 16);
             this.lbCrabDelayTime.TabIndex = 2;
-            this.lbCrabDelayTime.Text = "取向延遲時間：";
+            this.lbCrabDelayTime.Text = "取像延遲時間：";
             // 
             // btnRepeatMotionTest
             // 
@@ -2243,6 +2247,7 @@
             this.cbAligner02Enabled.TabIndex = 8;
             this.cbAligner02Enabled.Text = "啟用";
             this.cbAligner02Enabled.UseVisualStyleBackColor = true;
+            this.cbAligner02Enabled.CheckedChanged += new System.EventHandler(this.cbAlignerEnabled_CheckedChanged);
             // 
             // lbAligner02Status
             // 
@@ -2659,6 +2664,10 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.lbCpkMMYOffset);
+            this.panel1.Controls.Add(this.lbCpkMMXOffset);
+            this.panel1.Controls.Add(this.lbCpkDegOffset);
+            this.panel1.Controls.Add(this.lbCpkMMOffset);
             this.panel1.Controls.Add(this.DisplayImageBox);
             this.panel1.Controls.Add(this.BottomPanel);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -2666,6 +2675,46 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(645, 728);
             this.panel1.TabIndex = 6;
+            // 
+            // lbCpkMMYOffset
+            // 
+            this.lbCpkMMYOffset.AutoSize = true;
+            this.lbCpkMMYOffset.Font = new System.Drawing.Font("微軟正黑體", 11.25F);
+            this.lbCpkMMYOffset.ForeColor = System.Drawing.Color.Red;
+            this.lbCpkMMYOffset.Location = new System.Drawing.Point(461, 89);
+            this.lbCpkMMYOffset.Name = "lbCpkMMYOffset";
+            this.lbCpkMMYOffset.Size = new System.Drawing.Size(0, 19);
+            this.lbCpkMMYOffset.TabIndex = 8;
+            // 
+            // lbCpkMMXOffset
+            // 
+            this.lbCpkMMXOffset.AutoSize = true;
+            this.lbCpkMMXOffset.Font = new System.Drawing.Font("微軟正黑體", 11.25F);
+            this.lbCpkMMXOffset.ForeColor = System.Drawing.Color.Red;
+            this.lbCpkMMXOffset.Location = new System.Drawing.Point(460, 70);
+            this.lbCpkMMXOffset.Name = "lbCpkMMXOffset";
+            this.lbCpkMMXOffset.Size = new System.Drawing.Size(0, 19);
+            this.lbCpkMMXOffset.TabIndex = 7;
+            // 
+            // lbCpkDegOffset
+            // 
+            this.lbCpkDegOffset.AutoSize = true;
+            this.lbCpkDegOffset.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.lbCpkDegOffset.ForeColor = System.Drawing.Color.Red;
+            this.lbCpkDegOffset.Location = new System.Drawing.Point(460, 50);
+            this.lbCpkDegOffset.Name = "lbCpkDegOffset";
+            this.lbCpkDegOffset.Size = new System.Drawing.Size(0, 19);
+            this.lbCpkDegOffset.TabIndex = 6;
+            // 
+            // lbCpkMMOffset
+            // 
+            this.lbCpkMMOffset.AutoSize = true;
+            this.lbCpkMMOffset.Font = new System.Drawing.Font("微軟正黑體", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.lbCpkMMOffset.ForeColor = System.Drawing.Color.Red;
+            this.lbCpkMMOffset.Location = new System.Drawing.Point(460, 30);
+            this.lbCpkMMOffset.Name = "lbCpkMMOffset";
+            this.lbCpkMMOffset.Size = new System.Drawing.Size(0, 19);
+            this.lbCpkMMOffset.TabIndex = 5;
             // 
             // statusStrip1
             // 
@@ -2785,6 +2834,7 @@
             this.CylinderGroupBox.ResumeLayout(false);
             this.CylinderGroupBox.PerformLayout();
             this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -3005,6 +3055,10 @@
         private System.Windows.Forms.Label lbAligner02CommTest;
         private System.Windows.Forms.Button btnAligner02CommTest;
         private System.Windows.Forms.Button btnSaveParas1;
+        private System.Windows.Forms.Label lbCpkMMOffset;
+        private System.Windows.Forms.Label lbCpkDegOffset;
+        private System.Windows.Forms.Label lbCpkMMYOffset;
+        private System.Windows.Forms.Label lbCpkMMXOffset;
     }
 }
 

@@ -274,7 +274,7 @@ namespace AlignerVerification
             //回原點
             FormMainUpdate.MessageLogUpdate("DoAlignerIni", "$1CMD:ORG__");
             SetAlignerCommand("$1CMD:ORG__");
-            if (!EvtManager.AlignerORGFinishEvt.WaitOne(10000))
+            if (!EvtManager.AlignerORGFinishEvt.WaitOne(30000))
             {
                 FormMainUpdate.MessageLogUpdate("DoAlignerIni()", "$1CMD:ORG__ Timeout");
                 return;
@@ -2124,7 +2124,11 @@ namespace AlignerVerification
 
                 Statistics.FindCalibrateOffset();
 
+                Statistics.CaculateCpk();
+
                 FormMainUpdate.DisplayImageUpdate(strImgBufDirectory, cameraBasic.MatFrame, cameraBasic.AOITool, (float)ZoomRadioX, (float)ZoomRadioY, Info.ID + 1, bSaveBuffer);
+
+                
 
                 Thread.Sleep(300);
 
@@ -2365,6 +2369,14 @@ namespace AlignerVerification
             if(cmd.ToUpper().Contains("MOVED"))
             {
                 EvtManager.AlignerMoveFinishEvt.Reset();
+            }
+            else if(cmd.ToUpper().Contains("ORG__"))
+            {
+                EvtManager.AlignerORGFinishEvt.Reset();
+            }
+            else if(cmd.ToUpper().Contains("HOME_"))
+            {
+                EvtManager.AlignerHOMEFinishEvt.Reset();
             }
 
             string DeviceName = "Aligner";
@@ -2644,11 +2656,11 @@ namespace AlignerVerification
 
                 if (FilterImageBox.Visible) FilterImageBox.Visible = false;
                 //1.確認硬體通訊
-                foreach(DeviceController dc in deviceMap.Values)
+                foreach (DeviceController dc in deviceMap.Values)
                 {
-                    if(dc._Config.Enable)
+                    if (dc._Config.Enable)
                     {
-                        if(!dc._IsConnected)
+                        if (!dc._IsConnected)
                         {
                             FormMainUpdate.MessageLogUpdate(dc._Config.DeviceName, "未連線");
                             IsRun = false;
@@ -3136,6 +3148,8 @@ namespace AlignerVerification
 
                 Statistics.AddCalibrationPT(cameraBasic.AOITool.CenterPt, cameraBasic.AOITool.NotchPt, cameraBasic.AOITool.TopPt);
                 Statistics.FindCalibrateOffset();
+
+                Statistics.CaculateCpk();
 
                 FormMainUpdate.DisplayImageUpdate(RootDirectory, cameraBasic.MatFrame, cameraBasic.AOITool, (float)ZoomRadioX, (float)ZoomRadioY, CurrntCnt + 1, true);
 

@@ -73,12 +73,24 @@ namespace AlignerVerification.Comm
 
         public void Close()
         {
-            if (tcpClient.Connected)
+            try
             {
-                tcpClient.Close();
+                if (tcpClient != null)
+                {
+                    if (tcpClient.Connected)
+                    {
+                        tcpClient.Close();
 
-                ConnReport.On_Connection_Disconnected("Close");
+                        ConnReport.On_Connection_Disconnected("Close");
+                    }
+                }
             }
+            catch (Exception e)
+            {
+                logger.Error("[" + Config.DeviceName + "] 關閉異常" + e.StackTrace);
+                ConnReport.On_Connection_Error("[" + Config.DeviceName + "] " + e.Message + "\n" + e.StackTrace);
+            }
+
         }
 
         private void ConnectServer(object input)
