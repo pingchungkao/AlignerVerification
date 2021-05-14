@@ -42,3 +42,4 @@ C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\obj\
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\obj\Release\AlignerVerification.csproj.CopyComplete
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\obj\Release\AlignerVerification.exe
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\obj\Release\AlignerVerification.pdb
+C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\obj\Release\AlignerVerification.csprojAssemblyReference.cache

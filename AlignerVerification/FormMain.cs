@@ -2378,6 +2378,14 @@ namespace AlignerVerification
             {
                 EvtManager.AlignerHOMEFinishEvt.Reset();
             }
+            else if (cmd.ToUpper().Contains("WHLD_"))
+            {
+                EvtManager.AlignerWHLDFinishEvt.Reset();
+            }
+            else if (cmd.ToUpper().Contains("WRLS_"))
+            {
+                EvtManager.AlignerWRLSFinishEvt.Reset();
+            }
 
             string DeviceName = "Aligner";
             DeviceController dctrl = deviceMap[DeviceName];
@@ -2997,6 +3005,8 @@ namespace AlignerVerification
                             //break;
                         }
                     }
+
+                        
                 }
 
                 //Aligner
@@ -3215,6 +3225,7 @@ namespace AlignerVerification
                 }
 
                 CurrntCnt++;
+                SpinWait.SpinUntil(() => false, 1);
             }
 
             IsRun = false;
