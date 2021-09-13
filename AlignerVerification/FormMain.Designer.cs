@@ -68,6 +68,8 @@
             this.DisplayImageBox = new Emgu.CV.UI.ImageBox();
             this.FilterImageBox = new Emgu.CV.UI.ImageBox();
             this.lbShowCurrentCnt = new System.Windows.Forms.Label();
+            this.lbRPi = new System.Windows.Forms.Label();
+            this.lbRPa = new System.Windows.Forms.Label();
             this.RichTextBox1 = new System.Windows.Forms.RichTextBox();
             this.RightPanel = new System.Windows.Forms.Panel();
             this.LeftTabControl = new System.Windows.Forms.TabControl();
@@ -103,6 +105,7 @@
             this.TestCountGroupBox = new System.Windows.Forms.GroupBox();
             this.TestCountUpDown = new System.Windows.Forms.NumericUpDown();
             this.gbSingleMotion = new System.Windows.Forms.GroupBox();
+            this.AlignerReset = new System.Windows.Forms.Button();
             this.AlignerIniButton = new System.Windows.Forms.Button();
             this.CylinderIniButton = new System.Windows.Forms.Button();
             this.CalculateButton = new System.Windows.Forms.Button();
@@ -111,10 +114,21 @@
             this.RunButton = new System.Windows.Forms.Button();
             this.AOIPage = new System.Windows.Forms.TabPage();
             this.gbAOI = new System.Windows.Forms.GroupBox();
+            this.gbRepeatResult = new System.Windows.Forms.GroupBox();
+            this.lbRepeatP3POFullRange = new System.Windows.Forms.Label();
+            this.lbRepeatP2POFullRange = new System.Windows.Forms.Label();
+            this.lbRepeatP1POFullRange = new System.Windows.Forms.Label();
+            this.lbRepeatP1P3FullRange = new System.Windows.Forms.Label();
+            this.lbRepeatPOPox = new System.Windows.Forms.Label();
+            this.lbRepeatP3Pox = new System.Windows.Forms.Label();
+            this.lbRepeatP1P2FullRange = new System.Windows.Forms.Label();
+            this.lbRepeatP2Pox = new System.Windows.Forms.Label();
+            this.lbRepeatP1Pox = new System.Windows.Forms.Label();
             this.pbrContinusTest = new System.Windows.Forms.ProgressBar();
             this.pbrOpenImageFolder = new System.Windows.Forms.ProgressBar();
             this.btnReadConfigFile = new System.Windows.Forms.Button();
             this.gbAOISetup = new System.Windows.Forms.GroupBox();
+            this.cbNotchMark = new System.Windows.Forms.CheckBox();
             this.cbFillWafer = new System.Windows.Forms.CheckBox();
             this.cbManualBinary = new System.Windows.Forms.CheckBox();
             this.gbBinaryTHL = new System.Windows.Forms.GroupBox();
@@ -140,6 +154,7 @@
             this.NextTestButton = new System.Windows.Forms.Button();
             this.AdvancePage = new System.Windows.Forms.TabPage();
             this.gbAdvance = new System.Windows.Forms.GroupBox();
+            this.cbOffsetType = new System.Windows.Forms.CheckBox();
             this.gbAlarmStop = new System.Windows.Forms.GroupBox();
             this.tbNOffsetUpLimit = new System.Windows.Forms.TextBox();
             this.tbOOffsetUpLimit = new System.Windows.Forms.TextBox();
@@ -147,6 +162,7 @@
             this.cbAlarmStopEnabled = new System.Windows.Forms.CheckBox();
             this.lbNOffsetUpLimit = new System.Windows.Forms.Label();
             this.lbOOffsetUpLimit = new System.Windows.Forms.Label();
+            this.cbCheckWaferPresentInAutoRun = new System.Windows.Forms.CheckBox();
             this.gbCalibrate = new System.Windows.Forms.GroupBox();
             this.tbParam196 = new System.Windows.Forms.TextBox();
             this.tbParam195 = new System.Windows.Forms.TextBox();
@@ -162,18 +178,22 @@
             this.btnDownloadData = new System.Windows.Forms.Button();
             this.cbDownloadData = new System.Windows.Forms.CheckBox();
             this.gbAdvanceParas = new System.Windows.Forms.GroupBox();
-            this.cbOffsetType = new System.Windows.Forms.CheckBox();
-            this.cbCheckWaferPresentInAutoRun = new System.Windows.Forms.CheckBox();
             this.gbOutputFolder = new System.Windows.Forms.GroupBox();
             this.lbShowOutputFolder = new System.Windows.Forms.Label();
             this.btnOutputFolder = new System.Windows.Forms.Button();
             this.TestTabControl = new System.Windows.Forms.TabPage();
             this.gbTest = new System.Windows.Forms.GroupBox();
-            this.gbMotionTest = new System.Windows.Forms.GroupBox();
             this.udCrabDelayTime = new System.Windows.Forms.NumericUpDown();
+            this.gbRepeatTest = new System.Windows.Forms.GroupBox();
+            this.lbRepeatType = new System.Windows.Forms.Label();
+            this.cmbRepeatType = new System.Windows.Forms.ComboBox();
+            this.btnRepeatTestExcute = new System.Windows.Forms.Button();
+            this.lbRepeatTestTimes = new System.Windows.Forms.Label();
+            this.udRepeatTestTimes = new System.Windows.Forms.NumericUpDown();
             this.lbCrabDelayTime = new System.Windows.Forms.Label();
-            this.btnRepeatMotionTest = new System.Windows.Forms.Button();
             this.btnWaferAlignment = new System.Windows.Forms.Button();
+            this.gbMotionTest = new System.Windows.Forms.GroupBox();
+            this.btnRepeatMotionTest = new System.Windows.Forms.Button();
             this.gbPresent = new System.Windows.Forms.GroupBox();
             this.gbPresentTest = new System.Windows.Forms.GroupBox();
             this.lbPresentTakeTime = new System.Windows.Forms.Label();
@@ -278,6 +298,7 @@
             this.gbSingleMotion.SuspendLayout();
             this.AOIPage.SuspendLayout();
             this.gbAOI.SuspendLayout();
+            this.gbRepeatResult.SuspendLayout();
             this.gbAOISetup.SuspendLayout();
             this.gbBinaryTHL.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tkbrBinaryTHL)).BeginInit();
@@ -294,8 +315,10 @@
             this.gbOutputFolder.SuspendLayout();
             this.TestTabControl.SuspendLayout();
             this.gbTest.SuspendLayout();
-            this.gbMotionTest.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udCrabDelayTime)).BeginInit();
+            this.gbRepeatTest.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.udRepeatTestTimes)).BeginInit();
+            this.gbMotionTest.SuspendLayout();
             this.gbPresent.SuspendLayout();
             this.gbPresentTest.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udPresentMonitorSec)).BeginInit();
@@ -662,6 +685,8 @@
             this.DisplayImageBox.BackColor = System.Drawing.Color.Transparent;
             this.DisplayImageBox.Controls.Add(this.FilterImageBox);
             this.DisplayImageBox.Controls.Add(this.lbShowCurrentCnt);
+            this.DisplayImageBox.Controls.Add(this.lbRPi);
+            this.DisplayImageBox.Controls.Add(this.lbRPa);
             this.DisplayImageBox.Location = new System.Drawing.Point(3, 3);
             this.DisplayImageBox.Name = "DisplayImageBox";
             this.DisplayImageBox.Size = new System.Drawing.Size(640, 480);
@@ -691,6 +716,30 @@
             this.lbShowCurrentCnt.Name = "lbShowCurrentCnt";
             this.lbShowCurrentCnt.Size = new System.Drawing.Size(0, 30);
             this.lbShowCurrentCnt.TabIndex = 5;
+            // 
+            // lbRPi
+            // 
+            this.lbRPi.AutoSize = true;
+            this.lbRPi.BackColor = System.Drawing.Color.Transparent;
+            this.lbRPi.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.lbRPi.ForeColor = System.Drawing.Color.Red;
+            this.lbRPi.Location = new System.Drawing.Point(499, 25);
+            this.lbRPi.Name = "lbRPi";
+            this.lbRPi.Size = new System.Drawing.Size(54, 20);
+            this.lbRPi.TabIndex = 9;
+            this.lbRPi.Text = "label1";
+            // 
+            // lbRPa
+            // 
+            this.lbRPa.AutoSize = true;
+            this.lbRPa.BackColor = System.Drawing.Color.Transparent;
+            this.lbRPa.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.lbRPa.ForeColor = System.Drawing.Color.Red;
+            this.lbRPa.Location = new System.Drawing.Point(499, 49);
+            this.lbRPa.Name = "lbRPa";
+            this.lbRPa.Size = new System.Drawing.Size(54, 20);
+            this.lbRPa.TabIndex = 10;
+            this.lbRPa.Text = "label1";
             // 
             // RichTextBox1
             // 
@@ -1073,7 +1122,8 @@
             this.cmbWaferType.Items.AddRange(new object[] {
             "Notch Type",
             "Flat Type",
-            "Circle Type"});
+            "Circle Type",
+            "RepeatTest"});
             this.cmbWaferType.Location = new System.Drawing.Point(6, 22);
             this.cmbWaferType.Name = "cmbWaferType";
             this.cmbWaferType.Size = new System.Drawing.Size(152, 24);
@@ -1183,6 +1233,7 @@
             // 
             // gbSingleMotion
             // 
+            this.gbSingleMotion.Controls.Add(this.AlignerReset);
             this.gbSingleMotion.Controls.Add(this.AlignerIniButton);
             this.gbSingleMotion.Controls.Add(this.CylinderIniButton);
             this.gbSingleMotion.Controls.Add(this.CalculateButton);
@@ -1193,6 +1244,18 @@
             this.gbSingleMotion.Size = new System.Drawing.Size(230, 180);
             this.gbSingleMotion.TabIndex = 6;
             this.gbSingleMotion.TabStop = false;
+            // 
+            // AlignerReset
+            // 
+            this.AlignerReset.BackColor = System.Drawing.Color.Gold;
+            this.AlignerReset.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.AlignerReset.Location = new System.Drawing.Point(115, 68);
+            this.AlignerReset.Name = "AlignerReset";
+            this.AlignerReset.Size = new System.Drawing.Size(100, 49);
+            this.AlignerReset.TabIndex = 5;
+            this.AlignerReset.Text = "Align Reset";
+            this.AlignerReset.UseVisualStyleBackColor = false;
+            this.AlignerReset.Click += new System.EventHandler(this.AlignerReset_Click);
             // 
             // AlignerIniButton
             // 
@@ -1274,6 +1337,7 @@
             // 
             // gbAOI
             // 
+            this.gbAOI.Controls.Add(this.gbRepeatResult);
             this.gbAOI.Controls.Add(this.pbrContinusTest);
             this.gbAOI.Controls.Add(this.pbrOpenImageFolder);
             this.gbAOI.Controls.Add(this.btnReadConfigFile);
@@ -1293,9 +1357,107 @@
             this.gbAOI.TabIndex = 29;
             this.gbAOI.TabStop = false;
             // 
+            // gbRepeatResult
+            // 
+            this.gbRepeatResult.Controls.Add(this.lbRepeatP3POFullRange);
+            this.gbRepeatResult.Controls.Add(this.lbRepeatP2POFullRange);
+            this.gbRepeatResult.Controls.Add(this.lbRepeatP1POFullRange);
+            this.gbRepeatResult.Controls.Add(this.lbRepeatP1P3FullRange);
+            this.gbRepeatResult.Controls.Add(this.lbRepeatPOPox);
+            this.gbRepeatResult.Controls.Add(this.lbRepeatP3Pox);
+            this.gbRepeatResult.Controls.Add(this.lbRepeatP1P2FullRange);
+            this.gbRepeatResult.Controls.Add(this.lbRepeatP2Pox);
+            this.gbRepeatResult.Controls.Add(this.lbRepeatP1Pox);
+            this.gbRepeatResult.Location = new System.Drawing.Point(9, 377);
+            this.gbRepeatResult.Name = "gbRepeatResult";
+            this.gbRepeatResult.Size = new System.Drawing.Size(330, 195);
+            this.gbRepeatResult.TabIndex = 32;
+            this.gbRepeatResult.TabStop = false;
+            // 
+            // lbRepeatP3POFullRange
+            // 
+            this.lbRepeatP3POFullRange.AutoSize = true;
+            this.lbRepeatP3POFullRange.Location = new System.Drawing.Point(6, 171);
+            this.lbRepeatP3POFullRange.Name = "lbRepeatP3POFullRange";
+            this.lbRepeatP3POFullRange.Size = new System.Drawing.Size(43, 16);
+            this.lbRepeatP3POFullRange.TabIndex = 10;
+            this.lbRepeatP3POFullRange.Text = "label1";
+            // 
+            // lbRepeatP2POFullRange
+            // 
+            this.lbRepeatP2POFullRange.AutoSize = true;
+            this.lbRepeatP2POFullRange.Location = new System.Drawing.Point(6, 152);
+            this.lbRepeatP2POFullRange.Name = "lbRepeatP2POFullRange";
+            this.lbRepeatP2POFullRange.Size = new System.Drawing.Size(43, 16);
+            this.lbRepeatP2POFullRange.TabIndex = 9;
+            this.lbRepeatP2POFullRange.Text = "label1";
+            // 
+            // lbRepeatP1POFullRange
+            // 
+            this.lbRepeatP1POFullRange.AutoSize = true;
+            this.lbRepeatP1POFullRange.Location = new System.Drawing.Point(6, 133);
+            this.lbRepeatP1POFullRange.Name = "lbRepeatP1POFullRange";
+            this.lbRepeatP1POFullRange.Size = new System.Drawing.Size(43, 16);
+            this.lbRepeatP1POFullRange.TabIndex = 8;
+            this.lbRepeatP1POFullRange.Text = "label1";
+            // 
+            // lbRepeatP1P3FullRange
+            // 
+            this.lbRepeatP1P3FullRange.AutoSize = true;
+            this.lbRepeatP1P3FullRange.Location = new System.Drawing.Point(6, 114);
+            this.lbRepeatP1P3FullRange.Name = "lbRepeatP1P3FullRange";
+            this.lbRepeatP1P3FullRange.Size = new System.Drawing.Size(43, 16);
+            this.lbRepeatP1P3FullRange.TabIndex = 7;
+            this.lbRepeatP1P3FullRange.Text = "label1";
+            // 
+            // lbRepeatPOPox
+            // 
+            this.lbRepeatPOPox.AutoSize = true;
+            this.lbRepeatPOPox.Location = new System.Drawing.Point(6, 76);
+            this.lbRepeatPOPox.Name = "lbRepeatPOPox";
+            this.lbRepeatPOPox.Size = new System.Drawing.Size(43, 16);
+            this.lbRepeatPOPox.TabIndex = 6;
+            this.lbRepeatPOPox.Text = "label1";
+            // 
+            // lbRepeatP3Pox
+            // 
+            this.lbRepeatP3Pox.AutoSize = true;
+            this.lbRepeatP3Pox.Location = new System.Drawing.Point(6, 57);
+            this.lbRepeatP3Pox.Name = "lbRepeatP3Pox";
+            this.lbRepeatP3Pox.Size = new System.Drawing.Size(43, 16);
+            this.lbRepeatP3Pox.TabIndex = 5;
+            this.lbRepeatP3Pox.Text = "label1";
+            // 
+            // lbRepeatP1P2FullRange
+            // 
+            this.lbRepeatP1P2FullRange.AutoSize = true;
+            this.lbRepeatP1P2FullRange.Location = new System.Drawing.Point(6, 95);
+            this.lbRepeatP1P2FullRange.Name = "lbRepeatP1P2FullRange";
+            this.lbRepeatP1P2FullRange.Size = new System.Drawing.Size(43, 16);
+            this.lbRepeatP1P2FullRange.TabIndex = 4;
+            this.lbRepeatP1P2FullRange.Text = "label1";
+            // 
+            // lbRepeatP2Pox
+            // 
+            this.lbRepeatP2Pox.AutoSize = true;
+            this.lbRepeatP2Pox.Location = new System.Drawing.Point(6, 38);
+            this.lbRepeatP2Pox.Name = "lbRepeatP2Pox";
+            this.lbRepeatP2Pox.Size = new System.Drawing.Size(43, 16);
+            this.lbRepeatP2Pox.TabIndex = 1;
+            this.lbRepeatP2Pox.Text = "label1";
+            // 
+            // lbRepeatP1Pox
+            // 
+            this.lbRepeatP1Pox.AutoSize = true;
+            this.lbRepeatP1Pox.Location = new System.Drawing.Point(6, 19);
+            this.lbRepeatP1Pox.Name = "lbRepeatP1Pox";
+            this.lbRepeatP1Pox.Size = new System.Drawing.Size(43, 16);
+            this.lbRepeatP1Pox.TabIndex = 0;
+            this.lbRepeatP1Pox.Text = "label1";
+            // 
             // pbrContinusTest
             // 
-            this.pbrContinusTest.Location = new System.Drawing.Point(10, 377);
+            this.pbrContinusTest.Location = new System.Drawing.Point(115, 338);
             this.pbrContinusTest.Name = "pbrContinusTest";
             this.pbrContinusTest.Size = new System.Drawing.Size(216, 23);
             this.pbrContinusTest.TabIndex = 31;
@@ -1311,9 +1473,9 @@
             // 
             // btnReadConfigFile
             // 
-            this.btnReadConfigFile.Location = new System.Drawing.Point(242, 398);
+            this.btnReadConfigFile.Location = new System.Drawing.Point(119, 652);
             this.btnReadConfigFile.Name = "btnReadConfigFile";
-            this.btnReadConfigFile.Size = new System.Drawing.Size(98, 57);
+            this.btnReadConfigFile.Size = new System.Drawing.Size(98, 38);
             this.btnReadConfigFile.TabIndex = 29;
             this.btnReadConfigFile.Text = "讀取參數檔";
             this.btnReadConfigFile.UseVisualStyleBackColor = true;
@@ -1322,6 +1484,7 @@
             // 
             // gbAOISetup
             // 
+            this.gbAOISetup.Controls.Add(this.cbNotchMark);
             this.gbAOISetup.Controls.Add(this.cbFillWafer);
             this.gbAOISetup.Controls.Add(this.cbManualBinary);
             this.gbAOISetup.Controls.Add(this.gbBinaryTHL);
@@ -1340,6 +1503,17 @@
             this.gbAOISetup.TabIndex = 18;
             this.gbAOISetup.TabStop = false;
             this.gbAOISetup.Text = "影像參數設定";
+            // 
+            // cbNotchMark
+            // 
+            this.cbNotchMark.AutoSize = true;
+            this.cbNotchMark.Location = new System.Drawing.Point(7, 221);
+            this.cbNotchMark.Name = "cbNotchMark";
+            this.cbNotchMark.Size = new System.Drawing.Size(98, 20);
+            this.cbNotchMark.TabIndex = 21;
+            this.cbNotchMark.Text = "Notch Mark";
+            this.cbNotchMark.UseVisualStyleBackColor = true;
+            this.cbNotchMark.CheckedChanged += new System.EventHandler(this.cbNotchMark_CheckedChanged);
             // 
             // cbFillWafer
             // 
@@ -1538,7 +1712,7 @@
             // 
             // btnTestInfoBackup
             // 
-            this.btnTestInfoBackup.Location = new System.Drawing.Point(242, 338);
+            this.btnTestInfoBackup.Location = new System.Drawing.Point(235, 275);
             this.btnTestInfoBackup.Name = "btnTestInfoBackup";
             this.btnTestInfoBackup.Size = new System.Drawing.Size(98, 57);
             this.btnTestInfoBackup.TabIndex = 27;
@@ -1560,9 +1734,9 @@
             // 
             // btnCalculateResutl
             // 
-            this.btnCalculateResutl.Location = new System.Drawing.Point(242, 275);
+            this.btnCalculateResutl.Location = new System.Drawing.Point(223, 654);
             this.btnCalculateResutl.Name = "btnCalculateResutl";
-            this.btnCalculateResutl.Size = new System.Drawing.Size(98, 57);
+            this.btnCalculateResutl.Size = new System.Drawing.Size(98, 36);
             this.btnCalculateResutl.TabIndex = 19;
             this.btnCalculateResutl.Text = "計算";
             this.btnCalculateResutl.UseVisualStyleBackColor = true;
@@ -1594,7 +1768,9 @@
             // 
             // gbAdvance
             // 
+            this.gbAdvance.Controls.Add(this.cbOffsetType);
             this.gbAdvance.Controls.Add(this.gbAlarmStop);
+            this.gbAdvance.Controls.Add(this.cbCheckWaferPresentInAutoRun);
             this.gbAdvance.Controls.Add(this.gbCalibrate);
             this.gbAdvance.Controls.Add(this.btnSaveParas);
             this.gbAdvance.Controls.Add(this.gbDownloadData);
@@ -1605,6 +1781,17 @@
             this.gbAdvance.Size = new System.Drawing.Size(345, 693);
             this.gbAdvance.TabIndex = 6;
             this.gbAdvance.TabStop = false;
+            // 
+            // cbOffsetType
+            // 
+            this.cbOffsetType.AutoSize = true;
+            this.cbOffsetType.Location = new System.Drawing.Point(9, 481);
+            this.cbOffsetType.Name = "cbOffsetType";
+            this.cbOffsetType.Size = new System.Drawing.Size(159, 20);
+            this.cbOffsetType.TabIndex = 5;
+            this.cbOffsetType.Text = "根據平均位置計算偏移量";
+            this.cbOffsetType.UseVisualStyleBackColor = true;
+            this.cbOffsetType.CheckedChanged += new System.EventHandler(this.cbOffsetType_CheckedChanged);
             // 
             // gbAlarmStop
             // 
@@ -1678,6 +1865,17 @@
             this.lbOOffsetUpLimit.Size = new System.Drawing.Size(112, 16);
             this.lbOOffsetUpLimit.TabIndex = 0;
             this.lbOOffsetUpLimit.Text = "O offset 上限(mm)";
+            // 
+            // cbCheckWaferPresentInAutoRun
+            // 
+            this.cbCheckWaferPresentInAutoRun.AutoSize = true;
+            this.cbCheckWaferPresentInAutoRun.Location = new System.Drawing.Point(12, 456);
+            this.cbCheckWaferPresentInAutoRun.Name = "cbCheckWaferPresentInAutoRun";
+            this.cbCheckWaferPresentInAutoRun.Size = new System.Drawing.Size(143, 20);
+            this.cbCheckWaferPresentInAutoRun.TabIndex = 4;
+            this.cbCheckWaferPresentInAutoRun.Text = "Present sensor 啟用";
+            this.cbCheckWaferPresentInAutoRun.UseVisualStyleBackColor = true;
+            this.cbCheckWaferPresentInAutoRun.CheckedChanged += new System.EventHandler(this.cbCheckWaferPresentInAutoRun_CheckedChanged);
             // 
             // gbCalibrate
             // 
@@ -1818,8 +2016,6 @@
             // 
             // gbAdvanceParas
             // 
-            this.gbAdvanceParas.Controls.Add(this.cbOffsetType);
-            this.gbAdvanceParas.Controls.Add(this.cbCheckWaferPresentInAutoRun);
             this.gbAdvanceParas.Controls.Add(this.gbOutputFolder);
             this.gbAdvanceParas.Dock = System.Windows.Forms.DockStyle.Top;
             this.gbAdvanceParas.Location = new System.Drawing.Point(3, 19);
@@ -1829,35 +2025,13 @@
             this.gbAdvanceParas.TabStop = false;
             this.gbAdvanceParas.Text = "進階參數";
             // 
-            // cbOffsetType
-            // 
-            this.cbOffsetType.AutoSize = true;
-            this.cbOffsetType.Location = new System.Drawing.Point(183, 48);
-            this.cbOffsetType.Name = "cbOffsetType";
-            this.cbOffsetType.Size = new System.Drawing.Size(159, 20);
-            this.cbOffsetType.TabIndex = 5;
-            this.cbOffsetType.Text = "根據平均位置計算偏移量";
-            this.cbOffsetType.UseVisualStyleBackColor = true;
-            this.cbOffsetType.CheckedChanged += new System.EventHandler(this.cbOffsetType_CheckedChanged);
-            // 
-            // cbCheckWaferPresentInAutoRun
-            // 
-            this.cbCheckWaferPresentInAutoRun.AutoSize = true;
-            this.cbCheckWaferPresentInAutoRun.Location = new System.Drawing.Point(183, 19);
-            this.cbCheckWaferPresentInAutoRun.Name = "cbCheckWaferPresentInAutoRun";
-            this.cbCheckWaferPresentInAutoRun.Size = new System.Drawing.Size(143, 20);
-            this.cbCheckWaferPresentInAutoRun.TabIndex = 4;
-            this.cbCheckWaferPresentInAutoRun.Text = "Present sensor 啟用";
-            this.cbCheckWaferPresentInAutoRun.UseVisualStyleBackColor = true;
-            this.cbCheckWaferPresentInAutoRun.CheckedChanged += new System.EventHandler(this.cbCheckWaferPresentInAutoRun_CheckedChanged);
-            // 
             // gbOutputFolder
             // 
             this.gbOutputFolder.Controls.Add(this.lbShowOutputFolder);
             this.gbOutputFolder.Controls.Add(this.btnOutputFolder);
             this.gbOutputFolder.Location = new System.Drawing.Point(6, 19);
             this.gbOutputFolder.Name = "gbOutputFolder";
-            this.gbOutputFolder.Size = new System.Drawing.Size(160, 56);
+            this.gbOutputFolder.Size = new System.Drawing.Size(327, 56);
             this.gbOutputFolder.TabIndex = 3;
             this.gbOutputFolder.TabStop = false;
             this.gbOutputFolder.Text = "輸出資料夾";
@@ -1867,14 +2041,14 @@
             this.lbShowOutputFolder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lbShowOutputFolder.Location = new System.Drawing.Point(6, 25);
             this.lbShowOutputFolder.Name = "lbShowOutputFolder";
-            this.lbShowOutputFolder.Size = new System.Drawing.Size(77, 26);
+            this.lbShowOutputFolder.Size = new System.Drawing.Size(255, 26);
             this.lbShowOutputFolder.TabIndex = 1;
             this.lbShowOutputFolder.Text = "D:\\";
             this.lbShowOutputFolder.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // btnOutputFolder
             // 
-            this.btnOutputFolder.Location = new System.Drawing.Point(100, 11);
+            this.btnOutputFolder.Location = new System.Drawing.Point(267, 11);
             this.btnOutputFolder.Name = "btnOutputFolder";
             this.btnOutputFolder.Size = new System.Drawing.Size(54, 40);
             this.btnOutputFolder.TabIndex = 2;
@@ -1895,6 +2069,10 @@
             // 
             // gbTest
             // 
+            this.gbTest.Controls.Add(this.udCrabDelayTime);
+            this.gbTest.Controls.Add(this.gbRepeatTest);
+            this.gbTest.Controls.Add(this.lbCrabDelayTime);
+            this.gbTest.Controls.Add(this.btnWaferAlignment);
             this.gbTest.Controls.Add(this.gbMotionTest);
             this.gbTest.Controls.Add(this.gbPresent);
             this.gbTest.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1904,23 +2082,9 @@
             this.gbTest.TabIndex = 0;
             this.gbTest.TabStop = false;
             // 
-            // gbMotionTest
-            // 
-            this.gbMotionTest.Controls.Add(this.udCrabDelayTime);
-            this.gbMotionTest.Controls.Add(this.lbCrabDelayTime);
-            this.gbMotionTest.Controls.Add(this.btnRepeatMotionTest);
-            this.gbMotionTest.Controls.Add(this.btnWaferAlignment);
-            this.gbMotionTest.Dock = System.Windows.Forms.DockStyle.Top;
-            this.gbMotionTest.Location = new System.Drawing.Point(3, 244);
-            this.gbMotionTest.Name = "gbMotionTest";
-            this.gbMotionTest.Size = new System.Drawing.Size(339, 99);
-            this.gbMotionTest.TabIndex = 8;
-            this.gbMotionTest.TabStop = false;
-            this.gbMotionTest.Text = "動作測試";
-            // 
             // udCrabDelayTime
             // 
-            this.udCrabDelayTime.Location = new System.Drawing.Point(246, 22);
+            this.udCrabDelayTime.Location = new System.Drawing.Point(114, 283);
             this.udCrabDelayTime.Maximum = new decimal(new int[] {
             99999,
             0,
@@ -1936,34 +2100,116 @@
             0});
             this.udCrabDelayTime.ValueChanged += new System.EventHandler(this.udCrabDelayTime_ValueChanged);
             // 
+            // gbRepeatTest
+            // 
+            this.gbRepeatTest.Controls.Add(this.lbRepeatType);
+            this.gbRepeatTest.Controls.Add(this.cmbRepeatType);
+            this.gbRepeatTest.Controls.Add(this.btnRepeatTestExcute);
+            this.gbRepeatTest.Controls.Add(this.lbRepeatTestTimes);
+            this.gbRepeatTest.Controls.Add(this.udRepeatTestTimes);
+            this.gbRepeatTest.Location = new System.Drawing.Point(6, 331);
+            this.gbRepeatTest.Name = "gbRepeatTest";
+            this.gbRepeatTest.Size = new System.Drawing.Size(333, 353);
+            this.gbRepeatTest.TabIndex = 9;
+            this.gbRepeatTest.TabStop = false;
+            this.gbRepeatTest.Text = "重複性測試";
+            // 
+            // lbRepeatType
+            // 
+            this.lbRepeatType.AutoSize = true;
+            this.lbRepeatType.Location = new System.Drawing.Point(14, 36);
+            this.lbRepeatType.Name = "lbRepeatType";
+            this.lbRepeatType.Size = new System.Drawing.Size(56, 16);
+            this.lbRepeatType.TabIndex = 14;
+            this.lbRepeatType.Text = "測試模式";
+            // 
+            // cmbRepeatType
+            // 
+            this.cmbRepeatType.FormattingEnabled = true;
+            this.cmbRepeatType.Items.AddRange(new object[] {
+            "Rotation",
+            "Translation_X",
+            "Translation_Y"});
+            this.cmbRepeatType.Location = new System.Drawing.Point(88, 33);
+            this.cmbRepeatType.Name = "cmbRepeatType";
+            this.cmbRepeatType.Size = new System.Drawing.Size(121, 24);
+            this.cmbRepeatType.TabIndex = 13;
+            this.cmbRepeatType.Text = "Rotation";
+            // 
+            // btnRepeatTestExcute
+            // 
+            this.btnRepeatTestExcute.Location = new System.Drawing.Point(240, 22);
+            this.btnRepeatTestExcute.Name = "btnRepeatTestExcute";
+            this.btnRepeatTestExcute.Size = new System.Drawing.Size(87, 44);
+            this.btnRepeatTestExcute.TabIndex = 12;
+            this.btnRepeatTestExcute.Text = "執行";
+            this.btnRepeatTestExcute.UseVisualStyleBackColor = true;
+            this.btnRepeatTestExcute.Click += new System.EventHandler(this.btnRepeatTestExcute_Click);
+            // 
+            // lbRepeatTestTimes
+            // 
+            this.lbRepeatTestTimes.AutoSize = true;
+            this.lbRepeatTestTimes.Location = new System.Drawing.Point(14, 74);
+            this.lbRepeatTestTimes.Name = "lbRepeatTestTimes";
+            this.lbRepeatTestTimes.Size = new System.Drawing.Size(56, 16);
+            this.lbRepeatTestTimes.TabIndex = 11;
+            this.lbRepeatTestTimes.Text = "測試次數";
+            // 
+            // udRepeatTestTimes
+            // 
+            this.udRepeatTestTimes.Location = new System.Drawing.Point(88, 72);
+            this.udRepeatTestTimes.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.udRepeatTestTimes.Name = "udRepeatTestTimes";
+            this.udRepeatTestTimes.Size = new System.Drawing.Size(62, 23);
+            this.udRepeatTestTimes.TabIndex = 0;
+            this.udRepeatTestTimes.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
             // lbCrabDelayTime
             // 
             this.lbCrabDelayTime.AutoSize = true;
-            this.lbCrabDelayTime.Location = new System.Drawing.Point(148, 24);
+            this.lbCrabDelayTime.Location = new System.Drawing.Point(119, 250);
             this.lbCrabDelayTime.Name = "lbCrabDelayTime";
             this.lbCrabDelayTime.Size = new System.Drawing.Size(92, 16);
             this.lbCrabDelayTime.TabIndex = 2;
             this.lbCrabDelayTime.Text = "取像延遲時間：";
             // 
-            // btnRepeatMotionTest
-            // 
-            this.btnRepeatMotionTest.Location = new System.Drawing.Point(246, 57);
-            this.btnRepeatMotionTest.Name = "btnRepeatMotionTest";
-            this.btnRepeatMotionTest.Size = new System.Drawing.Size(90, 34);
-            this.btnRepeatMotionTest.TabIndex = 1;
-            this.btnRepeatMotionTest.Text = "重複性測試";
-            this.btnRepeatMotionTest.UseVisualStyleBackColor = true;
-            this.btnRepeatMotionTest.Click += new System.EventHandler(this.btnRepeatMotionTest_Click);
-            // 
             // btnWaferAlignment
             // 
-            this.btnWaferAlignment.Location = new System.Drawing.Point(20, 22);
+            this.btnWaferAlignment.Location = new System.Drawing.Point(6, 250);
             this.btnWaferAlignment.Name = "btnWaferAlignment";
             this.btnWaferAlignment.Size = new System.Drawing.Size(90, 34);
             this.btnWaferAlignment.TabIndex = 0;
             this.btnWaferAlignment.Text = "Wafer 置中";
             this.btnWaferAlignment.UseVisualStyleBackColor = true;
             this.btnWaferAlignment.Click += new System.EventHandler(this.btnWaferAlignment_Click);
+            // 
+            // gbMotionTest
+            // 
+            this.gbMotionTest.Controls.Add(this.btnRepeatMotionTest);
+            this.gbMotionTest.Location = new System.Drawing.Point(210, 250);
+            this.gbMotionTest.Name = "gbMotionTest";
+            this.gbMotionTest.Size = new System.Drawing.Size(132, 75);
+            this.gbMotionTest.TabIndex = 8;
+            this.gbMotionTest.TabStop = false;
+            this.gbMotionTest.Text = "動作測試";
+            // 
+            // btnRepeatMotionTest
+            // 
+            this.btnRepeatMotionTest.Location = new System.Drawing.Point(9, 22);
+            this.btnRepeatMotionTest.Name = "btnRepeatMotionTest";
+            this.btnRepeatMotionTest.Size = new System.Drawing.Size(117, 34);
+            this.btnRepeatMotionTest.TabIndex = 1;
+            this.btnRepeatMotionTest.Text = "重複性測試(5)";
+            this.btnRepeatMotionTest.UseVisualStyleBackColor = true;
+            this.btnRepeatMotionTest.Click += new System.EventHandler(this.btnRepeatMotionTest_Click);
             // 
             // gbPresent
             // 
@@ -2756,7 +3002,7 @@
             this.Controls.Add(this.statusStrip1);
             this.ImeMode = System.Windows.Forms.ImeMode.Off;
             this.Name = "FormMain";
-            this.Text = "Aligner Verification - Ver.1.05";
+            this.Text = "Aligner Verification - Ver.1.06";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.BottomPanel.ResumeLayout(false);
@@ -2793,6 +3039,8 @@
             this.gbSingleMotion.ResumeLayout(false);
             this.AOIPage.ResumeLayout(false);
             this.gbAOI.ResumeLayout(false);
+            this.gbRepeatResult.ResumeLayout(false);
+            this.gbRepeatResult.PerformLayout();
             this.gbAOISetup.ResumeLayout(false);
             this.gbAOISetup.PerformLayout();
             this.gbBinaryTHL.ResumeLayout(false);
@@ -2804,6 +3052,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.tkbrROITop)).EndInit();
             this.AdvancePage.ResumeLayout(false);
             this.gbAdvance.ResumeLayout(false);
+            this.gbAdvance.PerformLayout();
             this.gbAlarmStop.ResumeLayout(false);
             this.gbAlarmStop.PerformLayout();
             this.gbCalibrate.ResumeLayout(false);
@@ -2811,13 +3060,15 @@
             this.gbDownloadData.ResumeLayout(false);
             this.gbDownloadData.PerformLayout();
             this.gbAdvanceParas.ResumeLayout(false);
-            this.gbAdvanceParas.PerformLayout();
             this.gbOutputFolder.ResumeLayout(false);
             this.TestTabControl.ResumeLayout(false);
             this.gbTest.ResumeLayout(false);
-            this.gbMotionTest.ResumeLayout(false);
-            this.gbMotionTest.PerformLayout();
+            this.gbTest.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udCrabDelayTime)).EndInit();
+            this.gbRepeatTest.ResumeLayout(false);
+            this.gbRepeatTest.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.udRepeatTestTimes)).EndInit();
+            this.gbMotionTest.ResumeLayout(false);
             this.gbPresent.ResumeLayout(false);
             this.gbPresentTest.ResumeLayout(false);
             this.gbPresentTest.PerformLayout();
@@ -3059,6 +3310,26 @@
         private System.Windows.Forms.Label lbCpkDegOffset;
         private System.Windows.Forms.Label lbCpkMMYOffset;
         private System.Windows.Forms.Label lbCpkMMXOffset;
+        private System.Windows.Forms.GroupBox gbRepeatTest;
+        private System.Windows.Forms.Button btnRepeatTestExcute;
+        private System.Windows.Forms.Label lbRepeatTestTimes;
+        private System.Windows.Forms.NumericUpDown udRepeatTestTimes;
+        private System.Windows.Forms.Label lbRepeatType;
+        private System.Windows.Forms.ComboBox cmbRepeatType;
+        private System.Windows.Forms.GroupBox gbRepeatResult;
+        private System.Windows.Forms.Label lbRepeatP2Pox;
+        private System.Windows.Forms.Label lbRepeatP1P2FullRange;
+        private System.Windows.Forms.Label lbRepeatPOPox;
+        private System.Windows.Forms.Label lbRepeatP3Pox;
+        private System.Windows.Forms.Label lbRepeatP1Pox;
+        private System.Windows.Forms.Label lbRepeatP1P3FullRange;
+        private System.Windows.Forms.Label lbRepeatP3POFullRange;
+        private System.Windows.Forms.Label lbRepeatP2POFullRange;
+        private System.Windows.Forms.Label lbRepeatP1POFullRange;
+        private System.Windows.Forms.Label lbRPa;
+        private System.Windows.Forms.Label lbRPi;
+        private System.Windows.Forms.CheckBox cbNotchMark;
+        private System.Windows.Forms.Button AlignerReset;
     }
 }
 

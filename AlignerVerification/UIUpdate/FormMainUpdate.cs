@@ -13,9 +13,6 @@ using AlignerVerification.Comm;
 using AlignerVerification.Controller;
 using AlignerVerification.AOI;
 
-
-
-
 using Emgu.CV;
 using Emgu.CV.Structure;
 using Emgu.CV.CvEnum;
@@ -199,6 +196,15 @@ namespace AlignerVerification.UIUpdate
                     imgBox = form.Controls.Find("DisplayImageBox", true).FirstOrDefault() as ImageBox;
 
                     Mat DrawMat = mat.Clone();
+
+                    int r = (int)(Math.Sqrt(Math.Pow(AOITool.TopPt.X - AOITool.CenterPt.X, 2) + Math.Pow(AOITool.TopPt.Y - AOITool.CenterPt.Y, 2)) + 0.5);
+                    CvInvoke.Circle(DrawMat, AOITool.CenterPt, r, new MCvScalar(0, 255, 0),10);
+
+                    if (MachineParas.WaferType == 1 && !AOITool.NotchMark)
+                    {
+                        CvInvoke.Line(DrawMat, AOITool.EndPt, AOITool.NotchPt, new MCvScalar(255, 0, 255), 10);
+                    }
+
                     Point topPoint = new Point(AOITool.TopPt.X, AOITool.TopPt.Y);
                     DrawCrossPoint(DrawMat, topPoint, new MCvScalar(255, 0, 0), 25, 10);
 
@@ -218,19 +224,16 @@ namespace AlignerVerification.UIUpdate
                     
                     lb = form.Controls.Find("lbTopPosX", true).FirstOrDefault() as Label;
                     if(lb!= null)
-                        //lb.Text = Math.Round(Statistics.NowOrigin.X, 5).ToString();
                         lb.Text = Math.Round(Statistics.NowTop.X, 5).ToString();
 
                     lb = null;
                     lb = form.Controls.Find("lbTopPosY", true).FirstOrDefault() as Label;
                     if (lb != null)
-                        //lb.Text = Math.Round(Statistics.NowOrigin.Y, 5).ToString();
                         lb.Text = Math.Round(Statistics.NowTop.Y, 5).ToString();
 
                     lb = null;
                     lb = form.Controls.Find("lbAvgTopPosX", true).FirstOrDefault() as Label;
                     if (lb != null)
-                        //lb.Text = Math.Round(Statistics.AvgOrigin.X, 5).ToString();
                         lb.Text = Math.Round(Statistics.AvgTop.X, 5).ToString();
 
                     lb = null;
@@ -262,7 +265,6 @@ namespace AlignerVerification.UIUpdate
                     lb = null;
                     lb = form.Controls.Find("lbToffset", true).FirstOrDefault() as Label;
                     if (lb != null)
-                        //lb.Text = Math.Round(Statistics.OOffset, 5).ToString();
                         lb.Text = Math.Round(Statistics.TOffset, 5).ToString();
                     lb = null;
                     lb = form.Controls.Find("lbNoffset", true).FirstOrDefault() as Label;
@@ -337,6 +339,23 @@ namespace AlignerVerification.UIUpdate
                         lb.Text = string.Format("Cpk(Y_mm)_{0:F3}", Statistics.CpkYOffsetT);
                     }
 
+                    if(Cnt > 2)
+                    {
+                        lb = null;
+                        lb = form.Controls.Find("lbRPi", true).FirstOrDefault() as Label;
+                        if (lb != null)
+                        {
+                            lb.Text = string.Format("RPi_{0:F3}", Statistics.RPi);
+                        }
+
+                        lb = null;
+                        lb = form.Controls.Find("lbRPa", true).FirstOrDefault() as Label;
+                        if (lb != null)
+                        {
+                            lb.Text = string.Format("RPa_{0:F3}", Statistics.RPa);
+                        }
+                    }
+
 
                     form.Refresh();
 
@@ -354,6 +373,95 @@ namespace AlignerVerification.UIUpdate
                 logger.Debug(e.StackTrace);
             }
         }
+
+        delegate void UpdateRepeaTestInfo(string RootDirectory, Mat mat, Tool AOITool, float ZoomRadioX, float ZoomRadioY, int Cnt);
+        public static void RepeaTestInfoUpdate(string RootDirectory, Mat mat, Tool AOITool, float ZoomRadioX, float ZoomRadioY, int Cnt)
+        {
+            try
+            {
+                Form form = Application.OpenForms["FormMain"];
+                if (form.InvokeRequired)
+                {
+                    UpdateRepeaTestInfo ph = new UpdateRepeaTestInfo(RepeaTestInfoUpdate);
+                    form.BeginInvoke(ph, RootDirectory, mat, AOITool, ZoomRadioX, ZoomRadioY, Cnt);                
+                }
+                else
+                {
+                    ImageBox imgBox = null;
+                    imgBox = form.Controls.Find("DisplayImageBox", true).FirstOrDefault() as ImageBox;
+
+                    Mat DrawMat = mat.Clone();
+                    //重複精度
+                    Point Pt1 = new Point(AOITool.RepeatPt1.X, AOITool.RepeatPt1.Y);
+                    Point Pt2 = new Point(AOITool.RepeatPt2.X, AOITool.RepeatPt2.Y);
+                    Point Pt3 = new Point(AOITool.RepeatPt3.X, AOITool.RepeatPt3.Y);
+                    Point PtO = new Point(AOITool.CenterPt.X, AOITool.CenterPt.Y);
+
+                    DrawCrossPoint(DrawMat, Pt1, new MCvScalar(255, 0, 0), 30, 15);
+                    DrawCrossPoint(DrawMat, Pt2, new MCvScalar(255, 0, 0), 30, 15);
+                    DrawCrossPoint(DrawMat, Pt3, new MCvScalar(255, 0, 0), 30, 15);
+
+                    imgBox.Image = DrawMat;
+                    imgBox.Refresh();
+
+                    Label lb = null;
+                    lb = form.Controls.Find("lbShowCurrentCnt", true).FirstOrDefault() as Label;
+                    if (lb != null)
+                        lb.Text = "n = " + Cnt.ToString();
+
+                    lb = form.Controls.Find("lbRepeatP1Pox", true).FirstOrDefault() as Label;
+                    if (lb != null)
+                        lb.Text = string.Format("P1 x = {0:F3}, y = {1:F3}", Pt1.X / AOITool.PixelPerMM, Pt1.Y / AOITool.PixelPerMM);
+
+                    lb = null;
+                    lb = form.Controls.Find("lbRepeatP2Pox", true).FirstOrDefault() as Label;
+                    if (lb != null)
+                        lb.Text = string.Format("P2 x = {0:F3}, y = {1:F3}", Pt2.X / AOITool.PixelPerMM, Pt2.Y / AOITool.PixelPerMM);
+
+                    lb = null;
+                    lb = form.Controls.Find("lbRepeatP3Pox", true).FirstOrDefault() as Label;
+                    if (lb != null)
+                        lb.Text = string.Format("P3 x = {0:F3}, y = {1:F3}", Pt3.X / AOITool.PixelPerMM, Pt3.Y / AOITool.PixelPerMM);
+
+                    lb = null;
+                    lb = form.Controls.Find("lbRepeatPOPox", true).FirstOrDefault() as Label;
+                    if (lb != null)
+                        lb.Text = string.Format("PO x = {0:F3}, y = {1:F3}", PtO.X / AOITool.PixelPerMM, PtO.Y / AOITool.PixelPerMM);
+            
+                    lb = null;
+                    lb = form.Controls.Find("lbRepeatP1P2FullRange", true).FirstOrDefault() as Label;
+                    if (lb != null)
+                        lb.Text = string.Format("P1P2 Angle FullRange {0:F3}", Statistics.RepeatPT1PT2AngleOffset);
+
+                    lb = null;
+                    lb = form.Controls.Find("lbRepeatP1P3FullRange", true).FirstOrDefault() as Label;
+                    if (lb != null)
+                        lb.Text = string.Format("P1P3 Angle FullRange {0:F3}", Statistics.RepeatPT1PT3AngleOffset);
+
+                    lb = null;
+                    lb = form.Controls.Find("lbRepeatP1POFullRange", true).FirstOrDefault() as Label;
+                    if (lb != null)
+                        lb.Text = string.Format("P1PO Angle FullRange {0:F3}", Statistics.RepeatPT1PTOAngleOffset);
+
+                    lb = null;
+                    lb = form.Controls.Find("lbRepeatP2POFullRange", true).FirstOrDefault() as Label;
+                    if (lb != null)
+                        lb.Text = string.Format("P2PO Angle FullRange {0:F3}", Statistics.RepeatPT2PTOAngleOffset);
+
+                    lb = null;
+                    lb = form.Controls.Find("lbRepeatP3POFullRange", true).FirstOrDefault() as Label;
+                    if (lb != null)
+                        lb.Text = string.Format("P3PO Angle FullRange {0:F3}", Statistics.RepeatPT3PTOAngleOffset);
+
+                    form.Refresh();
+                }
+            }
+            catch (Exception e)
+            {
+                logger.Debug(e.StackTrace);
+            }
+        }
+
 
         delegate void UpdateShowImage(Mat mat);
         public static void ShowImageUpdate(Mat mat)

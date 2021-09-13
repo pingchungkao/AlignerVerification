@@ -58,6 +58,7 @@ namespace AlignerVerification.Class
 
         //Notch與原點之間的距離
         public static double AvgDistance;
+        #region CPK
         /// <summary>
         /// 規格寬度（規格上限-規格下限）
         /// </summary>
@@ -67,6 +68,66 @@ namespace AlignerVerification.Class
         public static double CpkXOffsetT = 0;
         public static double CpkYOffsetT = 0;
         public static double CpkOffsetDeg = 0;
+        #endregion
+        #region 重複性
+        public static List<Point> RepeatPT1List = new List<Point>();
+        public static List<double> RepeatPT1OffsetList = new List<double>();
+        public static List<Point> RepeatPT2List = new List<Point>();
+        public static List<double> RepeatPT2OffsetList = new List<double>();
+        public static List<Point> RepeatPT3List = new List<Point>();
+        public static List<double> RepeatPT3OffsetList = new List<double>();
+        public static List<Point> RepeatPTOList = new List<Point>();
+        public static List<double> RepeatPTOOffsetList = new List<double>();
+
+        public static List<double> PT1PT2AngleList = new List<double>();
+        public static List<double> PT1PT3AngleList = new List<double>();
+        public static List<double> PT1PTOAngleList = new List<double>();
+        public static List<double> PT2PTOAngleList = new List<double>();
+        public static List<double> PT3PTOAngleList = new List<double>();
+
+        public static Point NowRepeatPT1 = new Point();
+        public static Point NowRepeatPT2 = new Point();
+        public static Point NowRepeatPT3 = new Point();
+        public static Point NowRepeatPTO = new Point();
+
+        public static double RepeatPT1Offset;
+        public static double RepeatPT1Sigma;
+        public static double RepeatPT2Offset;
+        public static double RepeatPT2Sigma;
+        public static double RepeatPT3Offset;
+        public static double RepeatPT3Sigma;
+        public static double RepeatPTOOffset;
+        public static double RepeatPTOSigma;
+
+        public static double RepeatPT1PT2AngleOffset;
+        public static double RepeatPT1PT2AngleMax;
+        public static double RepeatPT1PT2AngleMin;
+        public static double PT1PT2AngleSigma;
+
+        public static double RepeatPT1PT3AngleOffset;
+        public static double RepeatPT1PT3AngleMax;
+        public static double RepeatPT1PT3AngleMin;
+        public static double PT1PT3AngleSigma;
+
+        public static double RepeatPT1PTOAngleOffset;
+        public static double RepeatPT1PTOAngleMax;
+        public static double RepeatPT1PTOAngleMin;
+        public static double PT1PTOAngleSigma;
+
+        public static double RepeatPT2PTOAngleOffset;
+        public static double RepeatPT2PTOAngleMax;
+        public static double RepeatPT2PTOAngleMin;
+        public static double PT2PTOAngleSigma;
+
+        public static double RepeatPT3PTOAngleOffset;
+        public static double RepeatPT3PTOAngleMax;
+        public static double RepeatPT3PTOAngleMin;
+        public static double PT3PTOAngleSigma;
+
+        #endregion
+
+        public static double RPi;
+        public static double RPa;
 
         public static void Reset()
         {
@@ -126,6 +187,281 @@ namespace AlignerVerification.Class
             CpkOffsetDeg = 0.0;
             CpkXOffsetT = 0.0;
             CpkYOffsetT = 0.0;
+
+#region 重複性
+            NowRepeatPT1.X = NowRepeatPT1.Y = 0;
+            NowRepeatPT2.X = NowRepeatPT2.Y = 0;
+            NowRepeatPT3.X = NowRepeatPT3.Y = 0;
+            NowRepeatPTO.X = NowRepeatPTO.Y = 0;
+
+            RepeatPT1Offset = 0.0;
+            RepeatPT2Offset = 0.0;
+            RepeatPT3Offset = 0.0;
+            RepeatPTOOffset = 0.0;
+
+            RepeatPT1PT2AngleOffset = 0.0;
+            RepeatPT1PT2AngleMax = -90;
+            RepeatPT1PT2AngleMin = 90;
+            PT1PT2AngleSigma = 0.0;
+
+            RepeatPT1PT3AngleOffset = 0.0;
+            RepeatPT1PT3AngleMax = -90;
+            RepeatPT1PT3AngleMin = 90;
+            PT1PT3AngleSigma = 0.0;
+
+            RepeatPT1PTOAngleOffset = 0.0;
+            RepeatPT1PTOAngleMax = -90;
+            RepeatPT1PTOAngleMin = 90;
+            PT1PTOAngleSigma = 0.0;
+
+            RepeatPT2PTOAngleOffset = 0.0;
+            RepeatPT2PTOAngleMax = -90;
+            RepeatPT2PTOAngleMin = 90;
+            PT2PTOAngleSigma = 0.0;
+
+            RepeatPT3PTOAngleOffset = 0.0;
+            RepeatPT3PTOAngleMax = -90;
+            RepeatPT3PTOAngleMin = 90;
+            PT3PTOAngleSigma = 0.0;
+
+            RepeatPT1List.Clear();
+            RepeatPT2List.Clear();
+            RepeatPT3List.Clear();
+            RepeatPTOList.Clear();
+
+            PT1PT2AngleList.Clear();
+            PT1PT3AngleList.Clear();
+            PT1PTOAngleList.Clear();
+            PT2PTOAngleList.Clear();
+            PT3PTOAngleList.Clear();
+
+            RepeatPT1OffsetList.Clear();
+            RepeatPT2OffsetList.Clear();
+            RepeatPT3OffsetList.Clear();
+            RepeatPTOOffsetList.Clear();
+#endregion
+        }
+
+        public static void AddRepeatPt(Point pt1, Point pt2, Point pt3, Point o)
+        {
+            RepeatPT1List.Add(pt1);
+            RepeatPT2List.Add(pt2);
+            RepeatPT3List.Add(pt3);
+            RepeatPTOList.Add(o);
+
+            NowRepeatPT1 = pt1;
+            NowRepeatPT2 = pt2;
+            NowRepeatPT3 = pt3;
+            NowRepeatPTO = o;
+
+            double Temp = 0.0;
+
+            foreach (Point pt in RepeatPT1List)
+            {
+                Temp = Math.Sqrt(Math.Pow((NowRepeatPT1.X - pt.X), 2) + Math.Pow((NowRepeatPT1.Y - pt.Y), 2));
+
+                if (Temp > RepeatPT1Offset) RepeatPT1Offset = Temp;
+            }
+
+            double avgX, avgY;
+
+            avgX = RepeatPT1List.Average(x => x.X);
+            avgY = RepeatPT1List.Average(x => x.Y);
+
+            RepeatPT1OffsetList.Add(Math.Sqrt(Math.Pow((NowRepeatPT1.X - avgX),2) + Math.Pow((NowRepeatPT1.Y - avgY),2)));
+
+            if (RepeatPT1List.Count > 1)
+            {
+                RepeatPT1Sigma = 0.0;
+
+                foreach(double offset in RepeatPT1OffsetList)
+                {
+                    RepeatPT1Sigma += Math.Pow((offset - RepeatPT1OffsetList.Average(x=>x)), 2);
+                }
+
+                RepeatPT1Sigma = Math.Sqrt(RepeatPT1Sigma / (RepeatPT1OffsetList.Count - 1));
+            }
+
+           
+            foreach (Point pt in RepeatPT2List)
+            {
+                Temp = Math.Sqrt(Math.Pow((NowRepeatPT2.X - pt.X),2) + Math.Pow((NowRepeatPT2.Y - pt.Y),2));
+
+                if (Temp > RepeatPT2Offset) RepeatPT2Offset = Temp;
+            }
+
+            avgX = RepeatPT2List.Average(x => x.X);
+            avgY = RepeatPT2List.Average(x => x.Y);
+
+            RepeatPT2OffsetList.Add(Math.Sqrt((NowRepeatPT2.X - avgX) * (NowRepeatPT2.X - avgX) + (NowRepeatPT2.Y - avgY) * (NowRepeatPT2.Y - avgY)));
+
+            if (RepeatPT2List.Count > 1)
+            {
+                RepeatPT2Sigma = 0.0;
+
+                foreach (double offset in RepeatPT2OffsetList)
+                {
+                    RepeatPT2Sigma += Math.Pow((offset - RepeatPT2OffsetList.Average(x => x)), 2);
+                }
+
+                RepeatPT2Sigma = Math.Sqrt(RepeatPT2Sigma / (RepeatPT2OffsetList.Count - 1));
+            }
+
+            foreach (Point pt in RepeatPT3List)
+            {
+                Temp = Math.Sqrt(Math.Pow((NowRepeatPT3.X - pt.X), 2) + Math.Pow((NowRepeatPT3.Y - pt.Y), 2));
+
+                if (Temp > RepeatPT3Offset) RepeatPT3Offset = Temp;
+            }
+
+            avgX = RepeatPT3List.Average(x => x.X);
+            avgY = RepeatPT3List.Average(x => x.Y);
+
+            RepeatPT3OffsetList.Add(Math.Sqrt(Math.Pow((NowRepeatPT3.X - avgX), 2) + Math.Pow((NowRepeatPT3.Y - avgY), 2)));
+
+            if (RepeatPT3List.Count > 1)
+            {
+                RepeatPT3Sigma = 0.0;
+
+                foreach (double offset in RepeatPT3OffsetList)
+                {
+                    RepeatPT3Sigma += Math.Pow((offset - RepeatPT3OffsetList.Average(x => x)), 2);
+                }
+
+                RepeatPT3Sigma = Math.Sqrt(RepeatPT3Sigma / (RepeatPT3OffsetList.Count - 1));
+            }
+
+            //原點偏移量
+            foreach (Point pt in RepeatPTOList)
+            {
+                Temp = Math.Sqrt(Math.Pow((NowRepeatPTO.X - pt.X), 2) + Math.Pow((NowRepeatPTO.Y - pt.Y), 2));
+
+                if (Temp > RepeatPTOOffset) RepeatPTOOffset = Temp;
+            }
+
+            avgX = RepeatPTOList.Average(x => x.X);
+            avgY = RepeatPTOList.Average(x => x.Y);
+
+            RepeatPTOOffsetList.Add(Math.Sqrt(Math.Pow((NowRepeatPTO.X - avgX), 2) + Math.Pow((NowRepeatPTO.Y - avgY), 2)));
+
+            if (RepeatPTOList.Count > 1)
+            {
+                RepeatPTOSigma = 0.0;
+
+                foreach (double offset in RepeatPTOOffsetList)
+                {
+                    RepeatPTOSigma += Math.Pow((offset - RepeatPTOOffsetList.Average(x => x)), 2);
+                }
+
+                RepeatPTOSigma = Math.Sqrt(RepeatPTOSigma / (RepeatPTOOffsetList.Count - 1));
+            }
+
+
+            /////////////////////////////////////////
+            Temp = Math.Atan((double)(NowRepeatPT2.Y - NowRepeatPT1.Y) / (double)(NowRepeatPT2.X - NowRepeatPT1.X)) / Math.PI * 180;
+
+            PT1PT2AngleList.Add(Temp);
+
+            if (Temp > RepeatPT1PT2AngleMax)
+                RepeatPT1PT2AngleMax = Temp;
+
+            if (Temp < RepeatPT1PT2AngleMin)
+                RepeatPT1PT2AngleMin = Temp;
+
+            RepeatPT1PT2AngleOffset = RepeatPT1PT2AngleMax - RepeatPT1PT2AngleMin;
+
+            if(PT1PT2AngleList.Count > 1)
+            {
+                PT1PT2AngleSigma = 0.0;
+                foreach(double Angle in PT1PT2AngleList)
+                    PT1PT2AngleSigma += Math.Pow((Angle - PT1PT2AngleList.Average(x => x)), 2);
+
+                PT1PT2AngleSigma = Math.Sqrt(PT1PT2AngleSigma / (PT1PT2AngleList.Count - 1));
+            }
+
+            /////////////////////////////////////////
+            Temp = Math.Atan((double)(NowRepeatPT3.Y - NowRepeatPT1.Y) / (double)(NowRepeatPT3.X - NowRepeatPT1.X)) / Math.PI * 180;
+            PT1PT3AngleList.Add(Temp);
+
+            if (Temp > RepeatPT1PT3AngleMax)
+                RepeatPT1PT3AngleMax = Temp;
+
+            if (Temp < RepeatPT1PT3AngleMin)
+                RepeatPT1PT3AngleMin = Temp;
+
+            RepeatPT1PT3AngleOffset = RepeatPT1PT3AngleMax - RepeatPT1PT3AngleMin;
+
+            if (PT1PT3AngleList.Count > 1)
+            {
+                PT1PT3AngleSigma = 0.0;
+                foreach (double Angle in PT1PT3AngleList)
+                    PT1PT3AngleSigma += Math.Pow((Angle - PT1PT3AngleList.Average(x => x)), 2);
+
+                PT1PT3AngleSigma = Math.Sqrt(PT1PT3AngleSigma / (PT1PT3AngleList.Count - 1));
+            }
+
+            ///////////
+            //圓心偏移
+            Temp = Math.Atan((double)(NowRepeatPTO.Y - NowRepeatPT1.Y) / (double)(NowRepeatPTO.X - NowRepeatPT1.X)) / Math.PI * 180;
+            PT1PTOAngleList.Add(Temp);
+
+            if (Temp > RepeatPT1PTOAngleMax)
+                RepeatPT1PTOAngleMax = Temp;
+
+            if (Temp < RepeatPT1PTOAngleMin)
+                RepeatPT1PTOAngleMin = Temp;
+
+            RepeatPT1PTOAngleOffset = RepeatPT1PTOAngleMax - RepeatPT1PTOAngleMin;
+
+            if (PT1PTOAngleList.Count > 1)
+            {
+                PT1PTOAngleSigma = 0.0;
+                foreach (double Angle in PT1PTOAngleList)
+                    PT1PTOAngleSigma += Math.Pow((Angle - PT1PTOAngleList.Average(x => x)), 2);
+
+                PT1PTOAngleSigma = Math.Sqrt(PT1PTOAngleSigma / (PT1PTOAngleList.Count - 1));
+            }
+
+            Temp = Math.Atan((double)(NowRepeatPTO.Y - NowRepeatPT2.Y) / (double)(NowRepeatPTO.X - NowRepeatPT2.X)) / Math.PI * 180;
+            PT2PTOAngleList.Add(Temp);
+
+            if (Temp > RepeatPT2PTOAngleMax)
+                RepeatPT2PTOAngleMax = Temp;
+
+            if (Temp < RepeatPT2PTOAngleMin)
+                RepeatPT2PTOAngleMin = Temp;
+
+            RepeatPT2PTOAngleOffset = RepeatPT2PTOAngleMax - RepeatPT2PTOAngleMin;
+
+            if (PT2PTOAngleList.Count > 1)
+            {
+                PT2PTOAngleSigma = 0.0;
+                foreach (double Angle in PT2PTOAngleList)
+                    PT2PTOAngleSigma += Math.Pow((Angle - PT2PTOAngleList.Average(x => x)), 2);
+
+                PT2PTOAngleSigma = Math.Sqrt(PT2PTOAngleSigma / (PT2PTOAngleList.Count - 1));
+            }
+
+            Temp = Math.Atan((double)(NowRepeatPTO.Y - NowRepeatPT3.Y) / (double)(NowRepeatPTO.X - NowRepeatPT3.X)) / Math.PI * 180;
+            PT3PTOAngleList.Add(Temp);
+
+            if (Temp > RepeatPT3PTOAngleMax)
+                RepeatPT3PTOAngleMax = Temp;
+
+            if (Temp < RepeatPT3PTOAngleMin)
+                RepeatPT3PTOAngleMin = Temp;
+
+            RepeatPT3PTOAngleOffset = RepeatPT3PTOAngleMax - RepeatPT3PTOAngleMin;
+
+            if (PT3PTOAngleList.Count > 1)
+            {
+                PT3PTOAngleSigma = 0.0;
+                foreach (double Angle in PT3PTOAngleList)
+                    PT3PTOAngleSigma += Math.Pow((Angle - PT3PTOAngleList.Average(x => x)), 2);
+
+                PT3PTOAngleSigma = Math.Sqrt(PT3PTOAngleSigma / (PT3PTOAngleList.Count - 1));
+            }
+
         }
         
         public static void AddCalibrationPT(Point Opt, Point Npt, Point Tpt)
@@ -405,6 +741,36 @@ namespace AlignerVerification.Class
             }
 
             //以上為以mm方式計算-------------------------
+        }
+
+        public static void CaculatePoseRepeatability()
+        {
+            if (TopList.Count < 2) return; 
+
+            List<double> l = new List<double>();
+
+            for (int i = 0; i < TopList.Count; i++)
+            {
+                l.Add(Math.Sqrt(Math.Pow(TopList[i].X - TopList.Average(x => x.X), 2) +
+                    Math.Pow(TopList[i].Y - TopList.Average(x => x.Y), 2)));
+            }
+
+            double Sigma = 0;
+
+            for(int i = 0; i< l.Count; i++)
+            {
+                Sigma += Math.Pow(l[i] - l.Average(x => x), 2);
+            }
+
+            RPi = l.Average(x => x) + (3 * Math.Sqrt(Sigma / (l.Count - 1)));
+
+            Sigma = 0;
+            for (int i = 0; i< NotchDegList.Count; i++)
+            {
+                Sigma += Math.Pow(NotchDegList[i] - NotchDegList.Average(x => x), 2);
+            }
+
+            RPa = 3 * Math.Sqrt(Sigma/ (NotchDegList.Count-1));
         }
     }
 }

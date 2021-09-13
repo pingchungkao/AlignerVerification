@@ -42,4 +42,3 @@ C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\obj\
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\obj\Debug\AlignerVerification.csproj.CopyComplete
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\obj\Debug\AlignerVerification.exe
 C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\obj\Debug\AlignerVerification.pdb
-C:\Users\pingchung_kao\source\repos\AlignerVerification\AlignerVerification\obj\Debug\AlignerVerification.csprojAssemblyReference.cache

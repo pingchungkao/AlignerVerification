@@ -52,16 +52,21 @@ namespace AlignerVerification.AOI
         public double Notch_Theta = 0.0;
 
         public double PixelPerMM = 300.0 / 1.67;
-
+        public bool NotchMark = false;
         public Point NotchPt;
         public PointD NotchMMPt = new PointD();
         public Point CenterPt;
         public PointD CenterMMPt = new PointD();
         public Point TopPt;
         public PointD TopMMPt = new PointD();
+        public Point EndPt;
+
 
         public Dictionary<int, Point> HighEageList = new Dictionary<int, Point>();
         public Dictionary<int, Point> LowEageList = new Dictionary<int, Point>();
+
+        //驗證重複性使用
+        public Point RepeatPt1, RepeatPt2, RepeatPt3, RepeatPtO;
 
         public int[] edge = new int[3840];
         public int[] lowedge = new int[3840];
@@ -376,36 +381,12 @@ namespace AlignerVerification.AOI
 
             double da1 = 0.0;
             double db1 = 0.0;
+            // 拟合直线方程(Y = kX + b)，k和b为返回值
             CalculateLineKB(RightEage, ref da1, ref db1);
-            //List<Point> List1 = new List<Point>();
-            //List<Point> List2 = new List<Point>();
 
-            //for (int i = 0; i<10; i++)
-            //{
-            //    List1.Add(RightEage[i]);
-            //    List2.Add(RightEage[RightEage.Count - 1 - i]);
-            //}
+            EndPt.X = 3839;
+            EndPt.Y = (int)(3839.0 * da1 + db1 + 0.5) + ROITop;
 
-            ////Point pt1 = new Point((int)(List1.Average(x => x.X) + 0.5), (int)(List1.Average(y => y.Y) + 0.5));
-            ////Point pt2 = new Point((int)(List2.Average(x => x.X) + 0.5), (int)(List2.Average(y => y.Y) + 0.5));
-            //Point pt1 = new Point((int)(List1.Max(x => x.X)), (int)(List1.Min(y => y.Y)));
-            //Point pt2 = new Point((int)(List2.Max(x => x.X)), (int)(List2.Min(y => y.Y)));
-
-
-            ////計算Notch角度
-            //if (pt1.X - pt2.X == 0)
-            //{
-            //    if(pt1.Y - pt2.Y > 0)
-            //    {
-            //        Notch_Theta = 90.0;
-            //    }
-            //    else
-            //    {
-            //        Notch_Theta = -90.0;
-            //    }
-            //}
-            //else
-            //    Notch_Theta = Math.Atan((double)(pt1.Y - pt2.Y) / (double)(pt1.X - pt2.X)) / Math.PI * 180;
 
             //計算直線與圓的交點(計算Notch點)
             double a = 1.0 + da1 * da1;
@@ -423,14 +404,14 @@ namespace AlignerVerification.AOI
             NotchMMPt.X = (double)NotchPt.X / PixelPerMM;
             NotchMMPt.Y = (double)NotchPt.Y / PixelPerMM;
 
-            R = (double)MachineParas.WaferRadius/ 1000.0 * PixelPerMM;
-            FindRelateCircle(0, NotchPt.X, ref Ox, ref Oy, R);
+            //R = (double)MachineParas.WaferRadius / 1000.0 * PixelPerMM;
+            //FindRelateCircle(0, NotchPt.X, ref Ox, ref Oy, R);
 
-            CenterPt.X = (int)Ox;
-            CenterPt.Y = (int)Oy + ROITop;
+            //CenterPt.X = (int)Ox;
+            //CenterPt.Y = (int)Oy + ROITop;
 
-            CenterMMPt.X = (double)CenterPt.X / PixelPerMM;
-            CenterMMPt.Y = (double)CenterPt.Y / PixelPerMM;
+            //CenterMMPt.X = (double)CenterPt.X / PixelPerMM;
+            //CenterMMPt.Y = (double)CenterPt.Y / PixelPerMM;
 
             //------------------------------------------------------------------------------
             //計算圓方程式
@@ -446,6 +427,28 @@ namespace AlignerVerification.AOI
             }
 
             LeastSquaresFit(TopEage, ref Ox, ref Oy, ref R);
+
+            //計算直線與圓的交點(計算Notch點)
+            a = 1.0 + da1 * da1;
+            b = -2 * Ox + 2 * da1 * (db1 - Oy);
+            c = Ox * Ox + (db1 - Oy) * (db1 - Oy) - R * R;
+
+            dNotchX = (-b + Math.Sqrt(b * b - 4 * a * c)) / (2 * a);
+            if (dNotchX > 3840.0) dNotchX = (-b - Math.Sqrt(b * b - 4 * a * c)) / (2 * a);
+
+            dNotchY = da1 * dNotchX + db1;
+
+            NotchPt.X = (int)(dNotchX + 0.5);
+            NotchPt.Y = (int)(dNotchY + 0.5) + ROITop;
+
+            NotchMMPt.X = (double)NotchPt.X / PixelPerMM;
+            NotchMMPt.Y = (double)NotchPt.Y / PixelPerMM;
+
+            CenterPt.X = (int)Ox;
+            CenterPt.Y = (int)Oy + ROITop;
+
+            CenterMMPt.X = (double)CenterPt.X / PixelPerMM;
+            CenterMMPt.Y = (double)CenterPt.Y / PixelPerMM;
 
             ////尋找最高的點
             double MaxTop = 99999999.0;
@@ -536,37 +539,6 @@ namespace AlignerVerification.AOI
             TopMMPt.Y = (double)TopPt.Y / PixelPerMM;
             //----------------------------------------
 
-            //List<PointF> TopEage = new List<PointF>();
-            //int MinValue = edge.Min();
-
-            //for(int i = 0; i< 3840; i++)
-            //{
-            //    if(edge[i] == MinValue)
-            //    {
-            //        PointF pt = new PointF
-            //        {
-            //            X = (float)i,
-            //            Y = (float)edge[i]
-            //        };
-            //        TopEage.Add(pt);
-            //    }
-            //}
-
-            //if(TopEage.Count == 1)
-            //{
-            //    TopPt.X = (int)TopEage[0].X;
-            //    TopPt.Y = (int)TopEage[0].Y + ROITop;
-            //    TopMMPt.X = (double)TopPt.X / PixelPerMM;
-            //    TopMMPt.Y = (double)TopPt.Y / PixelPerMM;
-            //}
-            //else
-            //{
-            //    TopPt.X = (int)TopEage.Average(x => x.X);
-            //    TopPt.Y = MinValue + ROITop;
-            //    TopMMPt.X = (double)TopPt.X / PixelPerMM;
-            //    TopMMPt.Y = (double)TopPt.Y / PixelPerMM;
-            //}
-
             NotchPt.X = 0;
             NotchPt.Y = 0;
             NotchMMPt.X = (double)NotchPt.X / PixelPerMM;
@@ -617,14 +589,14 @@ namespace AlignerVerification.AOI
             double Oy = 0.0;
             double R = 0.0;
 
-            ////計算相對圓心
-            R = (double)MachineParas.WaferRadius / 1000.0 * PixelPerMM;
-            FindRelateCircle(0, edge.Count() - 1, ref Ox, ref Oy, R);
+            //////計算相對圓心
+            //R = (double)MachineParas.WaferRadius / 1000.0 * PixelPerMM;
+            //FindRelateCircle(0, edge.Count() - 1, ref Ox, ref Oy, R);
 
-            CenterPt.X = (int)Ox;
-            CenterPt.Y = (int)Oy + ROITop;
-            CenterMMPt.X = (double)CenterPt.X / PixelPerMM;
-            CenterMMPt.Y = (double)CenterPt.Y / PixelPerMM;
+            //CenterPt.X = (int)Ox;
+            //CenterPt.Y = (int)Oy + ROITop;
+            //CenterMMPt.X = (double)CenterPt.X / PixelPerMM;
+            //CenterMMPt.Y = (double)CenterPt.Y / PixelPerMM;
 
             List<PointF> Eage = new List<PointF>();
             for (int x = 0; x < (int)(2 * (3840.0 / 5.0) + 0.5); x++)
@@ -648,6 +620,11 @@ namespace AlignerVerification.AOI
             }
 
             LeastSquaresFit(Eage, ref Ox, ref Oy, ref R);
+
+            CenterPt.X = (int)Ox;
+            CenterPt.Y = (int)Oy + ROITop;
+            CenterMMPt.X = (double)CenterPt.X / PixelPerMM;
+            CenterMMPt.Y = (double)CenterPt.Y / PixelPerMM;
 
             //尋找最高的點
             double MaxTop = 99999999.0;
@@ -735,7 +712,251 @@ namespace AlignerVerification.AOI
 
             return bReturn;
         }
+        public bool DoRepeatTest()
+        {
+            bool bRet = true;
 
+            Image<Gray, byte> img1 = MatBinary.ToImage<Gray, byte>();
+
+            bool FindPt1 = true;
+            bool FindPt2 = true;
+
+            Point RPt1 = new Point();
+            Point RPt2 = new Point();
+
+            //Dictionary<int, int> LeftScanGroup = new Dictionary<int, int>();
+            //Dictionary<int, int> RightScanGroup = new Dictionary<int, int>();
+
+            //for (int y = ROI.Height-1; y>=0; y--)
+            //{
+            //    if (img1.Data[y, ROI.Width / 2, 0] == 0x00) continue;
+
+            //    for (int x = ROI.Width / 2; x >= 0; x--)
+            //    {
+            //        if (img1.Data[y, x, 0] == 0x00)
+            //        {
+            //            if (!LeftScanGroup.ContainsKey(x))
+            //            {
+            //                LeftScanGroup.Add(x, 1);
+            //            }
+            //            else
+            //            {
+            //                LeftScanGroup[x]++;
+            //            }
+            //            break;
+            //        }
+            //    }
+
+            //    for (int x = ROI.Width / 2; x < ROI.Width; x++)
+            //    {
+            //        if (img1.Data[y, x, 0] == 0x00)
+            //        {
+            //            if (!RightScanGroup.ContainsKey(x))
+            //            {
+            //                RightScanGroup.Add(x, 1);
+            //            }
+            //            else
+            //            {
+            //                RightScanGroup[x]++;
+            //            }
+            //            break;
+            //        }
+            //    }
+            //}
+
+            //int Temp = 0;
+            //foreach(KeyValuePair<int, int> item in LeftScanGroup)
+            //{
+            //    if(item.Value > Temp)
+            //    {
+            //        Temp = item.Value;
+
+            //        RPt1.X = item.Key;
+
+            //        FindPt1 = true;
+            //    }
+            //}
+
+            //RPt1.X += 1;
+
+            //Temp = 0;
+            //foreach (KeyValuePair<int, int> item in RightScanGroup)
+            //{
+            //    if (item.Value > Temp)
+            //    {
+            //        Temp = item.Value;
+
+            //        RPt2.X = item.Key;
+
+            //        FindPt2 = true;
+            //    }
+            //}
+
+            //RPt2.X -= 1;
+
+
+
+            //List<Point> EageList = new List<Point>();
+            //for (int x = 0; x < ROI.Width; x++)
+            //{
+            //    for (int y = 0; y < ROI.Height; y++)
+            //    {
+            //        if (img1.Data[y, x, 0] == 0xFF)
+            //        {
+            //            Point pt = new Point
+            //            {
+            //                X = x,
+            //                Y = y
+            //            };
+            //            EageList.Add(pt);
+            //            break;
+            //        }
+            //    }
+            //}
+
+            //for (int i = EageList.Count/2; i >1; i--)
+            //{
+            //    Point pt2 = EageList[i];
+            //    Point pt1 = EageList[i - 1];
+
+            //    if (Math.Abs(pt2.Y - pt1.Y) > 3)
+            //    {
+            //        RPt1.X = pt1.X;
+            //        RPt1.Y = pt1.Y;
+
+            //        FindPt1 = true;
+            //        break;
+            //    }
+            //}
+
+            //for (int i = EageList.Count / 2; i < EageList.Count-2; i++)
+            //{
+            //    Point pt2 = EageList[i];
+            //    Point pt1 = EageList[i - 1];
+
+            //    if (Math.Abs(pt2.Y - pt1.Y) > 3)
+            //    {
+            //        RPt2.X = pt2.X;
+            //        RPt2.Y = pt2.Y;
+
+            //        FindPt2 = true;
+            //        break;
+            //    }
+            //}
+
+            if (FindPt2 && FindPt1)
+            {
+               if( FindEage())
+                {
+                    RPt1.X = 0;
+
+                    double sumX = 0.0;
+                    double sumY = 0.0;
+                    for (int i = RPt1.X; i <= RPt1.X + 100; i++)
+                    {
+                        sumX += i;
+                        sumY += edge[i];
+                    }
+
+                    RepeatPt1.X = (int)(sumX / 101.0 + 0.5);
+                    RepeatPt1.Y = (int)(sumY / 101.0 + 0.5) + ROITop;
+
+                    RPt2.X = 3839;
+
+                    sumX = 0.0;
+                    sumY = 0.0;
+                    for (int i = RPt2.X - 100; i <= RPt2.X; i++)
+                    {
+                        sumX += i;
+                        sumY += edge[i];
+                    }
+
+                    RepeatPt2.X = (int)(sumX / 101.0 + 0.5);
+                    RepeatPt2.Y = (int)(sumY / 101.0 + 0.5) + ROITop;
+
+                    RepeatPt3.X = (RepeatPt1.X + RepeatPt2.X) / 2;
+                    RepeatPt3.Y = edge[RepeatPt3.X] + ROITop;
+
+
+                    double a = (double)RepeatPt1.X - (double)RepeatPt2.X;// X1-X2
+                    double b = (double)RepeatPt1.Y - (double)RepeatPt2.Y;//Y1-Y2
+                    double c = (double)RepeatPt1.X - (double)RepeatPt3.X;//X1-X3
+                    double d = (double)RepeatPt1.Y - (double)RepeatPt3.Y;//Y1-Y3
+                    double aa = Math.Pow(RepeatPt1.X, 2) - Math.Pow(RepeatPt2.X, 2);//X1^2-X2^2
+                    double bb = Math.Pow(RepeatPt2.Y, 2) - Math.Pow(RepeatPt1.Y, 2);//Y2^2-Y1^2
+                    double cc = Math.Pow(RepeatPt1.X, 2) - Math.Pow(RepeatPt3.X, 2);//X1^2-X3^2
+                    double dd = Math.Pow(RepeatPt3.Y, 2) - Math.Pow(RepeatPt1.Y, 2);//Y3^2-Y1^2
+                    double E = (aa - bb) / 2;
+                    double F = (cc - dd) / 2;
+
+                    double Ox = (a * F - c * E) / (a * d - b * c);
+                    double Oy = (F * b - E * d) / (b * c - a * d);
+
+                    double R = Math.Sqrt((Math.Pow(((double)RepeatPt1.X - Ox), 2)) + (Math.Pow(((double)RepeatPt1.Y - Oy), 2)));
+
+                    CenterPt.X = (int)(Ox + 0.5);
+                    CenterPt.Y = (int)(Oy + 0.5);
+
+                    CenterMMPt.X = (double)CenterPt.X / PixelPerMM;
+                    CenterMMPt.Y = (double)CenterPt.Y / PixelPerMM;
+
+
+                    //尋找最高的點
+                    double MaxTop = 99999999.0;
+                    double tempY = 0;
+                    int MaxX = 0;
+                    for (int x = 0; x < 3840; x++)
+                    {
+                        tempY = Oy - Math.Sqrt(R * R - (Ox - x) * (Ox - x));
+                        if (tempY < MaxTop)
+                        {
+                            MaxTop = tempY;
+                            MaxX = x;
+                        }
+                    }
+
+                    TopPt.X = MaxX;
+                    TopPt.Y = (int)(MaxTop + 0.5);
+
+                    TopMMPt.X = TopPt.X / PixelPerMM;
+                    TopMMPt.Y = TopPt.Y / PixelPerMM;
+
+                    NotchPt = RepeatPt1;
+
+                    NotchMMPt.X = (double)NotchPt.X / PixelPerMM;
+                    NotchMMPt.Y = (double)NotchPt.Y / PixelPerMM;
+
+
+                    //計算Notch角度
+                    if (NotchPt.X - CenterPt.X == 0)
+                    {
+                        if (NotchPt.Y - CenterPt.Y >= 0)
+                        {
+                            Notch_Theta = 90.0;
+                        }
+                        else
+                        {
+                            Notch_Theta = -90.0;
+                        }
+                    }
+                    else
+                        Notch_Theta = Math.Atan((double)(NotchPt.Y - CenterPt.Y) / (double)(NotchPt.X - CenterPt.X)) / Math.PI * 180;
+
+                    if (Notch_Theta < 0.0) Notch_Theta += 180.0;
+
+                }
+               else
+                {
+                    FindPt1 = false;
+                    FindPt2 = false;
+
+                }
+            }
+
+            if (!FindPt2 || !FindPt1) bRet = false;
+
+            return bRet;
+        }
         public bool Calculate()
         {
             bool bResult = true;
@@ -751,21 +972,39 @@ namespace AlignerVerification.AOI
                 }
                 else
                 {
-                    if (!FindEage())
+                    if(MachineParas.WaferType != 3)
                     {
-                        bResult = false;
-                        CalculateResult = "尋邊界異常";
+                        if (!FindEage())
+                        {
+                            bResult = false;
+                            CalculateResult = "尋邊界異常";
+                        }
+                        else
+                        {
+                            //Wafer形式(Notch、Flat、Circle) 
+                            if (MachineParas.WaferType == 0) //不得於平邊的時候
+                                FindCircleWaferNotch();
+                            else if (MachineParas.WaferType == 1)
+                            {
+                                if(NotchMark)
+                                {
+                                    FindCircleWaferNotch();
+                                }
+                                else
+                                {
+                                    FindFlatWaferNotch();
+                                }
+                            }
+                            else if (MachineParas.WaferType == 2)
+                                FindCircleWaferInfo();
+                        }
                     }
                     else
                     {
-                        //Wafer形式(Notch、Flat、Circle) 
-                        if (MachineParas.WaferType == 0) //不得於平邊的時候
-                            FindCircleWaferNotch();
-                        else if(MachineParas.WaferType == 1)
-                            FindFlatWaferNotch();
-                        else
-                            FindCircleWaferInfo();
+                        if (MachineParas.WaferType == 3)
+                            DoRepeatTest();
                     }
+
                 }
             }
             catch(Exception e)
